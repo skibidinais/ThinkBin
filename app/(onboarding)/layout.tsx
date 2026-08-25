@@ -6,8 +6,7 @@ export default function OnboardingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative w-full h-full flex flex-col overflow-y-auto bg-gradient-to-b from-[#FFF7ED] to-[#FFEDD5]">
-      {/* Onboarding pages are distraction-free without StatusBar & BottomDock */}
+    <div className="relative w-full flex-1 flex flex-col bg-[#FFFBEA]">
       {children}
     </div>
   );
