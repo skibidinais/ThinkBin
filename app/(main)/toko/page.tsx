@@ -243,11 +243,11 @@ export default function TokoPage() {
 
   return (
     <div
-      className="relative flex flex-col w-full min-h-full px-3 pt-28 pb-28 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
-      style={{ backgroundImage: "url('/screens_assets/shop_bg_market.jpg')" }}
+      className="relative flex flex-col justify-between w-full h-full min-h-full px-3 pt-24 pb-24 select-none bg-cover bg-center bg-no-repeat overflow-y-auto no-scrollbar"
+      style={{ backgroundImage: "url('/screens_assets/shop_market_bg_official.jpg')" }}
     >
-      {/* FLOATING SPEECH BUBBLE BANNER (Directly under the awning, matching reference image) */}
-      <div className="flex items-center gap-2 bg-white/95 border-[2px] border-[#D19932] rounded-3xl p-2.5 mb-3 shadow-[0_4px_10px_rgba(180,120,30,0.15)]">
+      {/* 1. FLOATING SPEECH BUBBLE BANNER (Positioned below the awning & Toko sign) */}
+      <div className="flex items-center gap-2 bg-white/95 border-[2px] border-[#D19932] rounded-3xl p-2.5 mb-2 shadow-[0_4px_10px_rgba(180,120,30,0.15)] flex-shrink-0">
         <div className="relative w-11 h-11 flex-shrink-0">
           <Image
             src="/assets/mascot_leonardo.png"
@@ -271,8 +271,8 @@ export default function TokoPage() {
         </div>
       )}
 
-      {/* 3x2 STORE ITEM CARDS (Exact match to reference photo) */}
-      <div className="grid grid-cols-3 gap-2.5 mb-3">
+      {/* 2. 3x2 STORE ITEM CARDS (Positioned cleanly in the open cream center wall area) */}
+      <div className="grid grid-cols-3 gap-2 mb-2 flex-shrink-0">
         {currentItems.map((item) => {
           const isOwned = ownedFrames.includes(item.id);
           const isEquipped = selectedFrame === item.id;
@@ -291,7 +291,7 @@ export default function TokoPage() {
               )}
 
               {/* Item Preview */}
-              <div className="relative w-14 h-14 my-1 flex items-center justify-center">
+              <div className="relative w-14 h-14 my-0.5 flex items-center justify-center">
                 {!item.isMysteryBox ? (
                   <>
                     <Image
@@ -324,7 +324,7 @@ export default function TokoPage() {
                 )}
               </div>
 
-              <span className="font-fredoka font-bold text-[11px] text-[#382C22] text-center truncate w-full mb-1.5">
+              <span className="font-fredoka font-bold text-[10.5px] text-[#382C22] text-center truncate w-full mb-1">
                 {item.name}
               </span>
 
@@ -362,8 +362,8 @@ export default function TokoPage() {
         })}
       </div>
 
-      {/* PAGINATION CONTROLS PILL (< 1 / 3 >) */}
-      <div className="flex items-center justify-center gap-2 mb-2">
+      {/* 3. PAGINATION CONTROLS PILL (< 1 / 3 >) */}
+      <div className="flex items-center justify-center gap-2 mb-1 flex-shrink-0">
         <button
           type="button"
           onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
@@ -388,7 +388,7 @@ export default function TokoPage() {
       </div>
 
       {/* BOTTOM SAFE AREA SPACER */}
-      <div className="w-full h-8 flex-shrink-0" />
+      <div className="w-full h-4 flex-shrink-0" />
     </div>
   );
 }
