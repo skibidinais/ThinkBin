@@ -1,0 +1,907 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap');
+
+:root {
+    --bg-page: #E2D3B8; /* Warm sand background outside frame */
+    --bg-container: #FDE8A5; /* Warm yellow/cream tone from Quests page */
+    --text-main: #382C22;
+    --text-muted: #796F65;
+    --border-dark: #382C22;
+    --card-white: #FFFFFF;
+    --font-title: 'Fredoka', 'Nunito', sans-serif;
+    --font-body: 'Nunito', 'Fredoka', sans-serif;
+    
+    /* Button Colors matching Quests page */
+    --btn-green: #4CAF50;
+    --btn-green-shadow: #318B35;
+    --btn-yellow: #F5B82E;
+    --btn-yellow-shadow: #D39A1C;
+    --btn-gray: #ECE8E1;
+    --btn-gray-shadow: #D6CFBE;
+    
+    /* Shelf colors */
+    --shelf-wood: #D7A667;
+    --shelf-shadow: #A87334;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+body {
+    background-color: var(--bg-page);
+    font-family: var(--font-body);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Base Mobile App Canvas (Matching Quests Page: 412x890) */
+.app-container {
+    width: 100%;
+    max-width: 412px;
+    height: 890px;
+    max-height: 96vh;
+    background-color: var(--bg-container);
+    border-radius: 40px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 480px) {
+    body {
+        background-color: var(--bg-container);
+    }
+    .app-container {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+
+/* -------------------------------------------------------------
+   STICKY TOP HEADER
+------------------------------------------------------------- */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px 12px 20px;
+    background-color: var(--bg-container);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-back {
+    background: #FFFFFF;
+    border: 2.5px solid var(--border-dark);
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 3px 0 var(--border-dark);
+    transition: transform 0.1s ease;
+}
+
+.btn-back:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--border-dark);
+}
+
+.header-title {
+    font-family: var(--font-title);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.2px;
+}
+
+/* Coin & XP Display in Header */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.coin-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #FFFFFF;
+    border: 2.5px solid var(--border-dark);
+    border-radius: 20px;
+    padding: 6px 12px;
+    box-shadow: 0 3px 0 var(--border-dark);
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-main);
+    transition: transform 0.15s ease;
+}
+
+.coin-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.xp-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #FFFFFF;
+    border: 2.5px solid var(--border-dark);
+    border-radius: 20px;
+    padding: 6px 12px;
+    box-shadow: 0 3px 0 var(--border-dark);
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-main);
+    transition: transform 0.15s ease;
+}
+
+.xp-icon {
+    width: 19px;
+    height: 19px;
+    object-fit: contain;
+}
+
+.coin-jiggle {
+    animation: jiggle 0.4s ease-in-out;
+}
+
+@keyframes jiggle {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.15) rotate(-8deg); }
+    50% { transform: scale(1.15) rotate(8deg); }
+    75% { transform: scale(1.08) rotate(-4deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+/* -------------------------------------------------------------
+   SCROLLABLE CONTENT AREA
+------------------------------------------------------------- */
+.content-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 16px 100px 16px; /* 100px bottom padding for fixed footer nav */
+    scroll-behavior: smooth;
+}
+
+.content-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+.content-scroll::-webkit-scrollbar-thumb {
+    background: rgba(140, 100, 40, 0.2);
+    border-radius: 10px;
+}
+
+/* Mascot Shop Banner (Matching Quests white card style) */
+.shop-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: var(--card-white);
+    border: 2.5px solid var(--border-dark);
+    border-radius: 24px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+.banner-mascot-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background-color: #EEF8EC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.banner-mascot {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    animation: banner-bounce 2.5s infinite ease-in-out;
+}
+
+.banner-bubble {
+    font-family: var(--font-title);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-main);
+}
+
+@keyframes banner-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* -------------------------------------------------------------
+   SHELVES CONTAINER & SHOP CARDS
+------------------------------------------------------------- */
+.shelves-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 16px;
+}
+
+.shelf-row {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.shelf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding-bottom: 8px;
+    z-index: 2;
+}
+
+/* Wooden Shelf Plank matching Quests aesthetics */
+.shelf-wood-bar {
+    height: 12px;
+    background-color: var(--shelf-wood);
+    border: 2.5px solid var(--border-dark);
+    border-radius: 8px;
+    width: calc(100% + 8px);
+    margin-left: -4px;
+    box-shadow: 0 4px 0 var(--shelf-shadow);
+    z-index: 1;
+    margin-top: -6px;
+}
+
+/* Item Shop Card (White rounded card with bold cartoon outline) */
+.shop-card {
+    background-color: var(--card-white);
+    border: 2.5px solid var(--border-dark);
+    border-radius: 22px;
+    padding: 10px 6px 12px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.shop-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.08);
+}
+
+.shop-card:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Icon Badge Preview Area (Matching Quests colorful rounded-square badges) */
+.card-preview-area {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    overflow: visible;
+    transition: transform 0.15s ease;
+}
+
+/* Dynamic soft background colors for item badges */
+.card-preview-area.badge-purple { background-color: #F3EEFF; }
+.card-preview-area.badge-yellow { background-color: #FFF7E6; }
+.card-preview-area.badge-green  { background-color: #EEF8EC; }
+.card-preview-area.badge-pink   { background-color: #FFEBF2; }
+.card-preview-area.badge-cyan   { background-color: #E6F7FF; }
+.card-preview-area.badge-orange { background-color: #FFF0E6; }
+
+.card-item-img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    z-index: 2;
+}
+
+.card-border-img {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    object-fit: contain;
+    z-index: 2;
+}
+
+/* Card Name Typography (Bold Playful Heading Weight) */
+.card-name {
+    font-family: var(--font-title);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 3px;
+    line-height: 1.25;
+    height: 31px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-subtitle {
+    font-family: var(--font-title);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 6px;
+    height: 14px;
+    line-height: 1.2;
+}
+
+/* Card Price */
+.card-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.card-coin-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* Rounded Pill-Shaped Buttons (Matching "Claim!" / "Hint" style) */
+.btn-card-action {
+    width: 100%;
+    padding: 7px 4px;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.1s ease;
+    letter-spacing: 0.2px;
+}
+
+.btn-card-action:active {
+    transform: translateY(3px);
+    box-shadow: none !important;
+}
+
+/* Action Button Variants */
+.btn-buy {
+    background-color: var(--btn-green);
+    color: #FFFFFF;
+    box-shadow: 0 4px 0 var(--btn-green-shadow);
+}
+.btn-buy:hover {
+    background-color: #54B858;
+}
+
+.btn-equip {
+    background-color: var(--btn-yellow);
+    color: #4D3300;
+    box-shadow: 0 4px 0 var(--btn-yellow-shadow);
+}
+.btn-equip:hover {
+    background-color: #F8C34E;
+}
+
+.btn-active {
+    background-color: #EEF8EC;
+    color: #52B555;
+    border: 2px solid #52B555;
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: default;
+}
+
+/* -------------------------------------------------------------
+   PAGINATION CONTROLS
+------------------------------------------------------------- */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: auto;
+    padding: 8px 0 14px 0;
+}
+
+.btn-page {
+    background-color: #FFFFFF;
+    border: 2.5px solid var(--border-dark);
+    border-radius: 16px;
+    width: 42px;
+    height: 42px;
+    font-family: var(--font-title);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--border-dark);
+    transition: all 0.1s ease;
+}
+
+.btn-page:hover {
+    background-color: #F8FAFC;
+}
+
+.btn-page:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--border-dark);
+}
+
+.btn-page:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 4px 0 var(--border-dark) !important;
+}
+
+.page-indicator {
+    font-family: var(--font-title);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 55px;
+    text-align: center;
+}
+
+/* -------------------------------------------------------------
+   FOOTER NAVIGATION BAR (MATCHING QUESTS / MISSION STYLE)
+------------------------------------------------------------- */
+.footer-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 68px;
+    background-color: #FEE295;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 6px;
+    z-index: 100;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tab-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 18px;
+    transition: transform 0.15s ease;
+}
+
+.tab-item:active {
+    transform: scale(0.92);
+}
+
+.tab-pill {
+    position: absolute;
+    inset: 0;
+    background-color: #FBD578;
+    border-radius: 18px;
+    z-index: 0;
+}
+
+.tab-icon-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* -------------------------------------------------------------
+   MODAL CONFIRMATION (MATCHING QUESTS HINT MODAL)
+------------------------------------------------------------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 20, 10, 0.45);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: #FFFFFF;
+    border: 3.5px solid var(--border-dark);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 330px;
+    padding: 24px 20px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transform: scale(0.85);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-title {
+    font-family: var(--font-title);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 14px;
+}
+
+.modal-preview-box {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 14px auto;
+    position: relative;
+    background-color: #F8FAFC;
+    border-radius: 24px;
+    border: 2px dashed #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-preview-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.modal-border-preview {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 150px;
+    height: 150px;
+    z-index: 2;
+    pointer-events: none;
+    object-fit: contain;
+}
+
+.modal-item-name {
+    font-family: var(--font-title);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.modal-item-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-main);
+    margin-bottom: 20px;
+}
+
+.modal-coin-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-modal {
+    flex: 1;
+    padding: 12px;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.btn-modal:active {
+    transform: translateY(3px);
+    box-shadow: none !important;
+}
+
+.btn-cancel {
+    background-color: var(--btn-gray);
+    color: #6A6155;
+    box-shadow: 0 4px 0 var(--btn-gray-shadow);
+}
+.btn-cancel:hover {
+    background-color: #F3EFE9;
+}
+
+.btn-confirm {
+    background-color: var(--btn-green);
+    color: #FFFFFF;
+    box-shadow: 0 4px 0 var(--btn-green-shadow);
+}
+.btn-confirm:hover {
+    background-color: #54B858;
+}
+
+/* -------------------------------------------------------------
+   MYSTERY BOX MODAL
+------------------------------------------------------------- */
+.mystery-modal-content {
+    max-width: 350px !important;
+}
+
+.mystery-box-container {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+}
+
+.mystery-glow {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.5s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.mystery-glow.active {
+    opacity: 1;
+    transform: scale(1.3);
+    animation: rotate-glow 20s infinite linear;
+}
+
+.glow-common    { background: radial-gradient(circle, rgba(148,163,184,0.4) 0%, rgba(148,163,184,0) 70%); }
+.glow-uncommon  { background: radial-gradient(circle, rgba(74,222,128,0.5) 0%, rgba(74,222,128,0) 70%); }
+.glow-rare      { background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, rgba(168,85,247,0) 70%); }
+.glow-legendary { background: radial-gradient(circle, rgba(234,179,8,0.6) 0%, rgba(234,179,8,0) 70%); }
+
+.mystery-box-sprite {
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+    animation: idle-float 3s infinite ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mystery-box-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.mystery-box-sprite:hover {
+    transform: scale(1.08);
+}
+
+.mystery-box-sprite.shaking {
+    animation: shake-chest 0.1s infinite !important;
+}
+
+.mystery-box-sprite.open {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+}
+
+.mystery-reward-showcase {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.3);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 3;
+    pointer-events: none;
+}
+
+.mystery-reward-showcase.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.reward-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    background-color: #FFFFFF;
+    border: 2.5px solid var(--border-dark);
+    border-radius: 22px;
+    box-shadow: 0 4px 0 var(--border-dark);
+    position: relative;
+    padding: 8px;
+}
+
+.reward-border-placeholder {
+    width: 64px;
+    height: 64px;
+    background-color: #FAF6EE;
+    border-radius: 50%;
+}
+
+.reward-border-img {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 112px;
+    height: 112px;
+    object-fit: contain;
+    z-index: 2;
+}
+
+.reward-tier-badge {
+    font-family: var(--font-title);
+    font-size: 11px;
+    font-weight: 700;
+    color: #FFFFFF;
+    padding: 4px 14px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.tier-common    { background-color: #94A3B8; }
+.tier-uncommon  { background-color: #4ADE80; color: #1E293B !important; }
+.tier-rare      { background-color: #C084FC; }
+.tier-legendary { background-color: #FACC15; color: #1E293B !important; }
+
+.reward-text {
+    font-family: var(--font-title);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 4px;
+}
+
+.mystery-instruction {
+    font-family: var(--font-title);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+@keyframes idle-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+@keyframes shake-chest {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-3px, 2px) rotate(-3deg); }
+    75% { transform: translate(3px, -2px) rotate(3deg); }
+}
+
+@keyframes rotate-glow {
+    0% { transform: rotate(0deg) scale(1.3); }
+    100% { transform: rotate(360deg) scale(1.3); }
+}
+
+/* -------------------------------------------------------------
+   TOAST NOTIFICATION (Quests pill feedback)
+------------------------------------------------------------- */
+.toast-container {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background-color: #FFFFFF;
+    border: 2.5px solid var(--border-dark);
+    border-radius: 20px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.toast-container.active {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast-message {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+}

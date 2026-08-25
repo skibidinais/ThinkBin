@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Think Bin Quiz</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,600;0,700;0,800;0,900;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="screen-wrapper">
+    <div class="mobile-frame">
+      
+      <!-- Top Decorative Sticky Notes & Stationery Behind Paper -->
+      <div class="decorations-layer">
+        <!-- Orange Sticky Note -->
+        <div class="sticky-note sticky-orange"></div>
+        <!-- Yellow Sticky Note -->
+        <div class="sticky-note sticky-yellow"></div>
+        <!-- Light Green Sticky Note -->
+        <div class="sticky-note sticky-green"></div>
+        
+        <!-- Ruler on top right -->
+        <div class="ruler-prop">
+          <div class="ruler-marks">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- Green Crayon on Left -->
+        <div class="prop-crayon">
+          <div class="crayon-tip"></div>
+          <div class="crayon-body">
+            <div class="crayon-pattern">
+              <div class="crayon-circle"></div>
+            </div>
+            <div class="crayon-stripe top"></div>
+            <div class="crayon-stripe bot"></div>
+          </div>
+        </div>
+
+        <!-- Black Pencil on Left -->
+        <div class="prop-pencil">
+          <div class="pencil-body"></div>
+          <div class="pencil-wood"></div>
+          <div class="pencil-tip"></div>
+        </div>
+
+        <!-- White Eraser on Right -->
+        <div class="prop-eraser">
+          <div class="eraser-white"></div>
+          <div class="eraser-sleeve"></div>
+        </div>
+      </div>
+
+      <!-- Top Bar Header (Back button + Logo) -->
+      <header class="top-bar">
+        <button class="back-btn" id="backBtn" aria-label="Kembali" title="Kembali">
+          <svg viewBox="0 0 24 24" class="icon-arrow">
+            <path d="M15 19l-7-7 7-7" fill="none" stroke="#683407" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="logo-card">
+          <img src="logo.png" alt="Think Bin Logo" class="brand-logo" id="brandLogo">
+        </div>
+      </header>
+
+      <!-- Main Paper Quiz Container -->
+      <main class="paper-container" id="paperContainer">
+        
+        <!-- Pill: Question Counter badge -->
+        <div class="question-pill" id="questionPill">
+          <span id="questionCounter">Soal Pemahaman</span>
+        </div>
+
+        <!-- Pill: Bantuan (Hint) Button -->
+        <button class="hint-btn" id="hintBtn" title="Lihat Bantuan">
+          <span>Bantuan</span>
+        </button>
+
+        <!-- Quiz Body Card Area -->
+        <div class="quiz-content" id="quizContent">
+          <!-- Question Row -->
+          <div class="question-header">
+            <div class="question-num-circle" id="qNumberCircle">1</div>
+            <h2 class="question-text" id="questionText">Memuat soal...</h2>
+          </div>
+
+          <!-- Answer Options List -->
+          <div class="options-list" id="optionsList">
+            <!-- Dynamically populated options -->
+          </div>
+
+          <!-- Action Button: JAWAB -->
+          <div class="submit-wrapper">
+            <button class="btn-jawaban" id="btnJawab">
+              JAWAB
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Screen (Initially Hidden) -->
+        <div class="result-content hidden" id="resultContent">
+          <div class="result-mascot">
+            <img src="logo.png" alt="Think Bin" class="result-logo-img">
+          </div>
+          <h2 class="result-title" id="resultTitle">Kuis Selesai!</h2>
+          <p class="result-score-text">Skor Kamu:</p>
+          <div class="score-badge" id="scoreBadge">100 / 100</div>
+          <p class="result-feedback" id="resultFeedback">Luar biasa! Kamu menjawab semua dengan benar.</p>
+          
+          <div class="result-buttons-row">
+            <button class="btn-jawaban btn-restart" id="btnRestart">
+              MAIN LAGI
+            </button>
+            <button class="btn-jawaban btn-continue" id="btnContinue">
+              LANJUT
+            </button>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Exact Cartoon Hands Image Overlay Holding Paper at Bottom -->
+      <div class="hands-container">
+        <img src="hands.png" alt="Hands holding paper" class="hands-overlay-img">
+      </div>
+
+      <!-- Hint Modal Popup -->
+      <div class="modal-backdrop hidden" id="hintModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>Petunjuk / Bantuan</h3>
+          </div>
+          <p class="modal-text" id="hintModalText">Petunjuk akan muncul di sini.</p>
+          <button class="modal-close-btn" id="closeHintBtn">Mengerti!</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Load Curriculum Data -->
+  <script src="../shared/modul_data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

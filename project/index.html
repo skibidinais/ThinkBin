@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThinkBin - My Learning App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="app-nav">
+    <button class="nav-btn active" data-screen="learning-map">🗺️ Learning Map</button>
+    <button class="nav-btn" data-screen="bacaan">📖 Bacaan</button>
+    <button class="nav-btn" data-screen="quiz">📝 Quiz</button>
+    <button class="nav-btn" data-screen="home">🏠 Beranda</button>
+    <button class="nav-btn" data-screen="plopp">🏆 Leaderboard</button>
+    <button class="nav-btn" data-screen="mission">🎖️ Mission</button>
+    <button class="nav-btn" data-screen="dailygoals">🎯 Goals</button>
+    <button class="nav-btn" data-screen="profile">👤 Profil</button>
+    <button class="nav-btn" data-screen="toko">🛍️ Toko</button>
+    <button class="nav-btn" data-screen="onboarding">👋 Onboard</button>
+    <span class="nav-divider"></span>
+    <button class="nav-btn" data-screen="celeb-a">🎉 Celeb A</button>
+    <button class="nav-btn" data-screen="celeb-c">🎉 Celeb C</button>
+  </nav>
+
+  <main class="app-stage">
+    <iframe id="screenFrame" class="screen-frame" src="screens/learning-map/index.html" title="app-screen"></iframe>
+  </main>
+
+<script src="main.js"></script>
+</body>
+</html>

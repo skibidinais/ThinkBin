@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Plopp - Ready for focus & Leaderboard</title>
+  <!-- Google Fonts: Nunito / Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="../../data/class_roster.js"></script>
+</head>
+<body>
+  <!-- Top Screen Switcher Toolbar -->
+  <div class="screen-switcher-bar">
+    <button class="switch-screen-btn active" id="btnShowSignup" onclick="showScreen('signup')">
+      🚀 Screen 1: Focus Onboarding
+    </button>
+    <button class="switch-screen-btn" id="btnShowLeaderboard" onclick="showScreen('leaderboard')">
+      🏆 Screen 2: Golden Leaderboard
+    </button>
+  </div>
+
+  <div class="screen-wrapper">
+    <div class="phone-container" id="phoneApp">
+      
+      <!-- =========================================================
+           SCREEN 1: READY FOR FOCUS? (SIGN UP / ONBOARDING)
+           ========================================================= -->
+      <div class="app-screen screen-signup active" id="signupScreen">
+        
+        <!-- SUB-STEP 1: TEASER & GOOGLE LOGIN ONLY -->
+        <div class="signup-content onboarding-substep active" id="ploppStepTeaser">
+          <!-- Top Mascot Illustration (Waving Pose) -->
+          <div class="signup-mascot-wrapper" onclick="triggerSignupMascotCheer()">
+            <div class="mascot-waving-container" id="signupMascotBox">
+              <!-- Injected High-Res Mascot Sprite -->
+            </div>
+            <!-- Waving motion lines SVG -->
+            <div class="waving-arcs">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 4C9 7 9 17 5 20" stroke="#72a61c" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M12 2C17 6 17 18 12 22" stroke="#72a61c" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Main Title -->
+          <h1 class="signup-title">Ready for focus?</h1>
+          <p class="signup-desc-text">Selamat datang di ThinkBin! Masuk dengan akun Google untuk memulai.</p>
+
+          <!-- Single Google Login ONLY Button -->
+          <div class="google-auth-container">
+            <button type="button" class="social-btn google-btn plopp-google-only" id="btnGoogleAuth" onclick="handlePloppGoogleLogin()">
+              <span class="social-icon google-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21.35 11.1h-9.17v2.98h5.27c-.23 1.25-.94 2.31-2 3.02v2.51h3.24c1.89-1.74 2.98-4.3 2.98-7.39 0-.71-.06-1.4-.18-2.02l-.14-1.1z" fill="#ffffff"/>
+                  <path d="M12.18 21.5c2.7 0 4.96-.9 6.62-2.43l-3.24-2.51c-.9.6-2.04.96-3.38.96-2.6 0-4.8-1.76-5.59-4.12H3.24v2.59C4.88 19.24 8.28 21.5 12.18 21.5z" fill="#ffffff"/>
+                  <path d="M6.59 13.4c-.2-.6-.31-1.25-.31-1.9s.11-1.3.31-1.9V7.01H3.24C2.58 8.33 2.2 9.87 2.2 11.5s.38 3.17 1.04 4.49l3.35-2.59z" fill="#ffffff"/>
+                  <path d="M12.18 5.48c1.47 0 2.79.51 3.82 1.5l2.86-2.86C17.13 2.5 14.87 1.5 12.18 1.5 8.28 1.5 4.88 3.76 3.24 6.99l3.35 2.59c.79-2.36 2.99-4.1 5.59-4.1z" fill="#ffffff"/>
+                </svg>
+              </span>
+              <span class="social-text">Google</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SUB-STEP 2: SETUP PROFIL (3-STEP: KELAS -> NAMA -> ABSEN) -->
+        <div class="signup-content onboarding-substep" id="ploppStepProfile">
+          <div class="plopp-step-pill">Langkah 1 dari 2: Setup Profil</div>
+          <h2 class="plopp-section-title">Lengkapi Datamu</h2>
+
+          <div class="plopp-form-card">
+            <div class="input-group">
+              <label class="plopp-label">1. Pilih Kelas</label>
+              <select class="plopp-input plopp-select" id="ploppSelectClass" onchange="handlePloppClassChange()">
+                <option value="" disabled selected>-- Pilih Kelas Kamu --</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="plopp-label">2. Pilih Nama Kamu</label>
+              <select class="plopp-input plopp-select" id="ploppSelectStudent" disabled onchange="handlePloppStudentChange()">
+                <option value="" disabled selected>-- Pilih Kelas Terlebih Dahulu --</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="plopp-label">3. Nomor Absen</label>
+              <input type="text" class="plopp-input plopp-readonly" id="ploppInputAbsen" placeholder="Terisi otomatis" readonly />
+            </div>
+
+            <!-- Anti duplicate warning -->
+            <div class="plopp-warn-box" id="ploppWarnBox" style="display: none;">
+              <span id="ploppWarnText">Siswa ini sudah terdaftar sebelumnya!</span>
+            </div>
+
+            <button type="button" class="plopp-cta-btn" id="btnPloppGoToSurvey" disabled onclick="handlePloppProfileNext()">
+              Lanjut ke Kuisioner
+            </button>
+          </div>
+        </div>
+
+        <!-- SUB-STEP 3: KUISIONER AWAL -->
+        <div class="signup-content onboarding-substep" id="ploppStepSurvey">
+          <div class="plopp-step-pill">Langkah 2 dari 2: Kuisioner Awal</div>
+          <h2 class="plopp-section-title">Kuisioner Pengetahuan</h2>
+
+          <form class="plopp-survey-form" id="ploppSurveyForm" onsubmit="handlePloppSurveySubmit(event)">
+            <!-- Q1 -->
+            <div class="plopp-survey-card">
+              <span class="p-q-badge">Soal 1/4</span>
+              <p class="p-q-title">Seberapa sering kamu memilah sampah organik dan anorganik?</p>
+              <div class="p-opt-list">
+                <label class="p-opt-item"><input type="radio" name="pq1" value="A" required onchange="checkPloppSurvey()"><span class="p-opt-box"><b>A</b> Selalu memilah setiap saat</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq1" value="B" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>B</b> Sering memilah</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq1" value="C" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>C</b> Kadang-kadang saja</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq1" value="D" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>D</b> Belum pernah memilah</span></label>
+              </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="plopp-survey-card">
+              <span class="p-q-badge">Soal 2/4</span>
+              <p class="p-q-title">Apakah kamu tahu jenis sampah yang bisa dijual ke Bank Sampah?</p>
+              <div class="p-opt-list">
+                <label class="p-opt-item"><input type="radio" name="pq2" value="A" required onchange="checkPloppSurvey()"><span class="p-opt-box"><b>A</b> Sangat tahu dan paham</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq2" value="B" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>B</b> Cukup tahu beberapa jenis</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq2" value="C" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>C</b> Kurang tahu</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq2" value="D" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>D</b> Belum tahu sama sekali</span></label>
+              </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="plopp-survey-card">
+              <span class="p-q-badge">Soal 3/4</span>
+              <p class="p-q-title">Apa dampak utama jika kita membuang sampah sembarangan?</p>
+              <div class="p-opt-list">
+                <label class="p-opt-item"><input type="radio" name="pq3" value="A" required onchange="checkPloppSurvey()"><span class="p-opt-box"><b>A</b> Menyebabkan banjir & merusak alam</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq3" value="B" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>B</b> Lingkungan kotor</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq3" value="C" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>C</b> Bau tak sedap</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq3" value="D" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>D</b> Tidak terlalu berpengaruh</span></label>
+              </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="plopp-survey-card">
+              <span class="p-q-badge">Soal 4/4</span>
+              <p class="p-q-title">Apa motivasimu belajar di ThinkBin?</p>
+              <div class="p-opt-list">
+                <label class="p-opt-item"><input type="radio" name="pq4" value="A" required onchange="checkPloppSurvey()"><span class="p-opt-box"><b>A</b> Ingin menjaga bumi tetap bersih</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq4" value="B" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>B</b> Mengumpulkan koin & rank seru</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq4" value="C" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>C</b> Penasaran kuis dan tantangannya</span></label>
+                <label class="p-opt-item"><input type="radio" name="pq4" value="D" onchange="checkPloppSurvey()"><span class="p-opt-box"><b>D</b> Mengikuti tugas sekolah</span></label>
+              </div>
+            </div>
+
+            <button type="submit" class="plopp-cta-btn" id="btnPloppFinish" disabled>
+              Let's Plopp!
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+
+      <!-- =========================================================
+           SCREEN 2: LEADERBOARD - GOLDEN LEAGUE
+           ========================================================= -->
+      <div class="app-screen screen-leaderboard" id="leaderboardScreen">
+        
+        <!-- Authentic Scenery Backdrop & Animated Floating Clouds -->
+        <div class="scenery-background-layer">
+          <div class="cloud-layer">
+            <div class="animated-cloud cloud-drift-1"></div>
+            <div class="animated-cloud cloud-drift-2"></div>
+            <div class="animated-cloud cloud-drift-3"></div>
+            <div class="animated-cloud cloud-drift-4"></div>
+          </div>
+        </div>
+
+        <!-- Main Scrollable Content -->
+        <div class="app-content-scroll">
+          
+          <!-- HEADER SECTION -->
+          <header class="app-header">
+            <div class="header-left">
+              <h1 class="header-title">Leaderboard</h1>
+            </div>
+
+            <div class="header-right">
+              <!-- Gems Pill -->
+              <div class="stat-pill gems-pill" id="gemsBadge" title="Diamonds">
+                <span class="gem-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 3H18L22 9L12 22L2 9L6 3Z" fill="#38bdf8"/>
+                    <path d="M6 3L12 9L18 3" stroke="#bae6fd" stroke-width="1.5"/>
+                    <path d="M2 9H22" stroke="#bae6fd" stroke-width="1.5"/>
+                    <path d="M12 9V22" stroke="#0284c7" stroke-width="1.5"/>
+                    <path d="M6 3L2 9L12 22L22 9L18 3H6Z" stroke="#0284c7" stroke-width="1.5"/>
+                  </svg>
+                </span>
+                <span class="stat-value" id="gemsValue">245</span>
+              </div>
+
+              <!-- Energy XP Pill -->
+              <div class="stat-pill energy-pill" id="energyBadge" title="Energy / XP">
+                <span class="bolt-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="stat-value" id="energyValue">252</span>
+              </div>
+            </div>
+          </header>
+
+          <!-- DYNAMIC LEAGUE SWITCHER CARD -->
+          <section class="league-card">
+            <div class="league-card-header">
+              <h2 class="league-name" id="leagueTitle">Rank</h2>
+              <div class="countdown-badge">
+                <span class="clock-icon">⏱</span>
+                <span class="time-text" id="leagueCountdown">3 Days left</span>
+              </div>
+            </div>
+
+            <!-- 5 Switchable League Badges Track -->
+            <div class="league-badges-track" id="leagueTrack">
+              
+              <!-- Tier 1: Silver League -->
+              <div class="league-badge-item" data-tier="silver" title="Silver League (Click to Switch)">
+                <div class="shield-graphic silver">
+                  <div class="glow-halo"></div>
+                  <div class="shield-inner">
+                    <span class="star-sparkle">✦</span>
+                  </div>
+                  <div class="shield-stand"></div>
+                </div>
+              </div>
+
+              <!-- Tier 2: Bronze League -->
+              <div class="league-badge-item" data-tier="bronze" title="Bronze League (Click to Switch)">
+                <div class="shield-graphic bronze">
+                  <div class="glow-halo"></div>
+                  <div class="shield-inner">
+                    <span class="star-sparkle">✦</span>
+                  </div>
+                  <div class="shield-stand"></div>
+                </div>
+              </div>
+
+              <!-- Tier 3: Golden League (Default Active) -->
+              <div class="league-badge-item active-league" data-tier="gold" title="Rank (Current)">
+                <div class="shield-graphic gold">
+                  <div class="glow-halo gold-glow"></div>
+                  <div class="shield-inner">
+                    <span class="star-sparkle-big">✦</span>
+                  </div>
+                  <div class="shield-stand gold-stand"></div>
+                </div>
+              </div>
+
+              <!-- Tier 4: Ruby League -->
+              <div class="league-badge-item" data-tier="ruby" title="Ruby League (Click to Switch)">
+                <div class="shield-graphic ruby">
+                  <div class="glow-halo ruby-glow"></div>
+                  <div class="shield-inner">
+                    <span class="gem-sparkle">💎</span>
+                  </div>
+                  <div class="shield-stand ruby-stand"></div>
+                </div>
+              </div>
+
+              <!-- Tier 5: Diamond League -->
+              <div class="league-badge-item" data-tier="diamond" title="Diamond League (Click to Switch)">
+                <div class="shield-graphic diamond">
+                  <div class="glow-halo diamond-glow"></div>
+                  <div class="shield-inner">
+                    <span class="star-sparkle-big diamond-star">✧</span>
+                  </div>
+                  <div class="shield-stand diamond-stand"></div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- TOP 3 PODIUM SECTION -->
+          <section class="podium-stage">
+            <div class="podium-container">
+              <!-- RANK 2: LEONARDO (Left Stump) -->
+              <div class="podium-column rank-2-col" id="colLeonardo">
+                <div class="mascot-frame mascot-leonardo">
+                  <div class="mascot-img-container" id="leonardoMascotBox">
+                    <!-- Injected exact transparent mascot sprite -->
+                  </div>
+                </div>
+
+                <!-- Tree Stump 2 -->
+                <div class="tree-stump stump-2">
+                  <div class="stump-top">
+                    <div class="wood-rings"></div>
+                  </div>
+                  <div class="stump-bark">
+                    <div class="bark-sprout left-sprout">
+                      <div class="twig"></div>
+                      <div class="leaf leaf-1"></div>
+                      <div class="leaf leaf-2"></div>
+                    </div>
+                    <!-- Medal Rank 2 -->
+                    <div class="medal-badge medal-2">
+                      <span class="medal-num">2</span>
+                    </div>
+                    <div class="stump-user-name" id="p2Name">Leonardo</div>
+                    <div class="stump-xp">
+                      <span class="bolt">⚡</span> <span id="p2Xp">214 XP</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RANK 1: MAX (Center Tallest Stump) -->
+              <div class="podium-column rank-1-col" id="colMax">
+                <div class="mascot-frame mascot-max">
+                  <div class="mascot-img-container" id="maxMascotBox">
+                    <!-- Injected exact transparent mascot sprite -->
+                  </div>
+                </div>
+
+                <!-- Tree Stump 1 (Tallest) -->
+                <div class="tree-stump stump-1">
+                  <div class="stump-top">
+                    <div class="wood-rings"></div>
+                  </div>
+                  <div class="stump-bark">
+                    <!-- Medal Rank 1 -->
+                    <div class="medal-badge medal-1">
+                      <span class="medal-num">1</span>
+                    </div>
+                    <div class="stump-user-name" id="p1Name">Max</div>
+                    <div class="stump-xp">
+                      <span class="bolt">⚡</span> <span id="p1Xp">234 XP</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RANK 3: SUSAN (Right Stump) -->
+              <div class="podium-column rank-3-col" id="colSusan">
+                <!-- Floating Love Hearts -->
+                <div class="floating-hearts">
+                  <span class="heart h1">❤️</span>
+                  <span class="heart h2">❤️</span>
+                  <span class="heart h3">💖</span>
+                </div>
+
+                <div class="mascot-frame mascot-susan">
+                  <div class="mascot-img-container" id="susanMascotBox">
+                    <!-- Injected exact transparent mascot sprite -->
+                  </div>
+                </div>
+
+                <!-- Tree Stump 3 -->
+                <div class="tree-stump stump-3">
+                  <div class="stump-top">
+                    <div class="wood-rings"></div>
+                  </div>
+                  <div class="stump-bark">
+                    <div class="bark-sprout right-sprout">
+                      <div class="twig"></div>
+                      <div class="leaf leaf-1"></div>
+                      <div class="leaf leaf-2"></div>
+                    </div>
+                    <!-- Medal Rank 3 -->
+                    <div class="medal-badge medal-3">
+                      <span class="medal-num">3</span>
+                    </div>
+                    <div class="stump-user-name" id="p3Name">Susan</div>
+                    <div class="stump-xp">
+                      <span class="bolt">⚡</span> <span id="p3Xp">204 XP</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Scalloped Cloud Base Transition -->
+            <div class="scalloped-cloud-divider">
+              <svg viewBox="0 0 375 28" fill="none" preserveAspectRatio="none">
+                <path d="M0 28H375V16C360 16 352 6 338 6C324 6 316 16 302 16C288 16 280 6 266 6C252 6 244 16 230 16C216 16 208 6 194 6C180 6 172 16 158 16C144 16 136 6 122 6C108 6 100 16 86 16C72 16 64 6 50 6C36 6 28 16 14 16C6 16 0 12 0 12V28Z" fill="#ffffff"/>
+              </svg>
+            </div>
+          </section>
+
+          <!-- LEADERBOARD LIST SECTION (Ranks 4 - 8+) -->
+          <section class="leaderboard-list-card">
+            <div class="list-rows-container" id="leaderboardList">
+              
+              <!-- Rank 4: Aroma -->
+              <div class="rank-row">
+                <div class="rank-badge-wrap">
+                  <div class="silver-disc-badge">
+                    <span class="disc-num">4</span>
+                  </div>
+                </div>
+                <div class="user-info">
+                  <span class="user-name" id="r4Name">Aroma</span>
+                </div>
+                <div class="user-xp">
+                  <span class="bolt-icon">⚡</span>
+                  <span class="xp-val" id="r4Xp">173 XP</span>
+                </div>
+              </div>
+
+              <!-- Rank 5: You (Active Highlight) -->
+              <div class="rank-row current-user-row" onclick="openMyProfile()" style="cursor: pointer;" title="Lihat Profil Saya">
+                <div class="rank-badge-wrap">
+                  <div class="silver-disc-badge">
+                    <span class="disc-num">5</span>
+                  </div>
+                </div>
+                <div class="user-info">
+                  <span class="user-name you-name" id="r5Name">You</span>
+                </div>
+                <div class="user-xp">
+                  <span class="bolt-icon">⚡</span>
+                  <span class="xp-val" id="r5Xp">123 XP</span>
+                </div>
+              </div>
+
+              <!-- Rank 6: James -->
+              <div class="rank-row">
+                <div class="rank-badge-wrap">
+                  <div class="silver-disc-badge">
+                    <span class="disc-num">6</span>
+                  </div>
+                </div>
+                <div class="user-info">
+                  <span class="user-name" id="r6Name">James</span>
+                </div>
+                <div class="user-xp">
+                  <span class="bolt-icon">⚡</span>
+                  <span class="xp-val" id="r6Xp">98 XP</span>
+                </div>
+              </div>
+
+              <!-- Rank 7: William -->
+              <div class="rank-row">
+                <div class="rank-badge-wrap">
+                  <div class="silver-disc-badge">
+                    <span class="disc-num">7</span>
+                  </div>
+                </div>
+                <div class="user-info">
+                  <span class="user-name" id="r7Name">William</span>
+                </div>
+                <div class="user-xp">
+                  <span class="bolt-icon">⚡</span>
+                  <span class="xp-val" id="r7Xp">76 XP</span>
+                </div>
+              </div>
+
+              <!-- Rank 8: Chloe -->
+              <div class="rank-row">
+                <div class="rank-badge-wrap">
+                  <div class="silver-disc-badge">
+                    <span class="disc-num">8</span>
+                  </div>
+                </div>
+                <div class="user-info">
+                  <span class="user-name" id="r8Name">Chloe</span>
+                </div>
+                <div class="user-xp">
+                  <span class="bolt-icon">⚡</span>
+                  <span class="xp-val" id="r8Xp">64 XP</span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div> <!-- End Scroll Content -->
+
+        <!-- BOTTOM NAVIGATION DOCK -->
+        <nav class="bottom-nav-dock">
+          <!-- Home / Sign up toggle -->
+          <button class="nav-item-btn" title="Home" onclick="showScreen('signup')">
+            <svg class="nav-icon" width="26" height="26" viewBox="0 0 24 24" fill="#334155">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+          </button>
+
+          <!-- Streak / Fire -->
+          <button class="nav-item-btn" title="Streak">
+            <svg class="nav-icon" width="26" height="26" viewBox="0 0 24 24" fill="#334155">
+              <path d="M12 23c-4.97 0-9-4.03-9-9 0-3.92 2.6-7.3 6.32-8.52.48-.16.99.11 1.15.59.16.48-.11.99-.59 1.15C6.73 8.23 4.8 10.93 4.8 14c0 3.97 3.23 7.2 7.2 7.2s7.2-3.23 7.2-7.2c0-1.85-.71-3.62-2-4.95-.36-.37-.36-.96 0-1.33.37-.36.96-.36 1.33 0 1.63 1.68 2.47 3.91 2.47 6.28 0 4.97-4.03 9-9 9z"/>
+              <path d="M12 18c-2.21 0-4-1.79-4-4 0-1.63.98-3.08 2.46-3.71.46-.2.99.02 1.19.48.2.46-.02.99-.48 1.19-.94.4-1.57 1.32-1.57 2.04 0 1.32 1.08 2.4 2.4 2.4s2.4-1.08 2.4-2.4c0-.52-.16-1.02-.47-1.44-.3-.41-.21-.98.2-1.28.41-.3.98-.21 1.28.2.48.65.79 1.44.79 2.52 0 2.21-1.79 4-4 4z"/>
+            </svg>
+          </button>
+
+          <!-- Video / Camera -->
+          <button class="nav-item-btn" title="Practice Video">
+            <svg class="nav-icon" width="26" height="26" viewBox="0 0 24 24" fill="#334155">
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
+          </button>
+
+          <!-- Leaderboard (ACTIVE) -->
+          <button class="nav-item-btn nav-item-active" title="Leaderboard" onclick="showScreen('leaderboard')">
+            <div class="active-bubble">
+              <svg class="nav-icon-active" width="28" height="28" viewBox="0 0 24 24" fill="#00a8ff">
+                <path d="M12 2L14.4 7.2L20 7.8L15.8 11.7L17 17.2L12 14.3L7 17.2L8.2 11.7L4 7.8L9.6 7.2L12 2Z" fill="#00a8ff"/>
+                <path d="M5 19H19V22H5V19Z" fill="#00a8ff"/>
+                <path d="M7 16H17V19H7V16Z" fill="#00a8ff"/>
+              </svg>
+            </div>
+          </button>
+
+          <!-- Profile -->
+          <button class="nav-item-btn" title="Profile">
+            <svg class="nav-icon" width="26" height="26" viewBox="0 0 24 24" fill="#334155">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </button>
+        </nav>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

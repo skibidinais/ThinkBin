@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ThinkBin - Onboarding & Auth</title>
+  <!-- Google Fonts: Nunito & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="../../data/class_roster.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- =========================================================
+         STEP 1: TEASER / WELCOME PAGE & GOOGLE LOGIN ONLY
+         ========================================================= -->
+    <section class="onboarding-step active" id="stepTeaser">
+      <div class="step-content">
+        
+        <!-- Mascot Hero Illustration -->
+        <div class="teaser-mascot-box">
+          <img src="../plopp/assets/mascot_main.png" alt="ThinkBin Mascot" class="teaser-mascot-img">
+        </div>
+
+        <div class="teaser-text-box">
+          <span class="teaser-tag">THINKBIN APP</span>
+          <h1 class="teaser-title">Selamat Datang di ThinkBin!</h1>
+          <p class="teaser-subtitle">
+            Belajar memilah sampah cerdas, kumpulkan poin, dan raih rank tertinggi bersama teman sekelasmu!
+          </p>
+        </div>
+
+        <!-- Google OAuth ONLY Button -->
+        <div class="auth-section">
+          <button type="button" class="btn-google-login" id="btnGoogleLogin" onclick="handleGoogleLogin()">
+            <svg class="google-svg-icon" viewBox="0 0 24 24" width="22" height="22">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            <span class="btn-text">Google</span>
+          </button>
+          <span class="auth-hint">Masuk cepat dan aman menggunakan akun Google</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         STEP 2: SETUP PROFIL (3-STEP: KELAS -> NAMA -> ABSEN)
+         ========================================================= -->
+    <section class="onboarding-step" id="stepSetupProfile">
+      <div class="step-content">
+        
+        <div class="step-progress-badge">
+          <span>Langkah 1 dari 2: Setup Profil</span>
+        </div>
+
+        <div class="step-header">
+          <h2 class="step-title">Lengkapi Data Dirimu</h2>
+          <p class="step-desc">Pilih kelas dan namamu dari daftar siswa untuk mendaftarkan akun.</p>
+        </div>
+
+        <!-- Connected User Info Banner -->
+        <div class="google-user-pill" id="googleUserPill">
+          <img src="../profile/assets/mascot_thumbsup_transparent.png" class="g-user-avatar" id="gUserAvatar" alt="User">
+          <div class="g-user-info">
+            <span class="g-user-name" id="gUserName">Siswa ThinkBin</span>
+            <span class="g-user-email" id="gUserEmail">siswa@gmail.com</span>
+          </div>
+        </div>
+
+        <form class="setup-form" onsubmit="handleProfileSetupSubmit(event)">
+          
+          <!-- Field 1: Dropdown Kelas -->
+          <div class="form-group">
+            <label class="form-label" for="selectClass">1. Pilih Kelas</label>
+            <select class="form-select" id="selectClass" required onchange="handleClassChange()">
+              <option value="" disabled selected>-- Pilih Kelas Kamu --</option>
+              <!-- Injected dynamically: 7A, 7B, 8A, 8B, etc. -->
+            </select>
+          </div>
+
+          <!-- Field 2: Dropdown Nama Siswa (Filtered by class) -->
+          <div class="form-group">
+            <label class="form-label" for="selectStudent">2. Pilih Nama Kamu</label>
+            <select class="form-select" id="selectStudent" required disabled onchange="handleStudentChange()">
+              <option value="" disabled selected>-- Pilih Kelas Terlebih Dahulu --</option>
+            </select>
+          </div>
+
+          <!-- Field 3: Nomor Absen (Auto-fill, Read-Only) -->
+          <div class="form-group">
+            <label class="form-label" for="inputStudentNumber">3. Nomor Absen</label>
+            <div class="input-readonly-wrap">
+              <input type="number" class="form-input readonly-input" id="inputStudentNumber" placeholder="Terisi otomatis" readonly required />
+              <span class="readonly-badge">Auto-fill</span>
+            </div>
+          </div>
+
+          <!-- Anti-duplicate warning box -->
+          <div class="alert-box-warning" id="duplicateAlertBox" style="display: none;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#b91c1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span id="duplicateAlertText">Nomor absen ini sudah terdaftar. Silakan periksa kembali.</span>
+          </div>
+
+          <button type="submit" class="btn-cta-next" id="btnSubmitProfile" disabled>
+            Lanjut ke Kuisioner
+          </button>
+        </form>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         STEP 3: KUISIONER AWAL (PRE-SURVEY)
+         ========================================================= -->
+    <section class="onboarding-step" id="stepSurvey">
+      <div class="step-content">
+        
+        <div class="step-progress-badge">
+          <span>Langkah 2 dari 2: Kuisioner Awal</span>
+        </div>
+
+        <div class="step-header">
+          <h2 class="step-title">Kuisioner Pengetahuan Awal</h2>
+          <p class="step-desc">Jawab 4 pertanyaan singkat berikut sebelum memulai petualangan belajarmu.</p>
+        </div>
+
+        <form class="survey-form" id="surveyForm" onsubmit="handleSurveySubmit(event)">
+          
+          <!-- Pertanyaan 1 -->
+          <div class="survey-card">
+            <span class="q-num">Pertanyaan 1/4</span>
+            <p class="q-text">Seberapa sering kamu memilah sampah organik dan anorganik di rumah atau sekolah?</p>
+            <div class="options-group">
+              <label class="option-label">
+                <input type="radio" name="q1" value="A" required onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">A</span>
+                  <span class="opt-txt">Selalu memilah setiap saat</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="B" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">B</span>
+                  <span class="opt-txt">Sering memilah</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="C" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">C</span>
+                  <span class="opt-txt">Kadang-kadang saja</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="D" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">D</span>
+                  <span class="opt-txt">Belum pernah memilah</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pertanyaan 2 -->
+          <div class="survey-card">
+            <span class="q-num">Pertanyaan 2/4</span>
+            <p class="q-text">Apakah kamu tahu jenis sampah mana yang bisa dijual atau disetor ke Bank Sampah?</p>
+            <div class="options-group">
+              <label class="option-label">
+                <input type="radio" name="q2" value="A" required onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">A</span>
+                  <span class="opt-txt">Sangat tahu dan paham</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="B" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">B</span>
+                  <span class="opt-txt">Cukup tahu beberapa jenis</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="C" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">C</span>
+                  <span class="opt-txt">Kurang tahu</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="D" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">D</span>
+                  <span class="opt-txt">Belum tahu sama sekali</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pertanyaan 3 -->
+          <div class="survey-card">
+            <span class="q-num">Pertanyaan 3/4</span>
+            <p class="q-text">Menurutmu, apa dampak paling nyata jika kita membuang sampah sembarangan?</p>
+            <div class="options-group">
+              <label class="option-label">
+                <input type="radio" name="q3" value="A" required onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">A</span>
+                  <span class="opt-txt">Menyebabkan banjir & merusak ekosistem</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="B" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">B</span>
+                  <span class="opt-txt">Lingkungan menjadi kotor</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="C" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">C</span>
+                  <span class="opt-txt">Menimbulkan bau tak sedap</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="D" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">D</span>
+                  <span class="opt-txt">Tidak terlalu berpengaruh</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pertanyaan 4 -->
+          <div class="survey-card">
+            <span class="q-num">Pertanyaan 4/4</span>
+            <p class="q-text">Apa motivasi utamamu saat menggunakan aplikasi ThinkBin?</p>
+            <div class="options-group">
+              <label class="option-label">
+                <input type="radio" name="q4" value="A" required onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">A</span>
+                  <span class="opt-txt">Ingin menjaga lingkungan tetap bersih</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="B" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">B</span>
+                  <span class="opt-txt">Ingin mengumpulkan koin & badge seru</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="C" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">C</span>
+                  <span class="opt-txt">Penasaran dengan kuis dan tantangan</span>
+                </span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="D" onchange="checkSurveyCompletion()">
+                <span class="option-card">
+                  <span class="opt-key">D</span>
+                  <span class="opt-txt">Mengikuti tugas dari guru/sekolah</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-cta-next" id="btnSubmitSurvey" disabled>
+            Selesai & Masuk Dashboard
+          </button>
+        </form>
+
+      </div>
+    </section>
+
+    <!-- ANTI-DUPLICATE WARNING MODAL -->
+    <div class="modal-backdrop" id="duplicateModal">
+      <div class="modal-card">
+        <div class="modal-icon-wrap">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <h3 class="modal-title" id="modalDupTitle">Data Siswa Sudah Terdaftar!</h3>
+        <p class="modal-desc" id="modalDupDesc">
+          Akun dengan kombinasi Kelas dan Nomor Absen ini telah didaftarkan sebelumnya.
+        </p>
+        <div class="modal-action-btns">
+          <button type="button" class="btn-modal-primary" onclick="closeDuplicateModal()">
+            Periksa Kembali
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

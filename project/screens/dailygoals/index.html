@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Daily Goals - Casual Puzzle Game</title>
+  <!-- Google Fonts: Fredoka for cheerful game typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="device-wrapper" id="deviceWrapper">
+    <!-- View Switcher for Desktop / Testing -->
+    <aside class="desktop-controls">
+      <div class="control-badge">🎮 Game UI Mode</div>
+      <button class="ctrl-btn" id="toggleFrameBtn">📱 Toggle Device Frame</button>
+      <button class="ctrl-btn" id="reopenModalBtn">✨ Show "AWESOME!" Popup</button>
+      <button class="ctrl-btn" id="soundToggleBtn">🔊 Sound: <span id="soundStatus">ON</span></button>
+      <button class="ctrl-btn" id="resetProgressBtn">🔄 Reset Coins (5000)</button>
+    </aside>
+
+    <!-- Smartphone / Mobile Container -->
+    <main class="mobile-screen" id="mobileScreen">
+      
+      <!-- Top Header Bar -->
+      <header class="top-bar">
+        <!-- Settings Button -->
+        <button class="icon-btn settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" class="header-icon">
+            <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+        </button>
+
+        <!-- No Ads Pill -->
+        <button class="no-ads-pill" id="noAdsBtn" title="Remove Ads">
+          <div class="ads-slash-badge">
+            <span>ADS</span>
+            <div class="slash-line"></div>
+          </div>
+          <span class="no-ads-text">NO ADS</span>
+        </button>
+
+        <!-- Coins Counter -->
+        <div class="coins-pill" id="coinsContainer" title="Your Coins">
+          <div class="coin-icon-wrapper" id="topCoinAnchor">
+            <div class="gold-coin mini-coin">
+              <span class="coin-star">★</span>
+            </div>
+          </div>
+          <span class="coins-amount" id="coinsDisplay">5000</span>
+          <button class="add-coins-btn" id="addCoinsBtn" title="Add More Coins" aria-label="Add Coins">+</button>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Dashboard Content -->
+      <section class="game-dashboard" id="gameDashboard">
+        
+        <!-- Daily Goals Mini Bar Widget -->
+        <div class="daily-goals-banner" id="dailyGoalsBanner" role="button" tabindex="0" title="Click to view Daily Goals">
+          <div class="goals-banner-top">
+            <div class="goals-banner-title">
+              <span class="goals-clipboard-icon">📋</span>
+              <span class="banner-heading">DAILY GOALS</span>
+            </div>
+            <div class="goals-banner-timer">
+              <span class="timer-dot">🟡</span>
+              <span id="bannerTimer">2H 07M</span>
+            </div>
+          </div>
+
+          <div class="goals-banner-icons">
+            <div class="banner-task-col">
+              <div class="mini-task-icon trophy">🏆</div>
+              <span class="mini-task-ratio">3/3</span>
+              <span class="mini-task-name">Complete Three Levels</span>
+            </div>
+            <div class="banner-task-col">
+              <div class="mini-task-icon checkmark">✅</div>
+              <span class="mini-task-ratio">50/50</span>
+              <span class="mini-task-name">Clear 50 Blocks</span>
+            </div>
+            <div class="banner-task-col">
+              <div class="mini-task-icon box">🎁</div>
+              <span class="mini-task-ratio">1/1</span>
+              <span class="mini-task-name">Use One Hint</span>
+            </div>
+            <div class="banner-task-col">
+              <div class="mini-task-icon hint">💡</div>
+              <span class="mini-task-ratio">2/2</span>
+              <span class="mini-task-name">Play Two Difficulties</span>
+            </div>
+          </div>
+
+          <div class="goals-banner-progress">
+            <div class="banner-progress-info">
+              <span>4 Of 4 Done</span>
+              <span>100%</span>
+            </div>
+            <div class="banner-progress-track">
+              <div class="banner-progress-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Difficulty Navigation Tabs -->
+        <nav class="difficulty-tabs" aria-label="Difficulty Levels">
+          <button class="diff-tab" data-diff="all">ALL</button>
+          <button class="diff-tab active" data-diff="easy">EASY</button>
+          <button class="diff-tab" data-diff="medium">MEDIUM</button>
+          <button class="diff-tab" data-diff="hard">HARD</button>
+          <button class="diff-tab" data-diff="extreme">EXTREME</button>
+        </nav>
+
+        <!-- Puzzle Level Grid -->
+        <div class="level-grid" id="levelGrid">
+          <!-- Card 1: Butterfly -->
+          <div class="level-card" data-level="1" data-difficulty="easy">
+            <div class="badge-size size-l">L</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette butterfly-svg">
+                <path d="M50 35 C42 15, 10 10, 15 45 C18 65, 38 65, 48 48 C44 65, 25 85, 35 92 C45 98, 50 78, 50 60 C50 78, 55 98, 65 92 C75 85, 56 65, 52 48 C62 65, 82 65, 85 45 C90 10, 58 15, 50 35 Z"/>
+                <ellipse cx="50" cy="50" rx="3" ry="18" class="body-center" />
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 2: Apple -->
+          <div class="level-card" data-level="2" data-difficulty="easy">
+            <div class="badge-size size-xl">XL</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette apple-svg">
+                <!-- Leaf -->
+                <path d="M50 22 C55 12, 68 12, 65 24 C55 26, 52 24, 50 22 Z" fill="currentColor"/>
+                <!-- Stem -->
+                <path d="M50 22 Q48 15 42 12" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <!-- Apple Body -->
+                <path d="M50 30 C35 15, 15 30, 20 60 C25 85, 45 92, 50 85 C55 92, 75 85, 80 60 C85 30, 65 15, 50 30 Z"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 3: Tree -->
+          <div class="level-card" data-level="3" data-difficulty="medium">
+            <div class="badge-size size-m">M</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette tree-svg">
+                <!-- Tree Canopy -->
+                <path d="M50 18 C38 18, 30 28, 25 38 C15 42, 12 58, 24 68 C28 72, 38 72, 42 68 L42 85 C42 88, 58 88, 58 85 L58 68 C62 72, 72 72, 76 68 C88 58, 85 42, 75 38 C70 28, 62 18, 50 18 Z"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 4: Bird -->
+          <div class="level-card" data-level="4" data-difficulty="easy">
+            <div class="badge-size size-m">M</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette bird-svg">
+                <!-- Bird Body & Tail -->
+                <path d="M78 40 C75 32, 65 30, 58 34 C48 38, 40 48, 30 50 L12 55 L25 65 C32 68, 45 72, 58 68 C68 64, 76 54, 78 40 Z"/>
+                <!-- Beak -->
+                <polygon points="78,38 88,41 78,44" fill="currentColor"/>
+                <!-- Legs -->
+                <path d="M48 68 L45 80 M56 68 L53 80" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 5: Flower / Crest -->
+          <div class="level-card" data-level="5" data-difficulty="hard">
+            <div class="badge-size size-xl">XL</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette flower-svg">
+                <circle cx="50" cy="50" r="14"/>
+                <circle cx="50" cy="26" r="12"/>
+                <circle cx="72" cy="40" r="12"/>
+                <circle cx="64" cy="68" r="12"/>
+                <circle cx="36" cy="68" r="12"/>
+                <circle cx="28" cy="40" r="12"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 6: Star -->
+          <div class="level-card" data-level="6" data-difficulty="extreme">
+            <div class="badge-size size-e">E</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette star-svg">
+                <polygon points="50,15 61,38 86,40 67,58 73,83 50,70 27,83 33,58 14,40 39,38"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 7: Butterfly Alt -->
+          <div class="level-card" data-level="7" data-difficulty="easy">
+            <div class="badge-size size-l">L</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette butterfly-svg">
+                <path d="M50 35 C42 15, 10 10, 15 45 C18 65, 38 65, 48 48 C44 65, 25 85, 35 92 C45 98, 50 78, 50 60 C50 78, 55 98, 65 92 C75 85, 56 65, 52 48 C62 65, 82 65, 85 45 C90 10, 58 15, 50 35 Z"/>
+                <ellipse cx="50" cy="50" rx="3" ry="18" class="body-center" />
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 8: Crown / XL Level -->
+          <div class="level-card" data-level="8" data-difficulty="medium">
+            <div class="badge-size size-xl">XL</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette crown-svg">
+                <path d="M20 72 L80 72 L85 40 L65 55 L50 25 L35 55 L15 40 Z"/>
+                <circle cx="20" cy="78" r="4"/>
+                <circle cx="50" cy="78" r="4"/>
+                <circle cx="80" cy="78" r="4"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+
+          <!-- Card 9: Diamond -->
+          <div class="level-card" data-level="9" data-difficulty="hard">
+            <div class="badge-size size-m">M</div>
+            <div class="card-silhouette-wrap">
+              <svg viewBox="0 0 100 100" class="card-silhouette diamond-svg">
+                <polygon points="50,15 85,42 50,88 15,42"/>
+                <line x1="15" y1="42" x2="85" y2="42" stroke="#2a0a4c" stroke-width="3"/>
+                <line x1="50" y1="15" x2="50" y2="88" stroke="#2a0a4c" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="card-percentage">0%</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Navigation Bar -->
+      <footer class="bottom-nav">
+        <!-- Shop Icon -->
+        <button class="nav-item" id="navShop" title="Shop">
+          <div class="nav-icon-box shop-box">
+            <span class="nav-svg-icon">🏪</span>
+          </div>
+        </button>
+
+        <!-- Home Icon (Active) -->
+        <button class="nav-item active" id="navHome" title="Home">
+          <div class="nav-home-wrapper">
+            <div class="photo-frame-icon">
+              <div class="landscape-sun"></div>
+              <div class="landscape-hills"></div>
+            </div>
+            <span class="nav-label">Home</span>
+          </div>
+        </button>
+
+        <!-- Paint / Gallery Icon -->
+        <button class="nav-item" id="navGallery" title="Gallery">
+          <div class="nav-icon-box paint-box">
+            <span class="nav-svg-icon">🖌️</span>
+          </div>
+        </button>
+      </footer>
+
+      <!-- ============================================ -->
+      <!-- CELEBRATION MODAL OVERLAY ("AWESOME!")       -->
+      <!-- ============================================ -->
+      <div class="celebration-overlay active" id="celebrationOverlay">
+        
+        <!-- Canvas for Dynamic Confetti Explosion & Floating Streamers -->
+        <canvas id="confettiCanvas"></canvas>
+
+        <div class="celebration-content">
+          
+          <!-- Big 3D Header: "AWESOME!" -->
+          <h1 class="awesome-title" id="awesomeTitle">
+            <span class="text-3d">AWESOME!</span>
+          </h1>
+
+          <!-- Daily Goals Reward Card -->
+          <div class="reward-card">
+            <!-- Purple Header Strip -->
+            <div class="reward-card-header">
+              <div class="header-left">
+                <span class="card-icon">📋</span>
+                <span class="card-title">DAILY GOALS</span>
+              </div>
+              <div class="timer-pill">
+                <span class="dot">🟡</span>
+                <span class="timer-text" id="modalTimer">2H 07M</span>
+              </div>
+            </div>
+
+            <!-- Card Body with 4 Goals Checklist -->
+            <div class="reward-card-body">
+              <div class="goal-items-grid">
+                <!-- Goal 1 -->
+                <div class="goal-item-card">
+                  <div class="check-circle-wrapper">
+                    <div class="check-circle">
+                      <svg viewBox="0 0 24 24" class="check-svg">
+                        <path d="M5 13l4 4L19 7" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="goal-item-title">Complete Three Levels</span>
+                </div>
+
+                <!-- Goal 2 -->
+                <div class="goal-item-card">
+                  <div class="check-circle-wrapper">
+                    <div class="check-circle">
+                      <svg viewBox="0 0 24 24" class="check-svg">
+                        <path d="M5 13l4 4L19 7" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="goal-item-title">Clear 50 Blocks</span>
+                </div>
+
+                <!-- Goal 3 -->
+                <div class="goal-item-card">
+                  <div class="check-circle-wrapper">
+                    <div class="check-circle">
+                      <svg viewBox="0 0 24 24" class="check-svg">
+                        <path d="M5 13l4 4L19 7" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="goal-item-title">Use One Hint</span>
+                </div>
+
+                <!-- Goal 4 -->
+                <div class="goal-item-card">
+                  <div class="check-circle-wrapper">
+                    <div class="check-circle">
+                      <svg viewBox="0 0 24 24" class="check-svg">
+                        <path d="M5 13l4 4L19 7" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="goal-item-title">Play Two Difficulties</span>
+                </div>
+              </div>
+
+              <!-- Bottom Progress Tracker -->
+              <div class="modal-progress-wrapper">
+                <div class="progress-labels">
+                  <span class="progress-left-text">4 Of 4 Done</span>
+                  <span class="progress-right-text">100%</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reward Coins Showcase -->
+          <div class="reward-showcase">
+            <div class="coin-large" id="rewardCoinSource">
+              <div class="coin-rim">
+                <div class="coin-inner-disc">
+                  <span class="coin-star-lg">★</span>
+                </div>
+              </div>
+            </div>
+            <div class="reward-text">+50</div>
+          </div>
+
+          <!-- Continue Button -->
+          <button class="continue-btn" id="continueBtn">
+            <span class="btn-highlight"></span>
+            <span class="btn-label">CONTINUE</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Playable Mini Game Level Modal (Interactive Bonus) -->
+      <div class="level-play-modal" id="levelPlayModal">
+        <div class="play-modal-content">
+          <div class="play-header">
+            <span class="play-level-title" id="playLevelTitle">Level 1 - Butterfly</span>
+            <button class="close-play-btn" id="closePlayBtn">✕</button>
+          </div>
+          <div class="play-canvas-container">
+            <div class="puzzle-board" id="puzzleBoard">
+              <!-- Interactive block cells generated dynamically -->
+            </div>
+          </div>
+          <div class="play-instructions">Tap blocks to solve the level silhouette!</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beranda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Fredoka', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    background: radial-gradient(circle at 50% 40%, #FFB624 0%, #FFA800 45%, #F79400 85%, #EE8A00 100%);
+    text-align: center;
+  }
+  img { width: 180px; }
+  h1 { color: #161514; font-size: 28px; }
+  p { color: #4a3b00; font-size: 15px; max-width: 300px; }
+  button {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 20px;
+    background: #58cc02;
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #4caf00;
+  }
+  button:active { transform: translateY(4px); box-shadow: 0 2px 0 #4caf00; }
+</style>
+</head>
+<body>
+  <img src="../assets/mascot_leonardo.png" alt="Mascot">
+  <h1>Siap Belajar?</h1>
+  <p>Jawab pertanyaan, kumpulkan skor, dan lihat namamu di leaderboard!</p>
+  <button id="startBtn">MULAI QUIZ</button>
+
+<script>
+  document.getElementById('startBtn').addEventListener('click', () => {
+    window.parent.postMessage({ type: 'navigate', screen: 'quiz' }, '*');
+  });
+</script>
+</body>
+</html>

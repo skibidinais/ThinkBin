@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Bar</title>
+  
+  <!-- Link external CSS stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Link external JavaScript file -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <div class="nav-container">
+    <div class="navbar" id="navbar">
+      <!-- Absolute indicator that slides behind items -->
+      <div class="active-indicator" id="active-indicator"></div>
+      
+      <!-- Nav Item 1: Beranda -->
+      <button class="nav-item active" data-index="0">
+        <div class="icon-wrapper">
+          <img src="assets/home.png" alt="Beranda">
+        </div>
+        <span class="nav-text">Beranda</span>
+      </button>
+
+      <!-- Nav Item 2: Belajar -->
+      <button class="nav-item" data-index="1">
+        <div class="icon-wrapper">
+          <img src="assets/learn.png" alt="Belajar">
+        </div>
+        <span class="nav-text">Belajar</span>
+      </button>
+
+      <!-- Nav Item 3: Papan Peringkat -->
+      <button class="nav-item" data-index="2">
+        <div class="icon-wrapper">
+          <img src="assets/leaderboard.png" alt="Papan Peringkat">
+        </div>
+        <span class="nav-text">Papan Peringkat</span>
+      </button>
+
+      <!-- Nav Item 4: Toko -->
+      <button class="nav-item" data-index="3">
+        <div class="icon-wrapper">
+          <img src="assets/shop.png" alt="Toko">
+        </div>
+        <span class="nav-text">Toko</span>
+      </button>
+
+      <!-- Nav Item 5: Profil -->
+      <button class="nav-item" data-index="4">
+        <div class="icon-wrapper">
+          <img src="assets/profile.png" alt="Profil">
+        </div>
+        <span class="nav-text">Profil</span>
+      </button>
+
+    </div>
+  </div>
+
+</body>
+</html>

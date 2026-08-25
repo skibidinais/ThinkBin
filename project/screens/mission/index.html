@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Misi Harian - Think Bin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../shared/navbar.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="../shared/navbar.js" defer></script>
+</head>
+<body>
+  <div class="screen-container">
+    
+    <!-- Fixed App Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <h1 class="header-title">Misi Harian</h1>
+      </div>
+      <div class="header-right">
+        <!-- Coin Counter Pill -->
+        <div class="header-coin-pill" title="Koin Kamu">
+          <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-sm">
+          <span id="userCoinsDisplay">640</span>
+        </div>
+        <!-- XP Counter Pill -->
+        <div class="header-xp-pill" title="Total XP">
+          <img src="assets/xp_icon.png" alt="XP" class="xp-icon-sm">
+          <span id="userXpDisplay">252</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Quests Area -->
+    <div class="content-scroll">
+
+      <!-- Daily Reset & Total Reward Banner -->
+      <div class="summary-reward-card">
+        <div class="summary-left">
+          <div class="summary-title">Total Hadiah Harian</div>
+          <div class="summary-coins">
+            <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-md">
+            <span class="coin-highlight">45 Coin</span> <span class="per-day">/ hari</span>
+          </div>
+        </div>
+        <div class="reset-badge">
+          <div class="reset-label">Reset jam 00.00</div>
+          <div class="reset-timer" id="countdownTimer">--:--:--</div>
+        </div>
+      </div>
+
+      <!-- Section Subheading -->
+      <div class="section-subheading">
+        <span>DAFTAR MISI HARI INI</span>
+        <span class="mission-progress-lbl" id="missionProgressCount">1/4 Selesai</span>
+      </div>
+
+      <!-- Quest Cards Stack -->
+      <div class="quest-cards-stack">
+
+        <!-- 1. Mission 1: Login Hari Ini (10 Coin) -->
+        <div class="card white-card" id="m1">
+          <div class="icon-box green-box">
+            <!-- App Open / Login Phone Icon -->
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="3"/>
+              <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/>
+            </svg>
+          </div>
+          <div class="card-mid">
+            <div class="quest-heading">Login hari ini (buka app)</div>
+            <div class="quest-reward-row">
+              <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-xs">
+              <span class="reward-val">+10 Coin</span>
+            </div>
+            <div class="progress-pill-track">
+              <div class="progress-pill-bar" id="m1-bar" style="width: 100%;">
+                <span class="progress-number" id="m1-prog">1 / 1</span>
+              </div>
+            </div>
+          </div>
+          <button class="action-btn claim-button" id="m1-btn" onclick="claimMission(1, 10, this)">Klaim!</button>
+        </div>
+
+        <!-- 2. Mission 2: Selesaikan 1 Node Belajar (15 Coin) -->
+        <div class="card white-card" id="m2">
+          <div class="icon-box blue-box">
+            <!-- Learning Map / Book Icon -->
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div class="card-mid">
+            <div class="quest-heading">Selesaikan minimal 1 node belajar</div>
+            <div class="quest-reward-row">
+              <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-xs">
+              <span class="reward-val">+15 Coin</span>
+            </div>
+            <div class="progress-pill-track">
+              <div class="progress-pill-bar" id="m2-bar" style="width: 0%;">
+                <span class="progress-number" id="m2-prog">0 / 1</span>
+              </div>
+            </div>
+          </div>
+          <button class="action-btn go-button" id="m2-btn" onclick="handleGoMission(2, 'learning-map')">Mulai</button>
+        </div>
+
+        <!-- 3. Mission 3: Kunjungi Papan Peringkat (10 Coin) -->
+        <div class="card white-card" id="m3">
+          <div class="icon-box yellow-box">
+            <!-- Trophy / Leaderboard Icon -->
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+              <path d="M4 22h16"/>
+              <path d="M10 14.66V17c0 .55-.45 1-1 1H8v4h8v-4h-1c-.55 0-1-.45-1-1v-2.34"/>
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+            </svg>
+          </div>
+          <div class="card-mid">
+            <div class="quest-heading">Kunjungi Papan Peringkat</div>
+            <div class="quest-reward-row">
+              <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-xs">
+              <span class="reward-val">+10 Coin</span>
+            </div>
+            <div class="progress-pill-track">
+              <div class="progress-pill-bar" id="m3-bar" style="width: 0%;">
+                <span class="progress-number" id="m3-prog">0 / 1</span>
+              </div>
+            </div>
+          </div>
+          <button class="action-btn go-button" id="m3-btn" onclick="handleGoMission(3, 'plopp')">Buka</button>
+        </div>
+
+        <!-- 4. Mission 4: Kunjungi Toko (10 Coin) -->
+        <div class="card white-card" id="m4">
+          <div class="icon-box pink-box">
+            <!-- Shop / Store Tent Icon -->
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div class="card-mid">
+            <div class="quest-heading">Kunjungi Toko</div>
+            <div class="quest-reward-row">
+              <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-xs">
+              <span class="reward-val">+10 Coin</span>
+            </div>
+            <div class="progress-pill-track">
+              <div class="progress-pill-bar" id="m4-bar" style="width: 0%;">
+                <span class="progress-number" id="m4-prog">0 / 1</span>
+              </div>
+            </div>
+          </div>
+          <button class="action-btn go-button" id="m4-btn" onclick="handleGoMission(4, 'toko')">Buka</button>
+        </div>
+
+      </div>
+
+      <!-- Kuis Tantangan (4 Checkpoint) Special Card -->
+      <div class="quiz-challenge-card">
+        <div class="quiz-challenge-header">
+          <div class="challenge-title-row">
+            <div class="challenge-badge-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="challenge-title">Kuis Tantangan (4 Checkpoint)</h2>
+              <div class="challenge-subtitle">Uji pengetahuan dan kumpulkan koin ekstra!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-reward-table">
+          <div class="reward-table-row">
+            <div class="reward-condition">
+              <span>Selesai (min. 1 jawaban benar)</span>
+            </div>
+            <div class="reward-prize">
+              <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-xs">
+              <span>+20 Coin</span>
+            </div>
+          </div>
+
+          <div class="reward-table-row combo-row">
+            <div class="reward-condition">
+              <span>Full combo (semua benar)</span>
+            </div>
+            <div class="reward-prize gold-prize">
+              <img src="../toko/assets/coin.png" alt="Coin" class="coin-icon-xs">
+              <span>35 Coin (total)</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="play-quiz-btn" onclick="navigateTo('quiz')">
+          <span>Mainkan Kuis Sekarang</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Fixed Bottom Navigation Bar (GLOBAL THINKBIN NAV) -->
+    <div class="global-nav-container">
+      <div class="global-navbar" id="navbar">
+        <div class="global-active-indicator" id="active-indicator"></div>
+        
+        <!-- Nav Item 1: Beranda -->
+        <button class="global-nav-item" data-screen="home" data-index="0">
+          <div class="global-icon-wrapper">
+            <img src="assets/home.png" alt="Beranda">
+          </div>
+          <span class="global-nav-text">Beranda</span>
+        </button>
+
+        <!-- Nav Item 2: Belajar -->
+        <button class="global-nav-item" data-screen="learning-map" data-index="1">
+          <div class="global-icon-wrapper">
+            <img src="assets/learn.png" alt="Belajar">
+          </div>
+          <span class="global-nav-text">Belajar</span>
+        </button>
+
+        <!-- Nav Item 3: Papan Peringkat -->
+        <button class="global-nav-item" data-screen="plopp" data-index="2">
+          <div class="global-icon-wrapper">
+            <img src="assets/leaderboard.png" alt="Papan Peringkat">
+          </div>
+          <span class="global-nav-text">Peringkat</span>
+        </button>
+
+        <!-- Nav Item 4: Toko -->
+        <button class="global-nav-item" data-screen="toko" data-index="3">
+          <div class="global-icon-wrapper">
+            <img src="assets/shop.png" alt="Toko">
+          </div>
+          <span class="global-nav-text">Toko</span>
+        </button>
+
+        <!-- Nav Item 5: Profil -->
+        <button class="global-nav-item" data-screen="profile" data-index="4">
+          <div class="global-icon-wrapper">
+            <img src="assets/profile.png" alt="Profil">
+          </div>
+          <span class="global-nav-text">Profil</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

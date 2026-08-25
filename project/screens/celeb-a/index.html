@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Completed - ThinkCeleb</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="screen-wrapper">
+        <main class="game-container" id="gameCard">
+            <!-- Background Radial Concentric Circles -->
+            <div class="concentric-bg">
+                <div class="circle circle-outer"></div>
+                <div class="circle circle-mid"></div>
+                <div class="circle circle-inner"></div>
+                <div class="light-ray"></div>
+            </div>
+
+            <!-- Top Level Header -->
+            <header class="level-header">
+                <h1 class="level-text" id="levelText">NODE <span class="level-num">1</span></h1>
+            </header>
+
+            <!-- Three White Crowns Section -->
+            <div class="crowns-wrapper" aria-label="3 Crowns">
+                <div class="crown-item crown-left">
+                    <svg viewBox="0 0 100 80" class="crown-svg" fill="#FFFFFF">
+                        <path d="M10,70 L90,70 L85,25 L58,48 L50,12 L42,48 L15,25 Z" />
+                    </svg>
+                </div>
+                <div class="crown-item crown-center">
+                    <svg viewBox="0 0 100 80" class="crown-svg" fill="#FFFFFF">
+                        <path d="M10,70 L90,70 L85,25 L58,48 L50,12 L42,48 L15,25 Z" />
+                    </svg>
+                </div>
+                <div class="crown-item crown-right">
+                    <svg viewBox="0 0 100 80" class="crown-svg" fill="#FFFFFF">
+                        <path d="M10,70 L90,70 L85,25 L58,48 L50,12 L42,48 L15,25 Z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Mascot Character & Motion Stage -->
+            <div class="character-stage">
+                <!-- Motion Particles / Accents -->
+                <div class="accents">
+                    <span class="accent-bar bar-1"></span>
+                    <span class="accent-bar bar-2"></span>
+                    <span class="accent-bar bar-3"></span>
+                    <span class="accent-bar bar-4"></span>
+                </div>
+
+                <!-- Original Mascot Image -->
+                <div class="character-holder" id="character">
+                    <img src="mascot.png" alt="ThinkCeleb Mascot" class="mascot-img" />
+                </div>
+
+                <!-- Dynamic Ground Shadow -->
+                <div class="ground-shadow"></div>
+            </div>
+
+            <!-- COMPLETED & Action Section (Positioned Higher) -->
+            <div class="bottom-action-group">
+                <footer class="completed-footer">
+                    <h2 class="completed-text" id="completedText">SELESAI!</h2>
+                </footer>
+
+                <!-- Interactive Action Controls -->
+                <div class="controls-overlay">
+                    <button class="interactive-btn next-level-btn" id="nextLevelBtn" title="Lanjut ke Peta">
+                        <span>LANJUT KE PETA BELAJAR</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

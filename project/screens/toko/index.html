@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toko Border ThinkBin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../shared/navbar.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Header (Fixed Top) -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="btn-back" id="btn-back-header" title="Kembali">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#382C22" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </button>
+                <h1 class="header-title">Toko</h1>
+            </div>
+            <div class="header-right">
+                <!-- Coin display pill -->
+                <div class="coin-display" id="coin-display-container">
+                    <img src="assets/coin.png" class="coin-icon" alt="Coin">
+                    <span id="coin-balance">640</span>
+                </div>
+
+                <!-- XP display pill -->
+                <div class="xp-display" id="xp-display-container" title="Total XP">
+                    <img src="assets/xp_icon.png" class="xp-icon" alt="XP">
+                    <span id="xp-balance">252</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Scroll Area -->
+        <main class="content-scroll">
+            <!-- Banner / Greeting with Mascot -->
+            <div class="shop-banner">
+                <div class="banner-mascot-box">
+                    <img src="assets/mascot.png" class="banner-mascot" alt="Mascot ThinkBin">
+                </div>
+                <div class="banner-bubble">
+                    Halo! Yuk hias profilmu dengan Border Profil ThinkBin yang unik!
+                </div>
+            </div>
+
+            <!-- Shelves Container (3x2 items layout on warm wooden shelves) -->
+            <div class="shelves-container">
+                <!-- Shelf Row 1 -->
+                <div class="shelf-row">
+                    <div class="shelf-grid" id="shelf-grid-row-1">
+                        <!-- Card slots dynamically filled by JS -->
+                    </div>
+                    <div class="shelf-wood-bar"></div>
+                </div>
+
+                <!-- Shelf Row 2 -->
+                <div class="shelf-row">
+                    <div class="shelf-grid" id="shelf-grid-row-2">
+                        <!-- Card slots dynamically filled by JS -->
+                    </div>
+                    <div class="shelf-wood-bar"></div>
+                </div>
+            </div>
+
+            <!-- Pagination Bottom -->
+            <div class="pagination-container">
+                <button class="btn-page" id="btn-prev" aria-label="Halaman Sebelumnya">‹</button>
+                <span class="page-indicator" id="page-indicator">1 / 2</span>
+                <button class="btn-page" id="btn-next" aria-label="Halaman Selanjutnya">›</button>
+            </div>
+        </main>
+
+        <!-- Footer Navigation Bar (Matching Quests / Mission Style) -->
+        <nav class="footer-nav">
+            <!-- 1. Home -->
+            <div class="tab-item" data-nav="home" title="Beranda">
+                <svg viewBox="0 0 32 32" width="28" height="28">
+                    <path d="M16 5 L4 15 L7 15 L7 27 L13 27 L13 19 L19 19 L19 27 L25 27 L25 15 L28 15 Z" fill="#F7A93B" stroke="#DF8A1B" stroke-width="1.2"/>
+                </svg>
+            </div>
+
+            <!-- 2. Quests / Mission -->
+            <div class="tab-item" data-nav="mission" title="Misi">
+                <div class="tab-icon-wrap">
+                    <svg viewBox="0 0 32 32" width="27" height="27">
+                        <rect x="7" y="6" width="18" height="21" rx="3" fill="#FFFFFF" stroke="#607D8B" stroke-width="1.8"/>
+                        <rect x="11" y="3.5" width="10" height="4" rx="2" fill="#78909C"/>
+                        <path d="M11 12 L21 12 M11 17 L21 17 M11 22 L17 22" stroke="#42A5F5" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 3. Shop (Active Tab with Pill) -->
+            <div class="tab-item active-tab" data-nav="toko" title="Toko">
+                <div class="tab-pill"></div>
+                <div class="tab-icon-wrap">
+                    <svg viewBox="0 0 32 32" width="28" height="28">
+                        <path d="M4 25 L4 12 L16 6 L28 12 L28 25 Z" fill="#E53935"/>
+                        <path d="M4 12 L9 12 L9 25 L4 25 Z" fill="#FFCDD2"/>
+                        <path d="M12 12 L17 12 L17 25 L12 25 Z" fill="#FFCDD2"/>
+                        <path d="M20 12 L25 12 L25 25 L20 25 Z" fill="#FFCDD2"/>
+                        <polygon points="16,6 19,12 13,12" fill="#D32F2F"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 4. Learning Map -->
+            <div class="tab-item" data-nav="learning-map" title="Peta Belajar">
+                <div class="circle-avatar green-avatar">
+                    <svg viewBox="0 0 28 28" width="28" height="28">
+                        <circle cx="14" cy="14" r="13" fill="#58A849"/>
+                        <ellipse cx="10" cy="10" rx="2.5" ry="2" fill="#3D7D33"/>
+                        <ellipse cx="18" cy="10" rx="2.5" ry="2" fill="#3D7D33"/>
+                        <ellipse cx="14" cy="17" rx="3.5" ry="2.5" fill="#3D7D33"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 5. Profile -->
+            <div class="tab-item" data-nav="profile" title="Profil">
+                <div class="circle-avatar dark-avatar">
+                    <svg viewBox="0 0 28 28" width="28" height="28">
+                        <circle cx="14" cy="14" r="13" fill="#1C3879"/>
+                        <ellipse cx="14" cy="16" rx="8" ry="7" fill="#FFFFFF"/>
+                        <circle cx="11" cy="15" r="1.5" fill="#000000"/>
+                        <circle cx="17" cy="15" r="1.5" fill="#000000"/>
+                        <polygon points="14,16 12,19 16,19" fill="#FFA726"/>
+                    </svg>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Custom Purchase Confirmation Modal (Matching Hint Box Style) -->
+        <div class="modal-overlay" id="purchase-modal">
+            <div class="modal-content">
+                <h3 class="modal-title">Beli Item ini?</h3>
+                
+                <div class="modal-preview-box">
+                    <div class="modal-preview-placeholder" id="modal-preview-placeholder"></div>
+                    <img src="" id="modal-border-img" class="modal-border-preview" alt="Border Preview">
+                </div>
+
+                <div class="modal-item-name" id="modal-item-name">Nama Item</div>
+                
+                <div class="modal-item-price">
+                    <img src="assets/coin.png" class="modal-coin-icon" alt="Coin">
+                    <span id="modal-item-price-val">100</span>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-modal btn-cancel" id="btn-modal-cancel">Batal</button>
+                    <button class="btn-modal btn-confirm" id="btn-modal-confirm">Beli</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Mystery Box Opening Modal -->
+        <div class="modal-overlay" id="mystery-modal">
+            <div class="modal-content mystery-modal-content">
+                <h3 class="modal-title" id="mystery-title">Mystery Box Diperoleh!</h3>
+                
+                <div class="mystery-box-container">
+                    <div class="mystery-glow" id="mystery-glow"></div>
+                    
+                    <div class="mystery-box-sprite" id="mystery-box-sprite" title="Ketuk untuk membuka!"></div>
+
+                    <div class="mystery-reward-showcase" id="mystery-reward-showcase">
+                        <div class="reward-icon-wrapper" id="reward-icon-wrapper"></div>
+                        <div class="reward-tier-badge" id="reward-tier-badge">Common</div>
+                        <div class="reward-text" id="reward-text">Kamu mendapatkan 200 Coin!</div>
+                    </div>
+                </div>
+
+                <p class="mystery-instruction" id="mystery-instruction">Ketuk peti untuk membukanya!</p>
+                
+                <div class="modal-actions" style="margin-top: 16px;">
+                    <button class="btn-modal btn-confirm" id="btn-mystery-claim" style="display: none; width: 100%;">Klaim Hadiah</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Toast Notification -->
+        <div class="toast-container" id="toast-notification">
+            <span class="toast-icon" id="toast-icon"></span>
+            <span class="toast-message" id="toast-message">Feedback message</span>
+        </div>
+
+        <!-- BOTTOM NAVIGATION (GLOBAL THINKBIN NAV) -->
+        <div class="global-nav-container">
+            <div class="global-navbar" id="navbar">
+                <div class="global-active-indicator" id="active-indicator"></div>
+                
+                <!-- Nav Item 1: Beranda -->
+                <button class="global-nav-item" data-screen="home" data-index="0">
+                    <div class="global-icon-wrapper">
+                        <img src="assets/home.png" alt="Beranda">
+                    </div>
+                    <span class="global-nav-text">Beranda</span>
+                </button>
+
+                <!-- Nav Item 2: Belajar -->
+                <button class="global-nav-item" data-screen="learning-map" data-index="1">
+                    <div class="global-icon-wrapper">
+                        <img src="assets/learn.png" alt="Belajar">
+                    </div>
+                    <span class="global-nav-text">Belajar</span>
+                </button>
+
+                <!-- Nav Item 3: Papan Peringkat -->
+                <button class="global-nav-item" data-screen="plopp" data-index="2">
+                    <div class="global-icon-wrapper">
+                        <img src="assets/leaderboard.png" alt="Papan Peringkat">
+                    </div>
+                    <span class="global-nav-text">Peringkat</span>
+                </button>
+
+                <!-- Nav Item 4: Toko (Active) -->
+                <button class="global-nav-item active" data-screen="toko" data-index="3">
+                    <div class="global-icon-wrapper">
+                        <img src="assets/shop.png" alt="Toko">
+                    </div>
+                    <span class="global-nav-text">Toko</span>
+                </button>
+
+                <!-- Nav Item 5: Profil -->
+                <button class="global-nav-item" data-screen="profile" data-index="4">
+                    <div class="global-icon-wrapper">
+                        <img src="assets/profile.png" alt="Profil">
+                    </div>
+                    <span class="global-nav-text">Profil</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script src="../shared/navbar.js" defer></script>
+</body>
+</html>

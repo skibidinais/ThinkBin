@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Think Bin - Eco Adventure Game</title>
+  <meta name="description" content="Think Bin: Fun and educational eco-adventure recycling game with cute animal friends!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../shared/navbar.css">
+  <script src="../shared/navbar.js" defer></script>
+</head>
+<body>
+  <!-- Ambient Audio Controls -->
+  <button id="soundToggleBtn" class="sound-toggle" title="Toggle Sound">
+    <svg id="soundIcon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    </svg>
+  </button>
+
+  <!-- View Switcher -->
+  <div class="view-switch-banner">
+    <span class="view-hint">🌿 Think Bin Live Game</span>
+    <button id="fullscreenToggle" class="mode-btn">⛶ Fit Screen</button>
+  </div>
+
+  <main class="device-container" id="deviceFrame">
+    <div class="game-screen" id="mainScreen">
+      <!-- DYNAMIC MOVING CLOUDS OVER BACKGROUND -->
+      <div class="clouds-sky-container">
+        <!-- Cloud 1: Fluffy Big Cloud -->
+        <div class="moving-cloud cloud-speed-1 cloud-pos-1">
+          <svg viewBox="0 0 160 70" class="cloud-svg">
+            <path d="M 25 50 
+                     C 10 50, 0 40, 0 28 
+                     C 0 16, 12 8, 26 10 
+                     C 32 3, 48 0, 65 6 
+                     C 76 -2, 102 -2, 116 8 
+                     C 130 5, 148 14, 150 28 
+                     C 162 36, 155 50, 140 50 
+                     Z" fill="#ffffff" opacity="0.95" />
+          </svg>
+        </div>
+
+        <!-- Cloud 2: Medium Soft Cloud -->
+        <div class="moving-cloud cloud-speed-2 cloud-pos-2">
+          <svg viewBox="0 0 120 50" class="cloud-svg">
+            <path d="M 18 40 
+                     C 8 40, 0 32, 0 22 
+                     C 0 12, 10 6, 20 8 
+                     C 26 2, 40 0, 52 5 
+                     C 62 -1, 84 -1, 94 7 
+                     C 105 5, 118 12, 120 22 
+                     C 125 30, 118 40, 105 40 
+                     Z" fill="#ffffff" opacity="0.88" />
+          </svg>
+        </div>
+
+        <!-- Cloud 3: Small High Cloud -->
+        <div class="moving-cloud cloud-speed-3 cloud-pos-3">
+          <svg viewBox="0 0 90 40" class="cloud-svg">
+            <path d="M 14 30 
+                     C 6 30, 0 24, 0 16 
+                     C 0 9, 8 4, 16 6 
+                     C 20 1, 32 0, 42 4 
+                     C 50 -1, 68 -1, 76 5 
+                     C 84 4, 90 10, 90 18 
+                     C 90 24, 82 30, 72 30 
+                     Z" fill="#ffffff" opacity="0.82" />
+          </svg>
+        </div>
+
+        <!-- Cloud 4: Low Drifting Cloud -->
+        <div class="moving-cloud cloud-speed-4 cloud-pos-4">
+          <svg viewBox="0 0 140 60" class="cloud-svg">
+            <path d="M 20 45 
+                     C 8 45, 0 36, 0 25 
+                     C 0 14, 10 7, 22 9 
+                     C 28 2, 44 0, 58 5 
+                     C 68 -2, 92 -2, 104 7 
+                     C 116 4, 132 12, 135 25 
+                     C 140 33, 134 45, 120 45 
+                     Z" fill="#ffffff" opacity="0.9" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- TOP BAR -->
+      <header class="top-bar">
+        <div class="empty-top-left"></div>
+      </header>
+
+      <!-- MAIN LOGO & MASCOT SECTION (Photo 1) -->
+      <section class="mascot-section">
+        <div class="title-logo-container">
+          <div class="logo-image-wrapper" id="mascotInteractive" title="Tap Think Bin!">
+            <!-- Exact Logo from User's Photo 1 -->
+            <img src="assets/logo.png" alt="Think Bin Logo and Mascot" class="thinkbin-logo-img" />
+          </div>
+        </div>
+      </section>
+
+      <!-- MAIN ACTION ROW: PLAY BUTTON -->
+      <section class="main-action-row">
+        <!-- Big Green Play Button (Centered & Prominent) -->
+        <button class="btn-play-primary" id="btnPlayMain" aria-label="Start Game">
+          <span class="play-icon">▶</span>
+          <span class="play-text">play</span>
+        </button>
+      </section>
+
+      <!-- DAILY MISSIONS & KUISIONER AKHIR SECTION -->
+      <section class="misi-harian-section" style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="misi-harian-btn" id="btnMisiHarian" aria-label="Misi Harian" onclick="goToMissionPage()">
+          <div class="misi-icon-wrapper">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Checklist Target / Clipboard Icon -->
+              <path d="M9 11l3 3L22 4" stroke="#ffffff" stroke-width="3"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#ffffff" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <div class="misi-text-wrapper">
+            <span class="misi-title">Misi Harian</span>
+          </div>
+        </button>
+
+        <button class="misi-harian-btn" id="btnKuisionerAkhir" aria-label="Kuisioner Akhir" onclick="goToKuisionerAkhir()" style="background: linear-gradient(180deg, #fff3cd 0%, #fde047 100%); border-color: #ca8a04; color: #713f12; box-shadow: 0 4px 0 #a16207;">
+          <div class="misi-icon-wrapper" style="background: #eab308;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div class="misi-text-wrapper">
+            <span class="misi-title" style="color: #713f12;">Kuisioner Akhir</span>
+            <span style="font-size: 0.74rem; font-weight: 700; color: #854d0e; display: block; margin-top: 1px;">Bisa dikerjakan kapan saja (+20 XP, +30 Koin)</span>
+          </div>
+        </button>
+      </section>
+
+      <script>
+        function goToMissionPage() {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'navigate', screen: 'mission' }, '*');
+          } else {
+            window.location.href = '../mission/index.html';
+          }
+        }
+
+        function goToKuisionerAkhir() {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'navigate', screen: 'kuisioner', surveyType: 'akhir' }, '*');
+          } else {
+            window.location.href = '../kuisioner/index.html?type=akhir';
+          }
+        }
+      </script>
+
+      <!-- BOTTOM NAVIGATION (GLOBAL THINKBIN NAV) -->
+      <div class="global-nav-container">
+        <div class="global-navbar" id="navbar">
+          <div class="global-active-indicator" id="active-indicator"></div>
+          
+          <!-- Nav Item 1: Beranda (Active) -->
+          <button class="global-nav-item active" data-screen="home" data-index="0">
+            <div class="global-icon-wrapper">
+              <img src="assets/home.png" alt="Beranda">
+            </div>
+            <span class="global-nav-text">Beranda</span>
+          </button>
+
+          <!-- Nav Item 2: Belajar -->
+          <button class="global-nav-item" data-screen="learning-map" data-index="1">
+            <div class="global-icon-wrapper">
+              <img src="assets/learn.png" alt="Belajar">
+            </div>
+            <span class="global-nav-text">Belajar</span>
+          </button>
+
+          <!-- Nav Item 3: Papan Peringkat -->
+          <button class="global-nav-item" data-screen="plopp" data-index="2">
+            <div class="global-icon-wrapper">
+              <img src="assets/leaderboard.png" alt="Papan Peringkat">
+            </div>
+            <span class="global-nav-text">Peringkat</span>
+          </button>
+
+          <!-- Nav Item 4: Toko -->
+          <button class="global-nav-item" data-screen="toko" data-index="3">
+            <div class="global-icon-wrapper">
+              <img src="assets/shop.png" alt="Toko">
+            </div>
+            <span class="global-nav-text">Toko</span>
+          </button>
+
+          <!-- Nav Item 5: Profil -->
+          <button class="global-nav-item" data-screen="profile" data-index="4">
+            <div class="global-icon-wrapper">
+              <img src="assets/profile.png" alt="Profil">
+            </div>
+            <span class="global-nav-text">Profil</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 1: THINK BIN RECYCLING SORTING GAME      -->
+    <!-- ============================================== -->
+    <div class="modal-overlay hidden" id="gameModal">
+      <div class="modal-content game-modal-box">
+        <header class="modal-header">
+          <div class="game-stats-hud">
+            <span class="hud-item">🏆 <span id="gameScore">0</span></span>
+            <span class="hud-item">❤️ <span id="gameLives">❤️❤️❤️</span></span>
+            <span class="hud-item">⏱️ <span id="gameTimer">30s</span></span>
+          </div>
+          <button class="btn-close-modal" id="btnCloseGame">✕</button>
+        </header>
+
+        <div class="game-playfield" id="gamePlayfield">
+          <div class="bin-player" id="binPlayer">
+            <div class="bin-basket-visual">🗑️</div>
+            <div class="bin-label-tag">THINK BIN</div>
+          </div>
+          <div class="game-instructions-overlay" id="gameStartPrompt">
+            <h2>Catch Recyclables! ♻️</h2>
+            <p>Move Think Bin left & right (Mouse, Touch, or Arrow keys)</p>
+            <p class="target-tips">
+              ✅ Catch: Plastic 🧴, Paper 📦, Cans 🥫, Glass 🍾<br>
+              ❌ Avoid: Hazardous Waste ☣️ & Battery 🔋
+            </p>
+            <button class="btn-play-primary modal-action-btn" id="btnStartGameNow">START NOW!</button>
+          </div>
+        </div>
+
+        <div class="game-result-overlay hidden" id="gameResultOverlay">
+          <h3 id="resultTitle">Great Job Eco-Hero! 🎉</h3>
+          <p class="result-score-line">Score: <strong id="finalScoreVal">0</strong></p>
+          <p class="result-coins-line">+<span id="earnedCoins">50</span> Coins Won! 🪙</p>
+          <div class="result-btn-row">
+            <button class="card-btn btn-green" id="btnPlayAgain">Play Again</button>
+            <button class="card-btn btn-purple" id="btnExitGame">Menu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 2: 1v1 ANIMAL DUEL BATTLE                -->
+    <!-- ============================================== -->
+    <div class="modal-overlay hidden" id="duelModal">
+      <div class="modal-content duel-modal-box">
+        <header class="modal-header">
+          <h3>⚔️ Match vs <span id="opponentName">Mark</span></h3>
+          <button class="btn-close-modal" id="btnCloseDuel">✕</button>
+        </header>
+        <div class="duel-arena">
+          <div class="duel-fighter player-side">
+            <div class="fighter-avatar">🗑️</div>
+            <span class="fighter-label">You</span>
+            <div class="progress-bar-track">
+              <div class="progress-fill" id="playerProgress" style="width: 0%;"></div>
+            </div>
+            <span class="fighter-score" id="playerDuelScore">0 pts</span>
+          </div>
+
+          <div class="duel-vs-badge">VS</div>
+
+          <div class="duel-fighter opponent-side">
+            <div class="fighter-avatar" id="opponentAvatarIcon">🦦</div>
+            <span class="fighter-label" id="opponentLabel">Mark</span>
+            <div class="progress-bar-track">
+              <div class="progress-fill opp-fill" id="opponentProgress" style="width: 0%;"></div>
+            </div>
+            <span class="fighter-score" id="opponentDuelScore">0 pts</span>
+          </div>
+        </div>
+
+        <div class="duel-challenge-card" id="duelCard">
+          <p class="duel-question-text" id="duelQuestionText">Which bin does an <strong>Apple Core</strong> belong to?</p>
+          <div class="duel-answers-grid" id="duelAnswersGrid">
+            <button class="duel-btn-choice" data-correct="true">🍂 Organic Compost</button>
+            <button class="duel-btn-choice" data-correct="false">🧴 Plastic Bin</button>
+            <button class="duel-btn-choice" data-correct="false">📦 Paper Bin</button>
+            <button class="duel-btn-choice" data-correct="false">⚡ Battery Hazard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 3: PROFILE MODAL                         -->
+    <!-- ============================================== -->
+    <div class="modal-overlay hidden" id="profileModal">
+      <div class="modal-content profile-modal-box">
+        <header class="modal-header">
+          <h3>🐾 Forest Ranger Profile</h3>
+          <button class="btn-close-modal" id="btnCloseProfile">✕</button>
+        </header>
+        <div class="profile-body">
+          <div class="profile-badge-showcase">
+            <div class="big-avatar-circle">🦦</div>
+            <h4>Eco River Otter</h4>
+            <span class="rank-badge">Level 8 • Forest Guardian</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-cell">
+              <span class="stat-number">1,420</span>
+              <span class="stat-label">Items Recycled</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-number">98%</span>
+              <span class="stat-label">Accuracy</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-number">18</span>
+              <span class="stat-label">Wins Streak</span>
+            </div>
+            <div class="stat-cell">
+              <span class="stat-number">#4</span>
+              <span class="stat-label">Forest Rank</span>
+            </div>
+          </div>
+          <div class="hats-locker">
+            <h5>Mascot Hats Locker</h5>
+            <div class="hats-list">
+              <button class="hat-item active" title="Safari Explorer (Equipped)">🧭 Safari Hat</button>
+              <button class="hat-item" title="Eco Crown">👑 Leaf Crown</button>
+              <button class="hat-item" title="Wizard Hat">🧙‍♂️ Forest Mage</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 4: LUCKY SPIN WHEEL MODAL               -->
+    <!-- ============================================== -->
+    <div class="modal-overlay hidden" id="wheelModal">
+      <div class="modal-content wheel-modal-box">
+        <header class="modal-header">
+          <h3>🎡 Daily Lucky Spin!</h3>
+          <button class="btn-close-modal" id="btnCloseWheel">✕</button>
+        </header>
+        <div class="wheel-stage">
+          <div class="wheel-pointer-indicator">▼</div>
+          <div class="wheel-spinner" id="modalWheelSpinner">
+            <div class="spinner-slice s-1"><span>🪙 +50</span></div>
+            <div class="spinner-slice s-2"><span>⭐ +100</span></div>
+            <div class="spinner-slice s-3"><span>🪙 +25</span></div>
+            <div class="spinner-slice s-4"><span>🎁 BOX</span></div>
+            <div class="spinner-slice s-5"><span>🪙 +200</span></div>
+            <div class="spinner-slice s-6"><span>💎 1 GEM</span></div>
+          </div>
+          <button class="btn-play-primary modal-action-btn" id="btnSpinNow">SPIN WHEEL!</button>
+          <p class="wheel-result-msg" id="wheelResultMsg">Tap Spin to win daily eco rewards!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 5: COIN SHOP MODAL                       -->
+    <!-- ============================================== -->
+    <div class="modal-overlay hidden" id="shopModal">
+      <div class="modal-content shop-modal-box">
+        <header class="modal-header">
+          <h3>🪙 Forest Coin Shop</h3>
+          <button class="btn-close-modal" id="btnCloseShop">✕</button>
+        </header>
+        <div class="shop-grid">
+          <div class="shop-item">
+            <span class="item-icon">🧲</span>
+            <div class="item-desc">
+              <strong>Trash Magnet</strong>
+              <span>Attracts all recyclables for 10s</span>
+            </div>
+            <button class="card-btn btn-green buy-btn" data-cost="50">50 🪙</button>
+          </div>
+          <div class="shop-item">
+            <span class="item-icon">⏱️</span>
+            <div class="item-desc">
+              <strong>Time Extender</strong>
+              <span>+15 extra seconds in games</span>
+            </div>
+            <button class="card-btn btn-green buy-btn" data-cost="80">80 🪙</button>
+          </div>
+          <div class="shop-item">
+            <span class="item-icon">👑</span>
+            <div class="item-desc">
+              <strong>Golden Bin Skin</strong>
+              <span>Shiny golden glow for Think Bin</span>
+            </div>
+            <button class="card-btn btn-green buy-btn" data-cost="200">200 🪙</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Confetti Canvas for Wins -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <script src="game.js"></script>
+</body>
+</html>

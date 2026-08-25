@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ThinkBin - Kuis Tantangan Minigame</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="mobile-frame" id="mobileFrame">
+
+      <!-- Header with Back Button, Game Title, and ThinkBin Logo -->
+      <header class="top-bar">
+        <button class="icon-circle-btn" id="backBtn" aria-label="Kembali ke Peta Belajar">
+          <svg viewBox="0 0 24 24" class="icon-svg">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+
+        <div class="header-info">
+          <span class="game-tag" id="gameTag">KUIS TANTANGAN</span>
+          <h1 class="game-heading" id="gameHeading">Pilah Sampah Bertimer</h1>
+        </div>
+
+        <div class="logo-box">
+          <img src="logo.png" alt="Think Bin Logo" class="brand-logo" id="brandLogo">
+        </div>
+      </header>
+
+      <!-- Main Game Play Area Container -->
+      <main class="paper-container" id="paperContainer">
+        
+        <!-- Live Game Stats Bar (Timer Countdown, Current Question, Score) -->
+        <div class="game-stats-bar" id="gameStatsBar">
+          <div class="stat-badge question-badge">
+            <span id="questionCounter">Soal 1 / 5</span>
+          </div>
+
+          <div class="stat-badge timer-badge" id="timerBadge">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 2px;">
+              <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+            </svg>
+            <span class="timer-sec" id="timerSeconds">12s</span>
+          </div>
+
+          <div class="stat-badge score-badge">
+            <span>Skor: </span>
+            <strong id="scoreVal">0</strong>
+          </div>
+        </div>
+
+        <!-- Timer Progress Bar -->
+        <div class="timer-progress-track">
+          <div class="timer-progress-fill" id="timerProgressFill"></div>
+        </div>
+
+        <!-- Quiz Gameplay Content Area -->
+        <div class="quiz-content" id="quizContent">
+          <!-- Question Header -->
+          <div class="question-header">
+            <div class="question-num-circle" id="qNumberCircle">1</div>
+            <h2 class="question-text" id="questionText">Memuat soal tantangan...</h2>
+          </div>
+
+          <!-- Answer Options List (4 Options) -->
+          <div class="options-list" id="optionsList">
+            <!-- Dynamically populated options -->
+          </div>
+        </div>
+
+        <!-- Tantangan Result Screen (Shown after finishing 5 questions) -->
+        <div class="result-content hidden" id="resultContent">
+          <div class="result-mascot">
+            <img src="logo.png" alt="Think Bin" class="result-logo-img">
+          </div>
+
+          <h2 class="result-title" id="resultTitle">Tantangan Berhasil!</h2>
+          <div class="stars-rating" id="starsRating"></div>
+          
+          <p class="result-score-text">Skor Akhir:</p>
+          <div class="final-score-pill" id="finalScorePill">500 Poin</div>
+          
+          <p class="result-xp-text">+12 XP Didapatkan!</p>
+
+          <div class="result-buttons-row">
+            <button class="btn-continue-map" id="btnContinueMap">
+              LANJUT KE PETA BELAJAR
+            </button>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Load Curriculum Data & Game Script -->
+  <script src="../shared/modul_data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

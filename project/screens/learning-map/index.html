@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Learning Map - ThinkBin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/navbar.css">
+  <script src="../shared/navbar.js" defer></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: #120b06;
+      color: #3c3c3c;
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Main device simulation frame (Mobile Viewport: 375x812 base) */
+    .app-frame {
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      max-height: 880px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background-color: #4da325; /* Matches bottom grass seamlessly */
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+
+    @media (min-width: 441px) {
+      .app-frame {
+        height: 92vh;
+        border: 10px solid #4a270f;
+        border-radius: 42px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px #261307;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       STICKY TOP LEVEL / UNIT INFO BAR (NO STAT BAR)
+    ------------------------------------------------------------- */
+    .fixed-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 14px 16px 10px 16px;
+      display: flex;
+      flex-direction: column;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(80, 165, 235, 0.65) 0%, rgba(80, 165, 235, 0) 100%);
+    }
+
+    /* Level / Unit Card */
+    .level-unit-card {
+      background: #ffffff;
+      border: 3.5px solid #e5e5e5;
+      border-bottom-width: 6.5px;
+      border-radius: 22px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+      pointer-events: auto;
+    }
+
+    .unit-icon-badge {
+      width: 42px;
+      height: 42px;
+      background: #7c4e18;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+    }
+
+    .unit-text-col {
+      margin-left: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .unit-subtitle {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1cb0f6;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .unit-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #2b2b2b;
+      line-height: 1.2;
+    }
+
+    .unit-menu-btn {
+      margin-left: auto;
+      width: 36px;
+      height: 36px;
+      background-color: #e8f7fe;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .unit-menu-btn:active {
+      transform: scale(0.92);
+    }
+
+    .menu-bar {
+      width: 15px;
+      height: 2.5px;
+      background-color: #1cb0f6;
+      border-radius: 2px;
+    }
+
+    /* -------------------------------------------------------------
+       UNIT SELECTOR DROPDOWN (SWITCH BETWEEN 4 MAPS)
+    ------------------------------------------------------------- */
+    .unit-dropdown {
+      position: absolute;
+      top: 76px;
+      right: 16px;
+      background: #ffffff;
+      border: 3px solid #e2e8f0;
+      border-bottom-width: 6px;
+      border-radius: 18px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+      z-index: 150;
+      pointer-events: auto;
+      width: 220px;
+    }
+
+    .unit-dropdown.show {
+      display: flex;
+    }
+
+    .unit-option-btn {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .unit-option-btn:hover {
+      background: #e0f2fe;
+      border-color: #38bdf8;
+      color: #0369a1;
+    }
+
+    .unit-option-btn.active {
+      background: #0284c7;
+      border-color: #0369a1;
+      color: #ffffff;
+    }
+
+    /* -------------------------------------------------------------
+       SCROLLABLE MAP SCENE AREA (PROPORTIONAL / NOT ZOOMED)
+    ------------------------------------------------------------- */
+    .map-scroll-area {
+      flex: 1;
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      padding-bottom: 0px;
+      scrollbar-width: none;
+    }
+
+    .map-scroll-area::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Scene Container */
+    .scene-container {
+      position: relative;
+      width: 100%;
+      line-height: 0;
+    }
+
+    .scene-bg-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    /* -------------------------------------------------------------
+       ANIMATED FLOATING CLOUDS (NATURAL PROPORTIONS)
+    ------------------------------------------------------------- */
+    .clouds-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 36%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .animated-cloud {
+      position: absolute;
+      opacity: 0.85;
+      filter: drop-shadow(0 3px 4px rgba(0, 40, 100, 0.08));
+    }
+
+    .cloud-1 {
+      top: 7%;
+      width: 58px;
+      height: 32px;
+      animation: drift-lr-1 45s linear infinite;
+    }
+
+    .cloud-2 {
+      top: 18%;
+      width: 72px;
+      height: 38px;
+      animation: drift-rl-2 60s linear infinite;
+    }
+
+    .cloud-3 {
+      top: 29%;
+      width: 48px;
+      height: 26px;
+      animation: drift-lr-3 52s linear infinite;
+    }
+
+    @keyframes drift-lr-1 {
+      0% { transform: translateX(-80px); }
+      100% { transform: translateX(480px); }
+    }
+
+    @keyframes drift-rl-2 {
+      0% { transform: translateX(480px); }
+      100% { transform: translateX(-100px); }
+    }
+
+    @keyframes drift-lr-3 {
+      0% { transform: translateX(-70px); }
+      100% { transform: translateX(470px); }
+    }
+
+    /* -------------------------------------------------------------
+       INTERACTIVE LEVEL NODES (4 Nodes)
+    ------------------------------------------------------------- */
+    .level-node {
+      position: absolute;
+      width: 14%;
+      max-width: 68px;
+      min-width: 46px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease, filter 0.2s ease;
+      outline: none;
+    }
+
+    .level-node:active {
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    /* Current / Active Level Node */
+    .level-node.current {
+      background: linear-gradient(180deg, #ffc738 0%, #e59210 100%);
+      border: 3.5px solid #ffffff;
+      box-shadow: 0 6px 0 #b36a00, 0 8px 18px rgba(229, 146, 16, 0.5);
+      animation: pulse-glow 2s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 6px 0 #b36a00, 0 0 10px rgba(255, 199, 56, 0.4); }
+      100% { box-shadow: 0 6px 0 #b36a00, 0 0 22px rgba(255, 199, 56, 0.85); }
+    }
+
+    /* Completed Level Node */
+    .level-node.completed {
+      background: linear-gradient(180deg, #85e000 0%, #6ab800 100%);
+      border: 3.5px solid #ffffff;
+      box-shadow: 0 6px 0 #4a8500, 0 6px 14px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Locked Level Node */
+    .level-node.locked {
+      background: rgba(100, 100, 100, 0.85);
+      border: 3.5px solid rgba(255, 255, 255, 0.55);
+      box-shadow: 0 5px 0 #3a3a3a, 0 4px 10px rgba(0, 0, 0, 0.3);
+      filter: grayscale(0.7) opacity(0.85);
+    }
+
+    .level-node.locked:hover {
+      filter: grayscale(0.5) opacity(0.95);
+    }
+
+    .node-icon-svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+      filter: drop-shadow(0 1.5px 1px rgba(0, 0, 0, 0.2));
+      display: block;
+    }
+
+    .level-node.shake {
+      animation: shake-anim 0.4s ease-in-out;
+    }
+
+    @keyframes shake-anim {
+      0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+      20% { transform: translate(-55%, -50%) rotate(-8deg); }
+      40% { transform: translate(-45%, -50%) rotate(8deg); }
+      60% { transform: translate(-53%, -50%) rotate(-5deg); }
+      80% { transform: translate(-47%, -50%) rotate(5deg); }
+    }
+
+    /* -------------------------------------------------------------
+       MASCOT CHARACTER & LEVEL TRANSITION ANIMATIONS
+    ------------------------------------------------------------- */
+    .mascot-holder {
+      position: absolute;
+      width: 15%;
+      max-width: 78px;
+      min-width: 52px;
+      aspect-ratio: 1;
+      z-index: 30;
+      transform: translate(-50%, -90%);
+      pointer-events: none;
+      transition: left 0.85s cubic-bezier(0.34, 1.35, 0.64, 1), top 0.85s cubic-bezier(0.34, 1.35, 0.64, 1);
+    }
+
+    .mascot-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+    }
+
+    .mascot-holder.hop .mascot-img {
+      animation: mascot-hop-jump 0.85s ease-in-out;
+    }
+
+    .mascot-holder.hopping-transition {
+      transition: left 0.95s cubic-bezier(0.34, 1.25, 0.64, 1), top 0.95s cubic-bezier(0.34, 1.25, 0.64, 1) !important;
+    }
+
+    .mascot-holder.hopping-transition .mascot-img {
+      animation: mascotParabolicHop 0.95s ease-in-out forwards !important;
+    }
+
+    @keyframes mascotParabolicHop {
+      0% { transform: translateY(0) scale(1, 1); }
+      35% { transform: translateY(-45px) scale(0.82, 1.22); }
+      70% { transform: translateY(-25px) scale(1.12, 0.92); }
+      100% { transform: translateY(0) scale(1, 1); }
+    }
+
+    @keyframes mascot-hop-jump {
+      0% { transform: translateY(0) scale(1, 1); }
+      35% { transform: translateY(-36px) scale(0.85, 1.18); }
+      70% { transform: translateY(-18px) scale(1.08, 0.94); }
+      100% { transform: translateY(0) scale(1, 1); }
+    }
+
+    /* Node Unlock Burst Animation */
+    .level-node.just-unlocked {
+      animation: nodeUnlockPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+    }
+
+    @keyframes nodeUnlockPop {
+      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.38); }
+      75% { transform: translate(-50%, -50%) scale(0.92); }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    /* Glowing Ripple Ring expanding on unlock */
+    .node-ripple-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 4px solid #ffd043;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: none;
+      z-index: 15;
+      animation: rippleWave 1.4s ease-out infinite;
+    }
+
+    @keyframes rippleWave {
+      0% { transform: translate(-50%, -50%) scale(0.85); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+    }
+
+    /* Sparkle Burst Particles */
+    .sparkle-particle {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+      z-index: 40;
+      animation: sparkleFloat 0.85s ease-out forwards;
+    }
+
+    @keyframes sparkleFloat {
+      0% { transform: translate(-50%, -50%) scale(0.2) rotate(0deg); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(1.2) rotate(180deg); opacity: 0; }
+    }
+
+    /* -------------------------------------------------------------
+       LEVEL ACTION POPUP MODAL (CLEAN SINGLE TITLE)
+    ------------------------------------------------------------- */
+    .level-popup {
+      position: absolute;
+      width: 240px;
+      background: #ffffff;
+      border: 3.5px solid #3b200b;
+      border-bottom-width: 7px;
+      border-radius: 24px;
+      padding: 16px 16px 14px 16px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+      z-index: 50;
+      transform: translate(-50%, -100%) scale(0.9);
+      opacity: 0;
+      transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .level-popup.show {
+      display: flex;
+      transform: translate(-50%, -115%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .level-popup::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px 10px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+
+    .level-popup::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 14px 14px 0;
+      border-style: solid;
+      border-color: #3b200b transparent;
+      display: block;
+      width: 0;
+    }
+
+    .popup-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #3b200b;
+      margin: 0 0 6px 0;
+      padding: 0;
+      line-height: 1.25;
+      text-align: center;
+      width: 100%;
+    }
+
+    .popup-desc {
+      font-size: 13px;
+      font-weight: 600;
+      color: #614630;
+      margin: 0 0 14px 0;
+      padding: 0;
+      line-height: 1.4;
+      text-align: center;
+      width: 100%;
+    }
+
+    .popup-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .popup-btn {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 11px 12px;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+      transition: transform 0.1s ease, filter 0.1s ease;
+    }
+
+    .popup-btn:active {
+      transform: translateY(3px);
+      box-shadow: none !important;
+    }
+
+    .popup-btn-start {
+      background: linear-gradient(180deg, #ffc738 0%, #e59210 100%);
+      color: #3b200b;
+      border: 2.5px solid #6b3506;
+      box-shadow: 0 4px 0 #542803;
+    }
+
+    .popup-btn-sim {
+      background: linear-gradient(180deg, #85e000 0%, #6ab800 100%);
+      color: #ffffff;
+      border: 2.5px solid #386b00;
+      box-shadow: 0 4px 0 #284d00;
+    }
+
+    /* -------------------------------------------------------------
+       TOAST FEEDBACK FOR LOCKED NODES
+    ------------------------------------------------------------- */
+    .toast-pill {
+      position: absolute;
+      bottom: 82px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #ff4b4b;
+      border: 3px solid #b91c1c;
+      border-bottom-width: 5.5px;
+      border-radius: 20px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 10px 22px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      z-index: 200;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+    }
+
+    .toast-pill.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* -------------------------------------------------------------
+       KUIS TANTANGAN MODAL (COMING SOON PLACEHOLDER)
+    ------------------------------------------------------------- */
+    .tantangan-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 300;
+      padding: 20px;
+    }
+
+    .tantangan-modal.hidden {
+      display: none;
+    }
+
+    .tantangan-card {
+      background: #ffffff;
+      border: 3.5px solid #233e14;
+      border-radius: 28px;
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .tantangan-icon {
+      font-size: 2.8rem;
+      margin-bottom: 6px;
+    }
+
+    .tantangan-title {
+      font-size: 1.18rem;
+      font-weight: 900;
+      color: #1a3311;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .tantangan-badge {
+      display: inline-block;
+      background: #fef08a;
+      color: #854d0e;
+      border: 2px solid #ca8a04;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+    }
+
+    .tantangan-desc {
+      font-size: 0.92rem;
+      color: #4a5568;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    .tantangan-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tantangan-btn {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 900;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .tantangan-btn.btn-start {
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      border: 2.5px solid #92400e;
+      box-shadow: 0 4px 0 #78350f;
+    }
+
+    .tantangan-btn.btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #78350f;
+    }
+
+    .tantangan-btn.btn-start:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #78350f;
+    }
+
+    .tantangan-btn.btn-close {
+      background: #f1f5f9;
+      color: #475569;
+      border: 2px solid #cbd5e1;
+      box-shadow: 0 3px 0 #94a3b8;
+    }
+
+    .tantangan-btn.btn-close:hover {
+      background: #e2e8f0;
+    }
+
+    /* -------------------------------------------------------------
+       FIXED BOTTOM NAVIGATION BAR
+    ------------------------------------------------------------- */
+    .bottom-nav-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: #ffffff;
+      border-top: 2.5px solid #e5e5e5;
+      padding: 8px 12px 14px 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (min-width: 441px) {
+      .bottom-nav-bar {
+        border-radius: 0 0 32px 32px;
+      }
+    }
+
+    .nav-item-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 16px;
+      transition: transform 0.15s ease;
+      outline: none;
+    }
+
+    .nav-item-btn:active {
+      transform: scale(0.92);
+    }
+
+    .nav-svg-icon {
+      width: 24px;
+      height: 24px;
+      fill: #a0aec0;
+      transition: fill 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-item-btn.active .nav-svg-icon {
+      fill: #1cb0f6;
+      transform: scale(1.1);
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #a0aec0;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-item-btn.active .nav-label {
+      color: #1cb0f6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Frame Container -->
+  <div class="app-frame" id="appFrame">
+
+    <!-- Fixed Top Header Section -->
+    <header class="fixed-header">
+      <div class="level-unit-card">
+        <div class="unit-icon-badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="#ffffff">
+            <circle cx="8" cy="7" r="2.2"/>
+            <circle cx="16" cy="7" r="2.2"/>
+            <circle cx="4.5" cy="12" r="1.8"/>
+            <circle cx="19.5" cy="12" r="1.8"/>
+            <path d="M12 10c-2 0-3.6 1.6-3.6 3.6 0 1.6 1.1 2.7 2.7 2.7h1.8c1.6 0 2.7-1.1 2.7-2.7 0-2-1.6-3.6-3.6-3.6z"/>
+          </svg>
+        </div>
+        <div class="unit-text-col">
+          <span class="unit-subtitle" id="unitSubtitle">Bagian 1 • Node 1 - 4</span>
+          <span class="unit-title" id="unitTitle">Mengenal Sampah</span>
+        </div>
+        <button class="unit-menu-btn" id="unitMenuBtn" aria-label="Menu Unit">
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </button>
+      </div>
+
+      <!-- Unit Dropdown Selector (Switch between 4 Bagian) -->
+      <div class="unit-dropdown" id="unitDropdown">
+        <button class="unit-option-btn active" data-map="1">Bagian 1: Mengenal Sampah (Node 1-4)</button>
+        <button class="unit-option-btn" data-map="2">Bagian 2: Dampak Lingkungan (Node 5-8)</button>
+        <button class="unit-option-btn" data-map="3">Bagian 3: Solusi & Aksi (Node 9-12)</button>
+        <button class="unit-option-btn" data-map="4">Bagian 4: Gaya Hidup Hijau (Node 13-16)</button>
+        <button class="unit-option-btn" id="btnOpenKuisionerAkhir" style="background: linear-gradient(180deg, #fef08a 0%, #fde047 100%); color: #713f12; border: 2.5px solid #ca8a04; font-weight: 800; margin-top: 4px;">📝 Kuisioner Akhir (+20 XP)</button>
+      </div>
+    </header>
+
+    <!-- Scrollable Main Scene Area -->
+    <main class="map-scroll-area" id="mapScrollArea">
+      <div class="scene-container" id="sceneContainer">
+        <!-- Exact Scene Background Reference (576x1024) -->
+        <img src="assets/map_bg_current.png" alt="Learning Map Scene" class="scene-bg-img" id="sceneBgImg">
+
+        <!-- ================= ANIMATED CLOUDS LAYER ================= -->
+        <div class="clouds-layer">
+          <svg class="animated-cloud cloud-1" viewBox="0 0 64 36" fill="#ffffff">
+            <path d="M 12 28 A 10 10 0 0 1 20 14 A 14 14 0 0 1 42 12 A 12 12 0 0 1 54 22 A 8 8 0 0 1 52 28 Z"/>
+          </svg>
+          <svg class="animated-cloud cloud-2" viewBox="0 0 64 36" fill="#ffffff">
+            <path d="M 10 28 A 12 12 0 0 1 22 12 A 16 16 0 0 1 46 10 A 14 14 0 0 1 58 22 A 8 8 0 0 1 56 28 Z"/>
+          </svg>
+          <svg class="animated-cloud cloud-3" viewBox="0 0 64 36" fill="#ffffff">
+            <path d="M 8 26 A 8 8 0 0 1 18 14 A 12 12 0 0 1 38 12 A 10 10 0 0 1 48 20 A 7 7 0 0 1 46 26 Z"/>
+          </svg>
+        </div>
+
+        <!-- ================= 4 LEVEL NODES ================= -->
+        <button class="level-node current" id="node1" data-level="1" aria-label="Level 1"></button>
+        <button class="level-node locked" id="node2" data-level="2" aria-label="Level 2"></button>
+        <button class="level-node locked" id="node3" data-level="3" aria-label="Level 3"></button>
+        <button class="level-node locked" id="node4" data-level="4" aria-label="Level 4"></button>
+
+        <!-- ================= MASCOT CHARACTER (NO SPEECH BUBBLE) ================= -->
+        <div class="mascot-holder" id="mascotHolder">
+          <img src="assets/mascot_clean.png" alt="Mascot ThinkBin" class="mascot-img" id="mascotImg">
+        </div>
+
+        <!-- ================= INTERACTIVE LEVEL ACTION POPUP ================= -->
+        <div class="level-popup" id="levelPopup">
+          <h3 class="popup-title" id="popupTitle">Node 1: Apa itu Sampah & Klasifikasi UU</h3>
+          <div class="popup-actions">
+            <button class="popup-btn popup-btn-start" id="popupBtnStart">MULAI BACAAN</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Toast Notification for Locked Nodes -->
+    <div class="toast-pill" id="toastPill">Selesaikan level sebelumnya terlebih dahulu.</div>
+
+    <!-- ================= KUIS TANTANGAN MODAL ================= -->
+    <div class="tantangan-modal hidden" id="tantanganModal">
+      <div class="tantangan-card">
+        <div class="tantangan-icon">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="#eab308">
+            <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
+          </svg>
+        </div>
+        <h3 class="tantangan-title" id="tantanganTitle">Kuis Tantangan</h3>
+        <div class="tantangan-badge">Checkpoint Minigame Bertimer</div>
+        <p class="tantangan-desc" id="tantanganDesc">Uji kecepatan & ketepatanmu menjawab 5 soal bertimer (12 detik per soal) untuk memenangkan reward 12 XP!</p>
+        <div class="tantangan-actions">
+          <button class="tantangan-btn btn-start" id="tantanganBtnStart">MULAI TANTANGAN</button>
+          <button class="tantangan-btn btn-close" id="tantanganBtnClose">TUTUP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fixed Bottom Navigation Bar (GLOBAL THINKBIN NAV) -->
+    <div class="global-nav-container">
+      <div class="global-navbar" id="navbar">
+        <div class="global-active-indicator" id="active-indicator"></div>
+        
+        <!-- Nav Item 1: Beranda -->
+        <button class="global-nav-item" data-screen="home" data-index="0">
+          <div class="global-icon-wrapper">
+            <img src="assets/home.png" alt="Beranda">
+          </div>
+          <span class="global-nav-text">Beranda</span>
+        </button>
+
+        <!-- Nav Item 2: Belajar (Active) -->
+        <button class="global-nav-item active" data-screen="learning-map" data-index="1">
+          <div class="global-icon-wrapper">
+            <img src="assets/learn.png" alt="Belajar">
+          </div>
+          <span class="global-nav-text">Belajar</span>
+        </button>
+
+        <!-- Nav Item 3: Papan Peringkat -->
+        <button class="global-nav-item" data-screen="plopp" data-index="2">
+          <div class="global-icon-wrapper">
+            <img src="assets/leaderboard.png" alt="Papan Peringkat">
+          </div>
+          <span class="global-nav-text">Peringkat</span>
+        </button>
+
+        <!-- Nav Item 4: Toko -->
+        <button class="global-nav-item" data-screen="toko" data-index="3">
+          <div class="global-icon-wrapper">
+            <img src="assets/shop.png" alt="Toko">
+          </div>
+          <span class="global-nav-text">Toko</span>
+        </button>
+
+        <!-- Nav Item 5: Profil -->
+        <button class="global-nav-item" data-screen="profile" data-index="4">
+          <div class="global-icon-wrapper">
+            <img src="assets/profile.png" alt="Profil">
+          </div>
+          <span class="global-nav-text">Profil</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Load Curriculum Data & Map Data Source -->
+  <script src="../shared/modul_data.js"></script>
+  <script src="map-data.js"></script>
+  <script src="../shared/navbar.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const mapScrollArea = document.getElementById("mapScrollArea");
+      const sceneContainer = document.getElementById("sceneContainer");
+      const mascotHolder = document.getElementById("mascotHolder");
+      const levelPopup = document.getElementById("levelPopup");
+      const popupTitle = document.getElementById("popupTitle");
+      const popupBtnStart = document.getElementById("popupBtnStart");
+      const toastPill = document.getElementById("toastPill");
+      const unitSubtitle = document.getElementById("unitSubtitle");
+      const unitTitle = document.getElementById("unitTitle");
+      const unitMenuBtn = document.getElementById("unitMenuBtn");
+      const unitDropdown = document.getElementById("unitDropdown");
+      const navContainer = document.querySelector(".global-nav-container");
+
+      // Tantangan Modal Elements
+      const tantanganModal = document.getElementById("tantanganModal");
+      const tantanganTitle = document.getElementById("tantanganTitle");
+      const tantanganDesc = document.getElementById("tantanganDesc");
+      const tantanganBtnStart = document.getElementById("tantanganBtnStart");
+      const tantanganBtnClose = document.getElementById("tantanganBtnClose");
+
+      // Persistent Progression from LocalStorage
+      function getCompletedNodes() {
+        try {
+          return JSON.parse(localStorage.getItem('thinkbin_completed_nodes') || '[]');
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function getCurrentNodeId() {
+        return parseInt(localStorage.getItem('thinkbin_current_node') || '1', 10);
+      }
+
+      // Parse current map page from URL or deduce from current progress
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentMapId = parseInt(urlParams.get("map") || urlParams.get("page") || "0", 10);
+      
+      const currentProgNode = getCurrentNodeId();
+      if (!currentMapId || currentMapId < 1 || currentMapId > 4) {
+        // Auto-switch to the bagian corresponding to current progress
+        if (currentProgNode <= 4) currentMapId = 1;
+        else if (currentProgNode <= 8) currentMapId = 2;
+        else if (currentProgNode <= 12) currentMapId = 3;
+        else currentMapId = 4;
+      }
+
+      let currentMapData = learningMapsData[currentMapId] || learningMapsData[1];
+      let levelStates = { 1: "current", 2: "locked", 3: "locked", 4: "locked" };
+      let activePopupLevel = null;
+      let activeTantanganSlot = null;
+      let toastTimeout = null;
+
+      // Load Map Data for Selected Bagian (1..4)
+      function loadMap(mapId) {
+        currentMapId = mapId;
+        currentMapData = learningMapsData[mapId] || learningMapsData[1];
+
+        unitSubtitle.textContent = currentMapData.unitSubtitle;
+        unitTitle.textContent = currentMapData.unitTitle;
+
+        const completedNodes = getCompletedNodes();
+        const currentNodeId = getCurrentNodeId();
+
+        // Calculate state for each slot (1..4) in this Bagian
+        levelStates = {};
+        let activeMascotSlot = null;
+
+        for (let slot = 1; slot <= 4; slot++) {
+          const nodeData = currentMapData.levels[slot];
+          if (!nodeData) continue;
+
+          const nId = nodeData.nodeId;
+          if (completedNodes.includes(nId)) {
+            levelStates[slot] = "completed";
+          } else if (nId === currentNodeId) {
+            levelStates[slot] = "current";
+            activeMascotSlot = slot;
+          } else if (nId < currentNodeId) {
+            levelStates[slot] = "completed";
+          } else {
+            levelStates[slot] = "locked";
+          }
+
+          // Set positions
+          const btn = document.getElementById(`node${slot}`);
+          if (btn) {
+            btn.style.left = `${nodeData.x}%`;
+            btn.style.top = `${nodeData.y}%`;
+          }
+        }
+
+        // If no node is "current" in this Bagian:
+        if (!activeMascotSlot) {
+          const allCompleted = Object.values(levelStates).every(s => s === "completed");
+          if (allCompleted) {
+            activeMascotSlot = 4;
+          } else {
+            activeMascotSlot = 1;
+          }
+        }
+
+        renderNodes();
+        setMascotPosition(activeMascotSlot || 1, false);
+        scrollNodeIntoView(activeMascotSlot || 1);
+
+        // Update dropdown active item
+        document.querySelectorAll(".unit-option-btn").forEach(btn => {
+          btn.classList.toggle("active", parseInt(btn.dataset.map) === mapId);
+        });
+      }
+
+      // Update Node Visuals
+      function renderNodes() {
+        for (let slot = 1; slot <= 4; slot++) {
+          const btn = document.getElementById(`node${slot}`);
+          const nodeData = currentMapData.levels[slot];
+          if (!btn || !nodeData) continue;
+
+          const state = levelStates[slot] || "locked";
+          btn.className = `level-node ${state}`;
+
+          if (state === "completed") {
+            btn.innerHTML = mapSvgIcons.checkmark;
+          } else {
+            const iconName = nodeData.icon || "flag";
+            btn.innerHTML = mapSvgIcons[iconName] || mapSvgIcons.flag;
+          }
+        }
+      }
+
+      // Audio Synthesizer for Learning Map
+      let mapAudioCtx = null;
+      function initMapAudio() {
+        if (!mapAudioCtx) {
+          mapAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (mapAudioCtx.state === 'suspended') {
+          mapAudioCtx.resume();
+        }
+      }
+
+      function playMapSound(type) {
+        initMapAudio();
+        try {
+          const now = mapAudioCtx.currentTime;
+          if (type === 'hop') {
+            const osc = mapAudioCtx.createOscillator();
+            const gain = mapAudioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(280, now);
+            osc.frequency.exponentialRampToValueAtTime(580, now + 0.12);
+            osc.frequency.exponentialRampToValueAtTime(320, now + 0.28);
+            gain.setValueAtTime(0.18, now);
+            gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+            osc.connect(gain);
+            gain.connect(mapAudioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.28);
+          } else if (type === 'unlock') {
+            const notes = [440, 554.37, 659.25, 880];
+            notes.forEach((freq, i) => {
+              const osc = mapAudioCtx.createOscillator();
+              const gain = mapAudioCtx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, now + i * 0.08);
+              gain.setValueAtTime(0.16, now + i * 0.08);
+              gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.25);
+              osc.connect(gain);
+              gain.connect(mapAudioCtx.destination);
+              osc.start(now + i * 0.08);
+              osc.stop(now + i * 0.08 + 0.25);
+            });
+          } else if (type === 'check') {
+            const osc = mapAudioCtx.createOscillator();
+            const gain = mapAudioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(587.33, now);
+            gain.setValueAtTime(0.15, now);
+            gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+            osc.connect(gain);
+            gain.connect(mapAudioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.18);
+          }
+        } catch (e) {}
+      }
+
+      function spawnStarSparkles(xPct, yPct) {
+        const container = mapScrollArea || document.body;
+        for (let i = 0; i < 6; i++) {
+          const star = document.createElement('div');
+          star.className = 'sparkle-particle';
+          const angle = (i * 60) * (Math.PI / 180);
+          const dist = 32 + Math.random() * 20;
+          const tx = `${Math.cos(angle) * dist}px`;
+          const ty = `${Math.sin(angle) * dist}px`;
+          star.style.setProperty('--tx', tx);
+          star.style.setProperty('--ty', ty);
+          star.style.left = `${xPct}%`;
+          star.style.top = `${yPct}%`;
+          star.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="#ffd043"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+          container.appendChild(star);
+          setTimeout(() => star.remove(), 900);
+        }
+      }
+
+      // Move Mascot to Specific Node
+      function setMascotPosition(slot, animate = false) {
+        const pos = currentMapData.levels[slot];
+        if (!pos) return;
+
+        mascotHolder.style.left = `${pos.x}%`;
+        mascotHolder.style.top = `${pos.y}%`;
+
+        if (animate) {
+          mascotHolder.classList.add("hop");
+          setTimeout(() => {
+            mascotHolder.classList.remove("hop");
+          }, 850);
+        }
+      }
+
+      // Check and execute level advancement transition
+      function checkLevelAdvanceAnimation(activeSlot) {
+        const lastCompleted = parseInt(localStorage.getItem('thinkbin_last_completed_node') || '0', 10);
+        if (!lastCompleted) return false;
+
+        let prevSlot = null;
+        for (let s = 1; s <= 4; s++) {
+          if (currentMapData.levels[s] && currentMapData.levels[s].nodeId === lastCompleted) {
+            prevSlot = s;
+            break;
+          }
+        }
+
+        if (prevSlot && activeSlot && activeSlot !== prevSlot) {
+          localStorage.removeItem('thinkbin_last_completed_node');
+
+          // Place mascot initially at previous completed slot
+          setMascotPosition(prevSlot, false);
+          playMapSound('check');
+
+          // Animate mascot leaping to new slot
+          setTimeout(() => {
+            playMapSound('hop');
+            mascotHolder.classList.add('hopping-transition');
+            setMascotPosition(activeSlot, false);
+
+            setTimeout(() => {
+              mascotHolder.classList.remove('hopping-transition');
+              playMapSound('unlock');
+
+              const nextBtn = document.getElementById(`node${activeSlot}`);
+              const pos = currentMapData.levels[activeSlot];
+              if (nextBtn) {
+                nextBtn.classList.add('just-unlocked');
+                
+                const ripple = document.createElement('div');
+                ripple.className = 'node-ripple-ring';
+                nextBtn.appendChild(ripple);
+
+                if (pos) spawnStarSparkles(pos.x, pos.y);
+
+                setTimeout(() => {
+                  nextBtn.classList.remove('just-unlocked');
+                  ripple.remove();
+                }, 1800);
+              }
+            }, 950);
+          }, 450);
+
+          return true;
+        }
+        return false;
+      }
+
+      // Load Map Data for Selected Bagian (1..4)
+      function loadMap(mapId) {
+        currentMapId = mapId;
+        currentMapData = learningMapsData[mapId] || learningMapsData[1];
+
+        unitSubtitle.textContent = currentMapData.unitSubtitle;
+        unitTitle.textContent = currentMapData.unitTitle;
+
+        const completedNodes = getCompletedNodes();
+        const currentNodeId = getCurrentNodeId();
+
+        // Calculate state for each slot (1..4) in this Bagian
+        levelStates = {};
+        let activeMascotSlot = null;
+
+        for (let slot = 1; slot <= 4; slot++) {
+          const nodeData = currentMapData.levels[slot];
+          if (!nodeData) continue;
+
+          const nId = nodeData.nodeId;
+          if (completedNodes.includes(nId)) {
+            levelStates[slot] = "completed";
+          } else if (nId === currentNodeId) {
+            levelStates[slot] = "current";
+            activeMascotSlot = slot;
+          } else if (nId < currentNodeId) {
+            levelStates[slot] = "completed";
+          } else {
+            levelStates[slot] = "locked";
+          }
+
+          // Set positions
+          const btn = document.getElementById(`node${slot}`);
+          if (btn) {
+            btn.style.left = `${nodeData.x}%`;
+            btn.style.top = `${nodeData.y}%`;
+          }
+        }
+
+        // If no node is "current" in this Bagian:
+        if (!activeMascotSlot) {
+          const allCompleted = Object.values(levelStates).every(s => s === "completed");
+          if (allCompleted) {
+            activeMascotSlot = 4;
+          } else {
+            activeMascotSlot = 1;
+          }
+        }
+
+        renderNodes();
+
+        // Run level advance animation or position normally
+        const hasAnimated = checkLevelAdvanceAnimation(activeMascotSlot || 1);
+        if (!hasAnimated) {
+          setMascotPosition(activeMascotSlot || 1, false);
+        }
+
+        scrollNodeIntoView(activeMascotSlot || 1);
+
+        // Update dropdown active item
+        document.querySelectorAll(".unit-option-btn").forEach(btn => {
+          btn.classList.toggle("active", parseInt(btn.dataset.map) === mapId);
+        });
+      }
+
+      // Update Node Visuals
+      function renderNodes() {
+        for (let slot = 1; slot <= 4; slot++) {
+          const btn = document.getElementById(`node${slot}`);
+          const nodeData = currentMapData.levels[slot];
+          if (!btn || !nodeData) continue;
+
+          const state = levelStates[slot] || "locked";
+          btn.className = `level-node ${state}`;
+
+          if (state === "completed") {
+            btn.innerHTML = mapSvgIcons.checkmark;
+          } else {
+            const iconName = nodeData.icon || "flag";
+            btn.innerHTML = mapSvgIcons[iconName] || mapSvgIcons.flag;
+          }
+        }
+      }
+
+      // Scroll viewport to center a level
+      function scrollNodeIntoView(slot) {
+        const btn = document.getElementById(`node${slot}`);
+        if (!btn) return;
+
+        setTimeout(() => {
+          const containerHeight = mapScrollArea.clientHeight;
+          const nodeTop = btn.offsetTop;
+          const targetScroll = nodeTop - (containerHeight / 2) + 20;
+
+          mapScrollArea.scrollTo({
+            top: Math.max(0, targetScroll),
+            behavior: "smooth"
+          });
+        }, 150);
+      }
+
+      // Show Toast Notification for Locked Nodes
+      function showLockedToast(msg = "Selesaikan level sebelumnya terlebih dahulu.") {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastPill.textContent = msg;
+        toastPill.classList.add("show");
+
+        toastTimeout = setTimeout(() => {
+          toastPill.classList.remove("show");
+        }, 2200);
+      }
+
+      // Open Popup Card for Bacaan/Kuis Nodes (Shows ONLY title and action button)
+      function openLevelPopup(slot) {
+        const nodeData = currentMapData.levels[slot];
+        const state = levelStates[slot];
+        if (!nodeData || state === "locked") return;
+
+        activePopupLevel = slot;
+        popupTitle.textContent = nodeData.title;
+
+        if (state === "completed") {
+          popupBtnStart.textContent = "ULANGI BACAAN";
+        } else {
+          popupBtnStart.textContent = "MULAI BACAAN";
+        }
+
+        levelPopup.style.left = `${nodeData.x}%`;
+        levelPopup.style.top = `${nodeData.y}%`;
+        levelPopup.classList.add("show");
+
+        // Dim / Hide bottom navbar when popup is open
+        if (navContainer) {
+          navContainer.style.opacity = "0";
+          navContainer.style.pointerEvents = "none";
+        }
+      }
+
+      function closeLevelPopup() {
+        levelPopup.classList.remove("show");
+        activePopupLevel = null;
+
+        // Restore bottom navbar
+        if (navContainer) {
+          navContainer.style.opacity = "1";
+          navContainer.style.pointerEvents = "auto";
+        }
+      }
+
+      // Open Tantangan Modal (Coming Soon Placeholder - Neutral info only)
+      function openTantanganModal(slot) {
+        const nodeData = currentMapData.levels[slot];
+        if (!nodeData) return;
+
+        activeTantanganSlot = slot;
+        tantanganTitle.textContent = nodeData.title;
+        tantanganDesc.textContent = nodeData.desc || "Checkpoint minigame bertimer (bukan node bacaan). Menguji kecepatan & ketepatan siswa menerapkan materi dari node-node sebelumnya di Bagian yang sama.";
+        tantanganModal.classList.remove("hidden");
+
+        // Dim / Hide bottom navbar when modal is open
+        if (navContainer) {
+          navContainer.style.opacity = "0";
+          navContainer.style.pointerEvents = "none";
+        }
+      }
+
+      function closeTantanganModal() {
+        tantanganModal.classList.add("hidden");
+        activeTantanganSlot = null;
+
+        // Restore bottom navbar
+        if (navContainer) {
+          navContainer.style.opacity = "1";
+          navContainer.style.pointerEvents = "auto";
+        }
+      }
+
+      // Event Listeners for 4 Level Nodes
+      for (let slot = 1; slot <= 4; slot++) {
+        const btn = document.getElementById(`node${slot}`);
+        if (!btn) continue;
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const state = levelStates[slot];
+          const nodeData = currentMapData.levels[slot];
+
+          if (state === "locked") {
+            closeLevelPopup();
+            closeTantanganModal();
+            btn.classList.add("shake");
+            setTimeout(() => btn.classList.remove("shake"), 400);
+            showLockedToast("Selesaikan level sebelumnya terlebih dahulu.");
+            return;
+          }
+
+          // Hop mascot to clicked node
+          playMapSound('hop');
+          setMascotPosition(slot, true);
+
+          if (nodeData && nodeData.type === "kuis-tantangan") {
+            closeLevelPopup();
+            openTantanganModal(slot);
+          } else {
+            closeTantanganModal();
+            if (activePopupLevel === slot) {
+              closeLevelPopup();
+            } else {
+              openLevelPopup(slot);
+            }
+          }
+        });
+      }
+
+      // Tantangan Modal Actions
+      if (tantanganBtnStart) {
+        tantanganBtnStart.addEventListener("click", () => {
+          if (activeTantanganSlot !== null) {
+            const nodeData = currentMapData.levels[activeTantanganSlot];
+            closeTantanganModal();
+            if (!nodeData) return;
+
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({
+                type: 'navigate',
+                screen: 'tantangan',
+                nodeId: nodeData.nodeId
+              }, '*');
+            } else {
+              window.location.href = `../tantangan/index.html?nodeId=${nodeData.nodeId}`;
+            }
+          }
+        });
+      }
+
+      tantanganBtnClose.addEventListener("click", () => {
+        closeTantanganModal();
+      });
+
+      tantanganModal.addEventListener("click", (e) => {
+        if (e.target === tantanganModal) {
+          closeTantanganModal();
+        }
+      });
+
+      // Popup Action: Start Level -> Navigate to Bacaan
+      popupBtnStart.addEventListener("click", () => {
+        const slot = activePopupLevel;
+        const nodeData = currentMapData.levels[slot];
+        closeLevelPopup();
+        
+        if (!nodeData) return;
+
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'navigate',
+            screen: 'bacaan',
+            nodeId: nodeData.nodeId
+          }, '*');
+        } else {
+          window.location.href = `../bacaan/index.html?nodeId=${nodeData.nodeId}`;
+        }
+      });
+
+      // Unit Menu Dropdown Toggle
+      unitMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        unitDropdown.classList.toggle("show");
+      });
+
+      // Switch Unit from Dropdown
+      document.querySelectorAll(".unit-option-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (btn.id === "btnOpenKuisionerAkhir") {
+            unitDropdown.classList.remove("show");
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'navigate', screen: 'kuisioner', surveyType: 'akhir' }, '*');
+            } else {
+              window.location.href = '../kuisioner/index.html?type=akhir';
+            }
+            return;
+          }
+
+          const selectedMap = parseInt(btn.dataset.map);
+          if (!isNaN(selectedMap)) {
+            unitDropdown.classList.remove("show");
+            loadMap(selectedMap);
+          }
+        });
+      });
+
+      // Close popup & dropdown when clicking outside
+      sceneContainer.addEventListener("click", (e) => {
+        if (!e.target.closest(".level-node") && !e.target.closest(".level-popup")) {
+          closeLevelPopup();
+        }
+        unitDropdown.classList.remove("show");
+      });
+
+      // Initial Load
+      loadMap(currentMapId);
+    });
+  </script>
+</body>
+</html>
