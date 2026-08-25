@@ -110,7 +110,7 @@ export default function MissionPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-full px-4 pt-3 pb-28 select-none bg-[#FDE8A5]">
+    <div className="relative flex flex-col w-full min-h-full px-4 pt-3 pb-32 select-none bg-[#FDE8A5]">
       {/* TOAST POPUP NOTIFICATION */}
       {toastMsg && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#1E293B] text-white border-2 border-[#F59E0B] px-4 py-2 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce">
@@ -119,7 +119,7 @@ export default function MissionPage() {
       )}
 
       {/* ── 1. HEADER (Title on left, Coin & XP Counter Pills on right) ── */}
-      <header className="flex items-center justify-between pt-1 pb-3">
+      <header className="flex items-center justify-between pt-1 pb-3 flex-shrink-0">
         <h1 className="font-fredoka font-extrabold text-[26px] text-[#382C22] tracking-tight">
           Misi Harian
         </h1>
@@ -156,7 +156,7 @@ export default function MissionPage() {
       </header>
 
       {/* ── 2. TOTAL HADIAH HARIAN & RESET BANNER ── */}
-      <div className="bg-gradient-to-br from-[#FFF9E6] to-white border-[2.5px] border-[#382C22] rounded-[22px] p-3.5 flex items-center justify-between shadow-[0_3px_0_rgba(0,0,0,0.05)] mb-3">
+      <div className="bg-gradient-to-br from-[#FFF9E6] to-white border-[2.5px] border-[#382C22] rounded-[22px] p-3.5 flex items-center justify-between shadow-[0_3px_0_rgba(0,0,0,0.05)] mb-3 flex-shrink-0">
         <div className="flex flex-col gap-0.5">
           <span className="font-fredoka font-black text-[11px] uppercase text-[#796F65] tracking-wider">
             TOTAL HADIAH HARIAN
@@ -190,7 +190,7 @@ export default function MissionPage() {
       </div>
 
       {/* ── 3. SUBHEADING: DAFTAR MISI HARI INI + BADGE ── */}
-      <div className="flex items-center justify-between px-1 mb-2.5">
+      <div className="flex items-center justify-between px-1 mb-2.5 flex-shrink-0">
         <span className="font-fredoka font-black text-[11.5px] text-[#6B5B4F] tracking-wider uppercase">
           DAFTAR MISI HARI INI
         </span>
@@ -200,7 +200,7 @@ export default function MissionPage() {
       </div>
 
       {/* ── 4. STACK OF 4 MISSION CARDS ── */}
-      <div className="flex flex-col gap-2.5 mb-3.5">
+      <div className="flex flex-col gap-2.5 mb-3.5 flex-shrink-0">
         {/* MISSION 1: Login hari ini (buka app) */}
         <div
           className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
@@ -495,7 +495,7 @@ export default function MissionPage() {
       </div>
 
       {/* ── 5. KUIS TANTANGAN (4 CHECKPOINT) SPECIAL CARD ── */}
-      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 flex flex-col gap-3 shadow-[0_3px_0_#382C22]">
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 flex flex-col gap-3 shadow-[0_3px_0_#382C22] flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 min-w-[40px] bg-[#FEF3C7] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
             <svg
@@ -569,6 +569,9 @@ export default function MissionPage() {
           Mainkan Kuis Sekarang
         </button>
       </div>
+
+      {/* ── 6. BOTTOM SAFE AREA SPACER (Ensures the quiz button is never overlapped by the fixed nav bar) ── */}
+      <div className="w-full h-24 flex-shrink-0" />
     </div>
   );
 }
