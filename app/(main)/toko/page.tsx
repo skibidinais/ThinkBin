@@ -243,11 +243,11 @@ export default function TokoPage() {
 
   return (
     <div
-      className="relative flex flex-col w-full min-h-full px-3.5 pt-24 pb-28 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
+      className="relative flex flex-col w-full min-h-full px-3 pt-28 pb-28 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
       style={{ backgroundImage: "url('/screens_assets/shop_bg_market.jpg')" }}
     >
-      {/* MASCOT SPEECH BUBBLE BANNER (Under the awning, matching reference) */}
-      <div className="flex items-center gap-2.5 bg-[#FFFBEA]/95 border-[2.5px] border-[#382C22] rounded-3xl p-2.5 mb-3 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+      {/* FLOATING SPEECH BUBBLE BANNER (Directly under the awning, matching reference image) */}
+      <div className="flex items-center gap-2 bg-white/95 border-[2px] border-[#D19932] rounded-3xl p-2.5 mb-3 shadow-[0_4px_10px_rgba(180,120,30,0.15)]">
         <div className="relative w-11 h-11 flex-shrink-0">
           <Image
             src="/assets/mascot_leonardo.png"
@@ -257,7 +257,7 @@ export default function TokoPage() {
             className="object-contain"
           />
         </div>
-        <div className="bg-white border-[1.5px] border-[#382C22] rounded-2xl px-2.5 py-1.5 shadow-xs flex-1">
+        <div className="flex-1">
           <p className="font-fredoka font-bold text-[11.5px] text-[#382C22] leading-snug">
             Halo! Yuk hias profilmu dengan Border Profil ThinkBin yang unik!
           </p>
@@ -271,7 +271,7 @@ export default function TokoPage() {
         </div>
       )}
 
-      {/* 3x2 STORE ITEM CARDS GRID (Positioned in the open center wall area) */}
+      {/* 3x2 STORE ITEM CARDS (Exact match to reference photo) */}
       <div className="grid grid-cols-3 gap-2.5 mb-3">
         {currentItems.map((item) => {
           const isOwned = ownedFrames.includes(item.id);
@@ -280,7 +280,7 @@ export default function TokoPage() {
           return (
             <div
               key={item.id}
-              className={`flex flex-col items-center bg-white/95 border-[2.5px] border-[#382C22] rounded-2xl p-2 shadow-[0_3px_0_#382C22] relative transition-transform backdrop-blur-xs ${
+              className={`flex flex-col items-center bg-white border-[2px] border-[#E8DCC2] rounded-2xl p-2 shadow-[0_4px_12px_rgba(150,110,30,0.12)] relative transition-transform ${
                 isEquipped ? "ring-2 ring-[#4CAF50]" : ""
               }`}
             >
@@ -319,25 +319,25 @@ export default function TokoPage() {
                     alt={item.name}
                     width={48}
                     height={48}
-                    className="object-contain animate-pulse"
+                    className="object-contain"
                   />
                 )}
               </div>
 
-              <span className="font-fredoka font-black text-[10.5px] text-[#382C22] text-center truncate w-full mb-1">
+              <span className="font-fredoka font-bold text-[11px] text-[#382C22] text-center truncate w-full mb-1.5">
                 {item.name}
               </span>
 
-              {/* Buy/Equip Button */}
+              {/* Yellow Pill Buy/Equip Button */}
               <button
                 type="button"
                 onClick={() => handleBuyOrEquip(item)}
-                className={`w-full py-1.5 px-1 rounded-xl font-fredoka font-black text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#382C22] shadow-[0_2px_0_#382C22] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+                className={`w-full py-1.5 px-1 rounded-full font-fredoka font-extrabold text-[11px] flex items-center justify-center gap-1 border-[1.5px] border-[#D4981C] shadow-[0_2.5px_0_#C2870F] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
                   isEquipped
-                    ? "bg-[#4CAF50] text-white"
+                    ? "bg-[#4CAF50] border-[#388E3C] shadow-[0_2.5px_0_#2E7D32] text-white"
                     : isOwned
-                    ? "bg-[#1CB0F6] text-white"
-                    : "bg-gradient-to-b from-[#FCD34D] to-[#F59E0B] text-[#382C22]"
+                    ? "bg-[#1CB0F6] border-[#0284C7] shadow-[0_2.5px_0_#0369A1] text-white"
+                    : "bg-gradient-to-b from-[#FED54A] to-[#F5B82E] text-[#633E04]"
                 }`}
               >
                 {isEquipped ? (
@@ -349,8 +349,8 @@ export default function TokoPage() {
                     <Image
                       src="/screens_assets/coin.png"
                       alt="Coin"
-                      width={12}
-                      height={12}
+                      width={13}
+                      height={13}
                       className="object-contain"
                     />
                     <span>{item.price} Koin</span>
@@ -368,12 +368,12 @@ export default function TokoPage() {
           type="button"
           onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
           disabled={currentPage === 1}
-          className="w-8 h-8 rounded-full bg-white border-[2px] border-[#382C22] flex items-center justify-center font-fredoka font-black text-sm text-[#382C22] shadow-[0_2px_0_#382C22] disabled:opacity-40 active:translate-y-0.5 cursor-pointer"
+          className="w-8 h-8 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
         >
           ‹
         </button>
 
-        <div className="bg-white border-[2px] border-[#382C22] rounded-full px-4 py-1 font-fredoka font-black text-xs text-[#382C22] shadow-[0_2px_0_#382C22]">
+        <div className="bg-white border-[1.5px] border-[#D4981C] rounded-full px-5 py-1 font-fredoka font-black text-xs text-[#633E04] shadow-[0_2px_0_#C2870F]">
           {currentPage} / {TOTAL_PAGES}
         </div>
 
@@ -381,7 +381,7 @@ export default function TokoPage() {
           type="button"
           onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
           disabled={currentPage === TOTAL_PAGES}
-          className="w-8 h-8 rounded-full bg-white border-[2px] border-[#382C22] flex items-center justify-center font-fredoka font-black text-sm text-[#382C22] shadow-[0_2px_0_#382C22] disabled:opacity-40 active:translate-y-0.5 cursor-pointer"
+          className="w-8 h-8 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
         >
           ›
         </button>
