@@ -175,14 +175,12 @@ export default function TokoPage() {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentItems = FULL_CATALOG.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  const row1Items = currentItems.slice(0, 3);
-  const row2Items = currentItems.slice(3, 6);
 
   const handleBuyOrEquip = async (item: ShopItem) => {
     if (item.isMysteryBox) {
       const currentCoins = user?.coins ?? 0;
       if (currentCoins < item.price) {
-        setPurchaseNotice(`⚠️ Koin Daun tidak cukup untuk Mystery Box!`);
+        setPurchaseNotice(`⚠️ Koin tidak cukup untuk Mystery Box!`);
         setTimeout(() => setPurchaseNotice(null), 3000);
         return;
       }
@@ -208,7 +206,7 @@ export default function TokoPage() {
     } else {
       const currentCoins = user?.coins ?? 0;
       if (currentCoins < item.price) {
-        setPurchaseNotice(`⚠️ Koin Daun tidak cukup! Perlu ${item.price} koin.`);
+        setPurchaseNotice(`⚠️ Koin tidak cukup! Perlu ${item.price} koin.`);
         setTimeout(() => setPurchaseNotice(null), 3000);
         return;
       }
@@ -244,44 +242,23 @@ export default function TokoPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-full px-3.5 pt-3 pb-24 select-none bg-[#FDE8A5]">
-      {/* HEADER SECTION */}
-      <div className="flex items-center justify-between mb-3">
-        <h1 className="font-fredoka font-black text-2xl text-[#382C22]">
-          Toko
-        </h1>
-        <div className="flex items-center gap-2">
-          {/* Coin Pill */}
-          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] px-3 py-1 rounded-full shadow-[0_3px_0_#382C22]">
-            <Image src="/assets_game/coin.png" alt="Coin" width={18} height={18} className="object-contain" />
-            <span className="font-fredoka font-bold text-xs text-[#382C22]">
-              {user?.coins ?? 0}
-            </span>
-          </div>
-
-          {/* XP Pill */}
-          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] px-3 py-1 rounded-full shadow-[0_3px_0_#382C22]">
-            <Image src="/assets_game/exp_progress.png" alt="XP" width={16} height={16} className="object-contain" />
-            <span className="font-fredoka font-bold text-xs text-[#382C22]">
-              {user?.xp ?? 0}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* MASCOT CHAT BUBBLE BANNER */}
-      <div className="flex items-center gap-3 bg-[#FFF9E6] border-[2.5px] border-[#382C22] rounded-3xl p-3 mb-4 shadow-[0_4px_0_#382C22]">
-        <div className="relative w-12 h-12 flex-shrink-0">
+    <div
+      className="relative flex flex-col w-full min-h-full px-3.5 pt-24 pb-28 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
+      style={{ backgroundImage: "url('/screens_assets/shop_bg_market.jpg')" }}
+    >
+      {/* MASCOT SPEECH BUBBLE BANNER (Under the awning, matching reference) */}
+      <div className="flex items-center gap-2.5 bg-[#FFFBEA]/95 border-[2.5px] border-[#382C22] rounded-3xl p-2.5 mb-3 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+        <div className="relative w-11 h-11 flex-shrink-0">
           <Image
             src="/assets/mascot_leonardo.png"
             alt="Mascot"
-            width={48}
-            height={48}
+            width={44}
+            height={44}
             className="object-contain"
           />
         </div>
-        <div className="bg-white border-[2px] border-[#382C22] rounded-2xl p-2 shadow-xs flex-1">
-          <p className="font-fredoka font-bold text-xs text-[#382C22] leading-tight">
+        <div className="bg-white border-[1.5px] border-[#382C22] rounded-2xl px-2.5 py-1.5 shadow-xs flex-1">
+          <p className="font-fredoka font-bold text-[11.5px] text-[#382C22] leading-snug">
             Halo! Yuk hias profilmu dengan Border Profil ThinkBin yang unik!
           </p>
         </div>
@@ -289,206 +266,129 @@ export default function TokoPage() {
 
       {/* NOTIFICATION TOAST */}
       {purchaseNotice && (
-        <div className="p-2.5 mb-3 bg-emerald-100 border-[2.5px] border-[#15803D] rounded-2xl font-fredoka font-bold text-xs text-[#15803D] text-center shadow-xs animate-in zoom-in duration-200">
+        <div className="p-2 mb-2 bg-emerald-100 border-[2px] border-[#15803D] rounded-2xl font-fredoka font-bold text-xs text-[#15803D] text-center shadow-md animate-in zoom-in duration-200">
           {purchaseNotice}
         </div>
       )}
 
-      {/* 3D WOODEN SHELVES GRID (2 SHELF ROWS) */}
-      <div className="flex flex-col gap-5 mb-4">
-        {/* Shelf Row 1 */}
-        {row1Items.length > 0 && (
-          <div className="flex flex-col">
-            <div className="grid grid-cols-3 gap-2 mb-1">
-              {row1Items.map((item) => {
-                const isOwned = ownedFrames.includes(item.id);
-                const isEquipped = selectedFrame === item.id;
+      {/* 3x2 STORE ITEM CARDS GRID (Positioned in the open center wall area) */}
+      <div className="grid grid-cols-3 gap-2.5 mb-3">
+        {currentItems.map((item) => {
+          const isOwned = ownedFrames.includes(item.id);
+          const isEquipped = selectedFrame === item.id;
 
-                return (
-                  <div
-                    key={item.id}
-                    className={`flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-2xl p-2 shadow-[0_3px_0_#382C22] relative transition-transform ${
-                      isEquipped ? "ring-2 ring-[#4CAF50]" : ""
-                    }`}
-                  >
-                    {isEquipped && (
-                      <span className="absolute -top-1.5 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[8px] px-1.5 py-0.2 rounded-full shadow-xs">
-                        Terpasang
-                      </span>
-                    )}
+          return (
+            <div
+              key={item.id}
+              className={`flex flex-col items-center bg-white/95 border-[2.5px] border-[#382C22] rounded-2xl p-2 shadow-[0_3px_0_#382C22] relative transition-transform backdrop-blur-xs ${
+                isEquipped ? "ring-2 ring-[#4CAF50]" : ""
+              }`}
+            >
+              {isEquipped && (
+                <span className="absolute -top-1.5 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[8px] px-1.5 py-0.2 rounded-full shadow-xs">
+                  Terpasang
+                </span>
+              )}
 
-                    {/* Preview */}
-                    <div className="relative w-14 h-14 my-1 flex items-center justify-center">
-                      {!item.isMysteryBox ? (
-                        <>
-                          <Image
-                            src="/assets/mascot_leonardo.png"
-                            alt="Avatar"
-                            width={38}
-                            height={38}
-                            className="rounded-full object-cover"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none"
-                            style={{ filter: item.filter || "none" }}
-                          >
-                            <Image
-                              src={item.imageSrc}
-                              alt={item.name}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <Image
-                          src={item.imageSrc}
-                          alt={item.name}
-                          width={48}
-                          height={48}
-                          className="object-contain animate-pulse"
-                        />
-                      )}
-                    </div>
-
-                    <span className="font-fredoka font-bold text-[11px] text-[#382C22] text-center truncate w-full mb-1">
-                      {item.name}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={() => handleBuyOrEquip(item)}
-                      className={`w-full py-1.5 px-1 rounded-xl font-fredoka font-extrabold text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#382C22] shadow-[0_2px_0_#382C22] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
-                        isEquipped
-                          ? "bg-[#4CAF50] text-white"
-                          : isOwned
-                          ? "bg-[#1CB0F6] text-white"
-                          : "bg-[#F5B82E] text-[#382C22]"
-                      }`}
+              {/* Item Preview */}
+              <div className="relative w-14 h-14 my-1 flex items-center justify-center">
+                {!item.isMysteryBox ? (
+                  <>
+                    <Image
+                      src="/assets/mascot_leonardo.png"
+                      alt="Avatar"
+                      width={38}
+                      height={38}
+                      className="rounded-full object-cover"
+                    />
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{ filter: item.filter || "none" }}
                     >
-                      {isEquipped ? (
-                        <span>✓ Digunakan</span>
-                      ) : isOwned ? (
-                        <span>Pasang</span>
-                      ) : (
-                        <>
-                          <Image src="/assets_game/coin.png" alt="Coin" width={11} height={11} />
-                          <span>{item.price} Koin</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-            {/* Shelf Wood Bar */}
-            <div className="w-full h-3 bg-gradient-to-r from-[#D7A667] via-[#C48C4D] to-[#A87334] rounded-full border-[2px] border-[#382C22] shadow-[0_3px_0_#382C22]" />
-          </div>
-        )}
-
-        {/* Shelf Row 2 */}
-        {row2Items.length > 0 && (
-          <div className="flex flex-col">
-            <div className="grid grid-cols-3 gap-2 mb-1">
-              {row2Items.map((item) => {
-                const isOwned = ownedFrames.includes(item.id);
-                const isEquipped = selectedFrame === item.id;
-
-                return (
-                  <div
-                    key={item.id}
-                    className={`flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-2xl p-2 shadow-[0_3px_0_#382C22] relative transition-transform ${
-                      isEquipped ? "ring-2 ring-[#4CAF50]" : ""
-                    }`}
-                  >
-                    {isEquipped && (
-                      <span className="absolute -top-1.5 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[8px] px-1.5 py-0.2 rounded-full shadow-xs">
-                        Terpasang
-                      </span>
-                    )}
-
-                    {/* Preview */}
-                    <div className="relative w-14 h-14 my-1 flex items-center justify-center">
                       <Image
-                        src="/assets/mascot_leonardo.png"
-                        alt="Avatar"
-                        width={38}
-                        height={38}
-                        className="rounded-full object-cover"
+                        src={item.imageSrc}
+                        alt={item.name}
+                        fill
+                        className="object-contain"
                       />
-                      <div
-                        className="absolute inset-0 pointer-events-none"
-                        style={{ filter: item.filter || "none" }}
-                      >
-                        <Image
-                          src={item.imageSrc}
-                          alt={item.name}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
                     </div>
+                  </>
+                ) : (
+                  <Image
+                    src={item.imageSrc}
+                    alt={item.name}
+                    width={48}
+                    height={48}
+                    className="object-contain animate-pulse"
+                  />
+                )}
+              </div>
 
-                    <span className="font-fredoka font-bold text-[11px] text-[#382C22] text-center truncate w-full mb-1">
-                      {item.name}
-                    </span>
+              <span className="font-fredoka font-black text-[10.5px] text-[#382C22] text-center truncate w-full mb-1">
+                {item.name}
+              </span>
 
-                    <button
-                      type="button"
-                      onClick={() => handleBuyOrEquip(item)}
-                      className={`w-full py-1.5 px-1 rounded-xl font-fredoka font-extrabold text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#382C22] shadow-[0_2px_0_#382C22] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
-                        isEquipped
-                          ? "bg-[#4CAF50] text-white"
-                          : isOwned
-                          ? "bg-[#1CB0F6] text-white"
-                          : "bg-[#F5B82E] text-[#382C22]"
-                      }`}
-                    >
-                      {isEquipped ? (
-                        <span>✓ Digunakan</span>
-                      ) : isOwned ? (
-                        <span>Pasang</span>
-                      ) : (
-                        <>
-                          <Image src="/assets_game/coin.png" alt="Coin" width={11} height={11} />
-                          <span>{item.price} Koin</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
+              {/* Buy/Equip Button */}
+              <button
+                type="button"
+                onClick={() => handleBuyOrEquip(item)}
+                className={`w-full py-1.5 px-1 rounded-xl font-fredoka font-black text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#382C22] shadow-[0_2px_0_#382C22] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+                  isEquipped
+                    ? "bg-[#4CAF50] text-white"
+                    : isOwned
+                    ? "bg-[#1CB0F6] text-white"
+                    : "bg-gradient-to-b from-[#FCD34D] to-[#F59E0B] text-[#382C22]"
+                }`}
+              >
+                {isEquipped ? (
+                  <span>✓ Digunakan</span>
+                ) : isOwned ? (
+                  <span>Pasang</span>
+                ) : (
+                  <>
+                    <Image
+                      src="/screens_assets/coin.png"
+                      alt="Coin"
+                      width={12}
+                      height={12}
+                      className="object-contain"
+                    />
+                    <span>{item.price} Koin</span>
+                  </>
+                )}
+              </button>
             </div>
-            {/* Shelf Wood Bar */}
-            <div className="w-full h-3 bg-gradient-to-r from-[#D7A667] via-[#C48C4D] to-[#A87334] rounded-full border-[2px] border-[#382C22] shadow-[0_3px_0_#382C22]" />
-          </div>
-        )}
+          );
+        })}
       </div>
 
-      {/* PAGINATION BOTTOM (‹ 1 / 3 ›) */}
-      <div className="flex items-center justify-center gap-4 mt-2">
+      {/* PAGINATION CONTROLS PILL (< 1 / 3 >) */}
+      <div className="flex items-center justify-center gap-2 mb-2">
         <button
           type="button"
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
           disabled={currentPage === 1}
-          className="w-9 h-9 bg-white border-[2px] border-[#382C22] rounded-xl font-fredoka font-black text-lg text-[#382C22] flex items-center justify-center shadow-[0_3px_0_#382C22] disabled:opacity-40 disabled:shadow-none cursor-pointer active:translate-y-0.5"
-          aria-label="Halaman Sebelumnya"
+          className="w-8 h-8 rounded-full bg-white border-[2px] border-[#382C22] flex items-center justify-center font-fredoka font-black text-sm text-[#382C22] shadow-[0_2px_0_#382C22] disabled:opacity-40 active:translate-y-0.5 cursor-pointer"
         >
           ‹
         </button>
-        <span className="font-fredoka font-extrabold text-sm text-[#382C22] bg-white border-[2px] border-[#382C22] px-4 py-1.5 rounded-full shadow-[0_2px_0_#382C22]">
+
+        <div className="bg-white border-[2px] border-[#382C22] rounded-full px-4 py-1 font-fredoka font-black text-xs text-[#382C22] shadow-[0_2px_0_#382C22]">
           {currentPage} / {TOTAL_PAGES}
-        </span>
+        </div>
+
         <button
           type="button"
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, TOTAL_PAGES))}
+          onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
           disabled={currentPage === TOTAL_PAGES}
-          className="w-9 h-9 bg-white border-[2px] border-[#382C22] rounded-xl font-fredoka font-black text-lg text-[#382C22] flex items-center justify-center shadow-[0_3px_0_#382C22] disabled:opacity-40 disabled:shadow-none cursor-pointer active:translate-y-0.5"
-          aria-label="Halaman Selanjutnya"
+          className="w-8 h-8 rounded-full bg-white border-[2px] border-[#382C22] flex items-center justify-center font-fredoka font-black text-sm text-[#382C22] shadow-[0_2px_0_#382C22] disabled:opacity-40 active:translate-y-0.5 cursor-pointer"
         >
           ›
         </button>
       </div>
+
+      {/* BOTTOM SAFE AREA SPACER */}
+      <div className="w-full h-8 flex-shrink-0" />
     </div>
   );
 }
