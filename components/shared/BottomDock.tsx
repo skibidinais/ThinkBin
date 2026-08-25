@@ -78,7 +78,7 @@ export const BottomDock: React.FC = () => {
   }, [currentActiveIndex, pathname]);
 
   return (
-    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-24px)] max-w-[390px] z-50 select-none">
+    <div className="fixed bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-24px)] max-w-[390px] z-50 select-none">
       <div
         ref={containerRef}
         className="relative flex items-center justify-between w-full p-1.5 bg-[#7cbd73] border-[3.5px] border-[#65a35b] rounded-[36px] shadow-[0_8px_24px_rgba(101,163,91,0.35),0_2px_6px_rgba(0,0,0,0.1)]"

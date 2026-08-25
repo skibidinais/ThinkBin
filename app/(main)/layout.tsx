@@ -14,13 +14,12 @@ export default function MainLayout({
   const { user } = useAuth();
   const pathname = usePathname();
 
-  // Hide StatusBar on Beranda (/dashboard) so background scenery touches the top edge-to-edge
-  const hideStatusBar = pathname === "/dashboard";
+  const isDashboard = pathname === "/dashboard";
 
   return (
-    <div className="relative w-full h-full min-h-screen flex flex-col overflow-hidden bg-[#FFFBEA]">
-      {/* Top Floating Status Bar only on pages other than Beranda */}
-      {!hideStatusBar && (
+    <div className="relative w-full h-full flex flex-col overflow-hidden bg-[#FFFBEA]">
+      {/* Top Status Bar — hidden on Beranda so background fills edge-to-edge */}
+      {!isDashboard && (
         <StatusBar
           streak={user?.streak ?? 1}
           xp={user?.xp ?? 0}
@@ -29,11 +28,11 @@ export default function MainLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 w-full h-full flex flex-col overflow-y-auto overflow-x-hidden no-scrollbar">
+      <div className={`flex-1 w-full flex flex-col ${isDashboard ? "overflow-hidden" : "overflow-y-auto no-scrollbar"}`}>
         {children}
       </div>
 
-      {/* Bottom Floating Navigation Dock */}
+      {/* Bottom Navigation Dock — fixed to viewport via BottomDock's own `fixed` class */}
       <BottomDock />
     </div>
   );
