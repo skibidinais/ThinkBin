@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { fetchUserCompletedNodes } from "@/lib/supabase";
 
 interface MissionState {
   m1Claimed: boolean; // Login
-  m2Claimed: boolean; // 1 Node Belajar
+  m2Claimed: boolean; // 1 Node Belajar Claimed
   m3Visited: boolean; // Leaderboard
   m3Claimed: boolean;
   m4Visited: boolean; // Toko
@@ -20,7 +21,7 @@ export default function MissionPage() {
 
   // State for missions
   const [missionState, setMissionState] = useState<MissionState>({
-    m1Claimed: true, // Login is completed & claimed by default on app open
+    m1Claimed: true, // Login
     m2Claimed: false,
     m3Visited: false,
     m3Claimed: false,
@@ -28,9 +29,33 @@ export default function MissionPage() {
     m4Claimed: false,
   });
 
-  // Countdown timer to midnight (00:00:00)
+  const [completedNodeCount, setCompletedNodeCount] = useState<number>(0);
   const [countdown, setCountdown] = useState<string>("00:00:00");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Load completed nodes from Supabase / localStorage
+  useEffect(() => {
+    async function checkNodes() {
+      if (user?.id) {
+        try {
+          const completedNodes = await fetchUserCompletedNodes(user.id);
+          setCompletedNodeCount(completedNodes.length);
+        } catch {
+          // Check local fallback
+          try {
+            const raw = localStorage.getItem(`tb_completed_nodes_${user.id}`);
+            if (raw) {
+              const parsed: number[] = JSON.parse(raw);
+              setCompletedNodeCount(parsed.length);
+            }
+          } catch {
+            setCompletedNodeCount(0);
+          }
+        }
+      }
+    }
+    checkNodes();
+  }, [user?.id]);
 
   // Load saved state from localStorage
   useEffect(() => {
@@ -108,6 +133,8 @@ export default function MissionPage() {
     }
     router.push(path);
   };
+
+  const isM2ReadyToClaim = completedNodeCount >= 1 && !missionState.m2Claimed;
 
   return (
     <div className="relative flex flex-col w-full min-h-full px-4 pt-3 pb-32 select-none bg-[#FDE8A5]">
@@ -271,7 +298,7 @@ export default function MissionPage() {
           )}
         </div>
 
-        {/* MISSION 2: Selesaikan minimal 1 node belajar */}
+        {/* MISSION 2: Selesaikan minimal 1 node belajar (Dynamically Checked!) */}
         <div
           className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
             missionState.m2Claimed
@@ -319,12 +346,12 @@ export default function MissionPage() {
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
               <div
                 className="h-full bg-[#22C55E] rounded-full transition-all"
-                style={{ width: missionState.m2Claimed ? "100%" : "100%" }}
+                style={{ width: completedNodeCount >= 1 ? "100%" : "0%" }}
               />
             </div>
           </div>
 
-          {/* Action Button */}
+          {/* Action Button: Selesai ✓ IF Claimed, Klaim! IF Completed, Mulai IF not yet done */}
           {missionState.m2Claimed ? (
             <button
               type="button"
@@ -333,13 +360,21 @@ export default function MissionPage() {
             >
               Selesai ✓
             </button>
-          ) : (
+          ) : isM2ReadyToClaim ? (
             <button
               type="button"
               onClick={() => handleClaim("m2Claimed", 15, "Selesaikan 1 node belajar")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleNavigate("/belajar")}
+              className="bg-[#F5B82E] hover:bg-[#EAB308] text-[#382C22] font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0"
+            >
+              Mulai
             </button>
           )}
         </div>
@@ -570,7 +605,7 @@ export default function MissionPage() {
         </button>
       </div>
 
-      {/* ── 6. BOTTOM SAFE AREA SPACER (Ensures the quiz button is never overlapped by the fixed nav bar) ── */}
+      {/* ── 6. BOTTOM SAFE AREA SPACER ── */}
       <div className="w-full h-24 flex-shrink-0" />
     </div>
   );
