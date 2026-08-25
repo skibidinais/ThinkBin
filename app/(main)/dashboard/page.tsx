@@ -3,85 +3,105 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const router = useRouter();
 
   return (
-    <div className="relative flex flex-col items-center justify-between min-h-full px-4 pt-3 pb-10 select-none text-center">
-      {/* Top Banner Tag */}
-      <div className="w-full flex flex-col items-center">
-        <div className="inline-flex items-center gap-1.5 bg-[#FFF9E6] border-[2px] border-[#F5B82E] px-3.5 py-1 rounded-full shadow-xs mb-3">
-          <span className="text-xs">🌿</span>
-          <span className="font-fredoka font-bold text-xs text-[#713F12]">
-            ThinkBin SMPN 20 Malang
-          </span>
-        </div>
+    <div
+      className="relative flex flex-col justify-between min-h-full px-3.5 pt-2 pb-24 select-none bg-cover bg-center bg-no-repeat overflow-hidden"
+      style={{ backgroundImage: "url('/screens_assets/background.png')" }}
+    >
+      {/* DYNAMIC MOVING CLOUDS OVER SKY */}
+      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-4 left-2 w-28 h-10 bg-white/90 rounded-full opacity-90 filter drop-shadow-sm animate-pulse" />
+        <div className="absolute top-12 right-4 w-20 h-8 bg-white/85 rounded-full opacity-85 filter drop-shadow-sm" />
+        <div className="absolute top-24 left-20 w-16 h-6 bg-white/80 rounded-full opacity-80 filter drop-shadow-sm" />
+      </div>
 
-        {/* Mascot / Main Logo Section */}
-        <div className="relative w-48 h-48 my-1 flex items-center justify-center">
+      {/* TOP EMPTY SPACE */}
+      <div className="w-full h-2 z-10" />
+
+      {/* MAIN 3D THINKBIN LOGO & MASCOT SECTION (Foto 2) */}
+      <div className="relative z-10 flex flex-col items-center justify-center my-auto">
+        <div className="relative w-full max-w-[340px] px-2 cursor-pointer transition-transform active:scale-95 animate-bounce" style={{ animationDuration: "4s" }}>
           <Image
-            src="/assets/mascot_leonardo.png"
-            alt="Think Bin Mascot"
-            width={180}
-            height={180}
-            className="object-contain drop-shadow-lg animate-bounce"
-            style={{ animationDuration: "3.5s" }}
+            src="/screens_assets/logo.png"
+            alt="Think Bin Official 3D Logo and Mascot"
+            width={340}
+            height={220}
+            className="w-full h-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.25)]"
             priority
           />
         </div>
-
-        <h1 className="font-fredoka font-black text-2xl text-[#382C22] mb-1 leading-tight">
-          Halo, {user?.display_name?.split(" ")[0] || "Teman"}! 👋
-        </h1>
-        <p className="font-nunito font-bold text-xs text-[#796F65] max-w-[290px] leading-relaxed">
-          Pilah sampah cerdas, kumpulkan koin reward, dan raih rank tertinggi di kelasmu!
-        </p>
       </div>
 
-      {/* Main Action Section: BIG GREEN PLAY BUTTON & SHORTCUTS */}
-      <div className="w-full max-w-[320px] flex flex-col gap-3 my-4">
-        {/* Big Play Primary Button */}
-        <Link
-          href="/belajar"
-          className="w-full h-15 bg-[#58CC02] hover:bg-[#4CAF00] text-white font-fredoka font-black text-xl rounded-2xl border-[3px] border-[#4CAF00] border-b-[6px] shadow-lg active:translate-y-1 active:shadow-sm transition-all flex items-center justify-center gap-2.5 cursor-pointer uppercase tracking-wider"
+      {/* MAIN ACTION SECTION (Foto 2) */}
+      <div className="relative z-20 w-full flex flex-col items-center gap-3">
+        {/* BIG GREEN 3D PLAY BUTTON */}
+        <button
+          type="button"
+          onClick={() => router.push("/belajar")}
+          className="w-full max-w-[280px] h-16 bg-gradient-to-b from-[#97db2f] via-[#83c623] to-[#6fb016] text-white font-fredoka font-black text-3xl rounded-[22px] shadow-[0_6px_0_#4f870e,0_10px_14px_rgba(0,0,0,0.16)] active:translate-y-1 active:shadow-[0_2px_0_#4f870e] transition-all flex items-center justify-center gap-3 cursor-pointer relative overflow-hidden"
         >
-          <span className="text-2xl">▶</span>
-          <span>MULAI BELAJAR</span>
-        </Link>
+          {/* Top gloss highlight */}
+          <div className="absolute top-1 left-2 right-2 h-[40%] bg-gradient-to-b from-white/45 to-transparent rounded-t-[14px] pointer-events-none" />
+          <span className="text-2xl drop-shadow">▶</span>
+          <span className="drop-shadow-md">play</span>
+        </button>
 
-        {/* Misi Harian Button */}
+        {/* MISI HARIAN (Foto 2: White Card with Green Border) */}
         <Link
           href="/mission"
-          className="w-full p-3 bg-white border-[2.5px] border-[#E5E5E5] border-b-[5px] rounded-2xl shadow-xs hover:bg-gray-50 active:translate-y-0.5 transition-all flex items-center gap-3 text-left"
+          className="w-full min-h-[66px] bg-white border-[3.5px] border-[#65a35b] rounded-[26px] px-5 py-2.5 flex items-center justify-center gap-4 shadow-[0_6px_0_#528c49,0_10px_20px_rgba(0,0,0,0.12)] active:translate-y-1 active:shadow-[0_2px_0_#528c49] transition-all cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-xl bg-[#8A62DC] text-white flex items-center justify-center text-xl flex-shrink-0 shadow-xs">
-            🎯
+          <div className="w-11 h-11 bg-gradient-to-b from-[#7cbd73] to-[#65a35b] border-[2.5px] border-[#a3cca0] rounded-2xl flex items-center justify-center shadow-[0_3px_0_#4e8245] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="26"
+              height="26"
+              fill="none"
+              stroke="#ffffff"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 11l3 3L22 4" stroke="#ffffff" strokeWidth="3" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#ffffff" strokeWidth="2.5" />
+            </svg>
           </div>
-          <div className="flex flex-col">
-            <span className="font-fredoka font-black text-sm text-[#382C22] leading-tight">
-              Misi Harian
-            </span>
-            <span className="font-nunito font-bold text-[11px] text-[#796F65]">
-              Selesaikan target & klaim koin
-            </span>
-          </div>
+          <span className="font-fredoka font-black text-2xl text-[#2e5926] tracking-wide">
+            Misi Harian
+          </span>
         </Link>
 
-        {/* Kuisioner Akhir Button */}
+        {/* KUISIONER AKHIR (Foto 2: Yellow Gold Card) */}
         <Link
           href="/kuisioner?type=akhir"
-          className="w-full p-3 bg-gradient-to-r from-[#FFF9E6] to-[#FEF3C7] border-[2.5px] border-[#F5B82E] border-b-[5px] rounded-2xl shadow-xs hover:brightness-98 active:translate-y-0.5 transition-all flex items-center gap-3 text-left"
+          className="w-full min-h-[66px] bg-gradient-to-b from-[#fff3cd] to-[#fde047] border-[3.5px] border-[#ca8a04] rounded-[26px] px-5 py-2 flex items-center justify-center gap-3.5 shadow-[0_6px_0_#a16207,0_10px_20px_rgba(0,0,0,0.12)] active:translate-y-1 active:shadow-[0_2px_0_#a16207] transition-all cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-xl bg-[#EAB308] text-[#713F12] flex items-center justify-center text-xl flex-shrink-0 shadow-xs">
-            📝
+          <div className="w-10 h-10 bg-[#eab308] border-[2px] border-[#ca8a04] rounded-2xl flex items-center justify-center shadow-[0_2px_0_#a16207] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+              fill="none"
+              stroke="#713f12"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
           </div>
-          <div className="flex flex-col">
-            <span className="font-fredoka font-black text-sm text-[#713F12] leading-tight">
-              Kuisioner Evaluasi Akhir
+          <div className="flex flex-col text-left">
+            <span className="font-fredoka font-black text-lg text-[#713f12] leading-tight">
+              Kuisioner Akhir
             </span>
-            <span className="font-nunito font-bold text-[11px] text-[#854D0E]">
+            <span className="font-fredoka font-bold text-[11px] text-[#854d0e] leading-tight mt-0.5">
               Bisa dikerjakan kapan saja (+40 XP, +50 Koin)
             </span>
           </div>
