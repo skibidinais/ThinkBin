@@ -146,8 +146,8 @@ const TOTAL_PAGES = Math.ceil(FULL_CATALOG.length / ITEMS_PER_PAGE);
 
 export default function TokoPage() {
   const { user, updateUser } = useAuth();
-  const [ownedFrames, setOwnedFrames] = useState<string[]>(["eco_green", "frame_teal_tech"]);
-  const [selectedFrame, setSelectedFrame] = useState<string>("eco_green");
+  const [ownedFrames, setOwnedFrames] = useState<string[]>([]);
+  const [selectedFrame, setSelectedFrame] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [purchaseNotice, setPurchaseNotice] = useState<string | null>(null);
 
@@ -156,14 +156,14 @@ export default function TokoPage() {
       if (user?.id) {
         const owned = await fetchUserOwnedFrames(user.id);
         setOwnedFrames(owned);
-        setSelectedFrame(user.selected_frame || "eco_green");
+        setSelectedFrame(user.selected_frame || "");
       } else {
         try {
           const savedOwned = localStorage.getItem("thinkbin_owned_frames");
           if (savedOwned) {
             setOwnedFrames(JSON.parse(savedOwned));
           }
-          const savedSelected = localStorage.getItem("thinkbin_selected_frame") || "eco_green";
+          const savedSelected = localStorage.getItem("thinkbin_selected_frame") || "";
           setSelectedFrame(savedSelected);
         } catch {
           // Fallback

@@ -325,7 +325,7 @@ export async function recordNodeCompletion(payload: {
  * Fetch Owned Frames from store_transactions
  */
 export async function fetchUserOwnedFrames(userId: string): Promise<string[]> {
-  const defaultOwned = ["frame_teal_tech"];
+  const defaultOwned: string[] = [];
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
@@ -335,7 +335,7 @@ export async function fetchUserOwnedFrames(userId: string): Promise<string[]> {
         .eq("user_id", userId);
 
       if (!error && data) {
-        const owned = Array.from(new Set([...defaultOwned, ...data.map((d) => d.item_id)]));
+        const owned = Array.from(new Set(data.map((d) => d.item_id)));
         return owned;
       }
     } catch (err) {
