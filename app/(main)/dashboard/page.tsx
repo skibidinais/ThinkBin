@@ -10,40 +10,40 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="relative flex flex-col justify-between w-full h-full min-h-full px-4 pt-3 pb-[88px] select-none bg-cover bg-center bg-no-repeat overflow-y-auto no-scrollbar"
+      className="relative flex flex-col items-center justify-start w-full h-full min-h-full px-4 pt-3 pb-24 select-none bg-cover bg-center bg-no-repeat overflow-y-auto no-scrollbar"
       style={{ backgroundImage: "url('/screens_assets/background.png')" }}
     >
       {/* DYNAMIC MOVING CLOUDS OVER SKY */}
-      <div className="absolute top-0 left-0 right-0 h-36 pointer-events-none overflow-hidden z-0">
+      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-2 left-3 w-24 h-8 bg-white/90 rounded-full opacity-90 filter drop-shadow-sm animate-pulse" />
         <div className="absolute top-8 right-5 w-18 h-7 bg-white/85 rounded-full opacity-85 filter drop-shadow-sm" />
-        <div className="absolute top-16 left-20 w-14 h-5 bg-white/80 rounded-full opacity-80 filter drop-shadow-sm" />
+        <div className="absolute top-14 left-20 w-14 h-5 bg-white/80 rounded-full opacity-80 filter drop-shadow-sm" />
       </div>
 
-      {/* 1. HERO LOGO & MASCOT SECTION (Reduced vertical spacing to fit mobile viewport) */}
-      <div className="relative z-10 flex flex-col items-center justify-center pt-1 pb-1 flex-shrink-0">
+      {/* 1. HERO LOGO & MASCOT SECTION (Positioned closely at top) */}
+      <div className="relative z-10 flex flex-col items-center justify-center pt-2 pb-0 flex-shrink-0">
         <div
-          className="relative w-full max-w-[240px] xs:max-w-[260px] cursor-pointer transition-transform active:scale-95 animate-bounce"
+          className="relative w-full max-w-[270px] cursor-pointer transition-transform active:scale-95 animate-bounce"
           style={{ animationDuration: "4s" }}
         >
           <Image
             src="/screens_assets/logo.png"
             alt="Think Bin Official 3D Logo and Mascot"
-            width={260}
-            height={165}
+            width={270}
+            height={170}
             className="w-full h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
             priority
           />
         </div>
       </div>
 
-      {/* 2. BALANCED & VERTICALLY CENTERED ACTION BUTTON GROUP */}
-      <div className="relative z-20 w-full max-w-[310px] mx-auto flex-1 flex flex-col items-center justify-center gap-2.5 my-auto">
+      {/* 2. COMPACT ACTION BUTTON GROUP (Directly below logo, removing the empty middle gap) */}
+      <div className="relative z-20 w-full max-w-[320px] mx-auto flex flex-col items-center gap-2.5 mt-2 flex-shrink-0">
         {/* BIG GREEN 3D PLAY BUTTON */}
         <button
           type="button"
           onClick={() => router.push("/belajar")}
-          className="w-full max-w-[230px] h-[52px] bg-gradient-to-b from-[#97db2f] via-[#83c623] to-[#6fb016] text-white font-fredoka font-black text-[26px] rounded-[20px] shadow-[0_5px_0_#4f870e,0_8px_12px_rgba(0,0,0,0.16)] active:translate-y-1 active:shadow-[0_2px_0_#4f870e] transition-all flex items-center justify-center gap-2.5 cursor-pointer relative overflow-hidden flex-shrink-0"
+          className="w-full max-w-[240px] h-[54px] bg-gradient-to-b from-[#97db2f] via-[#83c623] to-[#6fb016] text-white font-fredoka font-black text-[28px] rounded-[20px] shadow-[0_5px_0_#4f870e,0_8px_12px_rgba(0,0,0,0.16)] active:translate-y-1 active:shadow-[0_2px_0_#4f870e] transition-all flex items-center justify-center gap-2.5 cursor-pointer relative overflow-hidden flex-shrink-0"
         >
           {/* Gloss highlight */}
           <div className="absolute top-1 left-2 right-2 h-[38%] bg-gradient-to-b from-white/45 to-transparent rounded-t-[12px] pointer-events-none" />
@@ -70,7 +70,7 @@ export default function DashboardPage() {
               <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#ffffff" strokeWidth="2.5" />
             </svg>
           </div>
-          <span className="font-fredoka font-black text-[19px] text-[#2e5926] tracking-wide">
+          <span className="font-fredoka font-black text-[20px] text-[#2e5926] tracking-wide">
             Misi Harian
           </span>
         </Link>
@@ -78,7 +78,7 @@ export default function DashboardPage() {
         {/* KUISIONER AKHIR (Gold Yellow Card with Dark Gold Border) */}
         <Link
           href="/kuisioner?type=akhir"
-          className="w-full min-h-[52px] py-1 bg-gradient-to-b from-[#fff3cd] to-[#fde047] border-[3px] border-[#ca8a04] rounded-[22px] px-4 flex items-center justify-center gap-3 shadow-[0_5px_0_#a16207,0_8px_16px_rgba(0,0,0,0.12)] active:translate-y-1 active:shadow-[0_2px_0_#a16207] transition-all cursor-pointer flex-shrink-0"
+          className="w-full h-[52px] bg-gradient-to-b from-[#fff3cd] to-[#fde047] border-[3px] border-[#ca8a04] rounded-[22px] px-4 flex items-center justify-center gap-3 shadow-[0_5px_0_#a16207,0_8px_16px_rgba(0,0,0,0.12)] active:translate-y-1 active:shadow-[0_2px_0_#a16207] transition-all cursor-pointer flex-shrink-0"
         >
           <div className="w-8 h-8 bg-[#eab308] border-[2px] border-[#ca8a04] rounded-xl flex items-center justify-center shadow-[0_2px_0_#a16207] flex-shrink-0">
             <svg
@@ -107,6 +107,8 @@ export default function DashboardPage() {
           </div>
         </Link>
       </div>
+
+      {/* 3. GRASS AREA (Naturally remains open at bottom for the Bottom Nav Bar) */}
     </div>
   );
 }
