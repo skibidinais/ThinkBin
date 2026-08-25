@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { UserProfile } from "@/types";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://qmofbqocyzrhxheyyyuo.supabase.co";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -13,37 +13,29 @@ export interface DuplicateCheckResult {
 }
 
 /**
- * Sign in with Google (Seamless One-Click Login & Supabase Auth Fallback)
+ * Sign in with Official Real Google OAuth via Supabase Auth
  */
 export async function signInWithGoogleOAuth(): Promise<void> {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const redirectTo = `${origin}/setup-profil`;
 
-  if (typeof window !== "undefined") {
-    // Generate or retrieve persistent Google Account session for the student
-    let existingUserRaw = localStorage.getItem("tb_active_user");
-    let activeUser: UserProfile | null = existingUserRaw ? JSON.parse(existingUserRaw) : null;
-
-    if (!activeUser || !activeUser.google_id) {
-      const generatedGoogleId = "google_" + Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
-      activeUser = {
-        id: "usr_" + Math.random().toString(36).substring(2, 10),
-        google_id: generatedGoogleId,
-        email: `siswa_${generatedGoogleId.substring(7, 13)}@smpn20malang.sch.id`,
-        display_name: "",
-        class_name: "",
-        student_number: 0,
-        coins: 0,
-        xp: 0,
-        streak: 1,
-        selected_frame: "frame_teal_tech",
-        onboarding_completed: false,
-      };
-      localStorage.setItem("tb_active_user", JSON.stringify(activeUser));
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    });
+    if (error) {
+      console.error("Google OAuth error:", error);
+      alert(`Pemberitahuan Login Google: ${error.message}`);
     }
-
-    // Smoothly redirect to setup profil
-    window.location.href = redirectTo;
+  } catch (err) {
+    console.error("OAuth exception:", err);
   }
 }
 
