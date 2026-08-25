@@ -242,153 +242,163 @@ export default function TokoPage() {
   };
 
   return (
-    <div
-      className="relative flex flex-col justify-between w-full h-full min-h-full px-3 pt-24 pb-24 select-none bg-cover bg-center bg-no-repeat overflow-y-auto no-scrollbar"
-      style={{ backgroundImage: "url('/screens_assets/shop_market_bg_official.jpg')" }}
-    >
-      {/* 1. FLOATING SPEECH BUBBLE BANNER (Positioned below the awning & Toko sign) */}
-      <div className="flex items-center gap-2 bg-white/95 border-[2px] border-[#D19932] rounded-3xl p-2.5 mb-2 shadow-[0_4px_10px_rgba(180,120,30,0.15)] flex-shrink-0">
-        <div className="relative w-11 h-11 flex-shrink-0">
-          <Image
-            src="/assets/mascot_leonardo.png"
-            alt="Mascot"
-            width={44}
-            height={44}
-            className="object-contain"
-          />
-        </div>
-        <div className="flex-1">
-          <p className="font-fredoka font-bold text-[11.5px] text-[#382C22] leading-snug">
-            Halo! Yuk hias profilmu dengan Border Profil ThinkBin yang unik!
-          </p>
-        </div>
+    <div className="relative w-full h-full min-h-full flex flex-col items-center justify-between select-none overflow-hidden bg-[#F7E7B4]">
+      {/* ── BACKGROUND IMAGE (Maintains Aspect Ratio with object-fit: contain without cropping or stretching) ── */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <Image
+          src="/screens_assets/shop_clean_background.jpg"
+          alt="Toko Background Market Stall"
+          fill
+          priority
+          sizes="(max-width: 480px) 100vw, 440px"
+          className="object-contain object-center"
+        />
       </div>
 
-      {/* NOTIFICATION TOAST */}
-      {purchaseNotice && (
-        <div className="p-2 mb-2 bg-emerald-100 border-[2px] border-[#15803D] rounded-2xl font-fredoka font-bold text-xs text-[#15803D] text-center shadow-md animate-in zoom-in duration-200">
-          {purchaseNotice}
+      {/* ── CENTRAL INTERACTIVE CONTENT LAYER (Positioned precisely over the open cream wall area) ── */}
+      <div className="relative z-10 w-full max-w-[390px] h-full flex flex-col justify-between pt-[76px] pb-[84px] px-3.5">
+        
+        {/* 1. WELCOME MESSAGE BUBBLE WITH MASCOT */}
+        <div className="flex items-center gap-2 bg-white/95 border-[2px] border-[#D19932] rounded-2xl p-2 shadow-[0_3px_8px_rgba(180,120,30,0.12)] backdrop-blur-xs flex-shrink-0 mb-1.5">
+          <div className="relative w-10 h-10 flex-shrink-0">
+            <Image
+              src="/assets/mascot_leonardo.png"
+              alt="Mascot"
+              width={40}
+              height={40}
+              className="object-contain"
+            />
+          </div>
+          <div className="flex-1">
+            <p className="font-fredoka font-bold text-[11px] text-[#382C22] leading-snug">
+              Halo! Yuk hias profilmu dengan Border Profil ThinkBin yang unik!
+            </p>
+          </div>
         </div>
-      )}
 
-      {/* 2. 3x2 STORE ITEM CARDS (Positioned cleanly in the open cream center wall area) */}
-      <div className="grid grid-cols-3 gap-2 mb-2 flex-shrink-0">
-        {currentItems.map((item) => {
-          const isOwned = ownedFrames.includes(item.id);
-          const isEquipped = selectedFrame === item.id;
+        {/* NOTIFICATION TOAST */}
+        {purchaseNotice && (
+          <div className="p-1.5 mb-1 bg-emerald-100 border-[2px] border-[#15803D] rounded-xl font-fredoka font-bold text-[11px] text-[#15803D] text-center shadow-md animate-in zoom-in duration-200">
+            {purchaseNotice}
+          </div>
+        )}
 
-          return (
-            <div
-              key={item.id}
-              className={`flex flex-col items-center bg-white border-[2px] border-[#E8DCC2] rounded-2xl p-2 shadow-[0_4px_12px_rgba(150,110,30,0.12)] relative transition-transform ${
-                isEquipped ? "ring-2 ring-[#4CAF50]" : ""
-              }`}
-            >
-              {isEquipped && (
-                <span className="absolute -top-1.5 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[8px] px-1.5 py-0.2 rounded-full shadow-xs">
-                  Terpasang
-                </span>
-              )}
+        {/* 2. GRID OF 6 ITEM CARDS (2 rows x 3 columns) */}
+        <div className="grid grid-cols-3 gap-2 my-auto flex-shrink-0">
+          {currentItems.map((item) => {
+            const isOwned = ownedFrames.includes(item.id);
+            const isEquipped = selectedFrame === item.id;
 
-              {/* Item Preview */}
-              <div className="relative w-14 h-14 my-0.5 flex items-center justify-center">
-                {!item.isMysteryBox ? (
-                  <>
-                    <Image
-                      src="/assets/mascot_leonardo.png"
-                      alt="Avatar"
-                      width={38}
-                      height={38}
-                      className="rounded-full object-cover"
-                    />
-                    <div
-                      className="absolute inset-0 pointer-events-none"
-                      style={{ filter: item.filter || "none" }}
-                    >
-                      <Image
-                        src={item.imageSrc}
-                        alt={item.name}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <Image
-                    src={item.imageSrc}
-                    alt={item.name}
-                    width={48}
-                    height={48}
-                    className="object-contain"
-                  />
-                )}
-              </div>
-
-              <span className="font-fredoka font-bold text-[10.5px] text-[#382C22] text-center truncate w-full mb-1">
-                {item.name}
-              </span>
-
-              {/* Yellow Pill Buy/Equip Button */}
-              <button
-                type="button"
-                onClick={() => handleBuyOrEquip(item)}
-                className={`w-full py-1.5 px-1 rounded-full font-fredoka font-extrabold text-[11px] flex items-center justify-center gap-1 border-[1.5px] border-[#D4981C] shadow-[0_2.5px_0_#C2870F] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
-                  isEquipped
-                    ? "bg-[#4CAF50] border-[#388E3C] shadow-[0_2.5px_0_#2E7D32] text-white"
-                    : isOwned
-                    ? "bg-[#1CB0F6] border-[#0284C7] shadow-[0_2.5px_0_#0369A1] text-white"
-                    : "bg-gradient-to-b from-[#FED54A] to-[#F5B82E] text-[#633E04]"
+            return (
+              <div
+                key={item.id}
+                className={`flex flex-col items-center bg-white border-[2px] border-[#E8DCC2] rounded-2xl p-1.5 shadow-[0_3px_8px_rgba(150,110,30,0.1)] relative transition-transform ${
+                  isEquipped ? "ring-2 ring-[#4CAF50]" : ""
                 }`}
               >
-                {isEquipped ? (
-                  <span>✓ Digunakan</span>
-                ) : isOwned ? (
-                  <span>Pasang</span>
-                ) : (
-                  <>
+                {isEquipped && (
+                  <span className="absolute -top-1.5 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[7.5px] px-1.5 py-0.2 rounded-full shadow-xs">
+                    Terpasang
+                  </span>
+                )}
+
+                {/* Item Icon / Preview */}
+                <div className="relative w-12 h-12 my-0.5 flex items-center justify-center">
+                  {!item.isMysteryBox ? (
+                    <>
+                      <Image
+                        src="/assets/mascot_leonardo.png"
+                        alt="Avatar"
+                        width={34}
+                        height={34}
+                        className="rounded-full object-cover"
+                      />
+                      <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{ filter: item.filter || "none" }}
+                      >
+                        <Image
+                          src={item.imageSrc}
+                          alt={item.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    </>
+                  ) : (
                     <Image
-                      src="/screens_assets/coin.png"
-                      alt="Coin"
-                      width={13}
-                      height={13}
+                      src={item.imageSrc}
+                      alt={item.name}
+                      width={42}
+                      height={42}
                       className="object-contain"
                     />
-                    <span>{item.price} Koin</span>
-                  </>
-                )}
-              </button>
-            </div>
-          );
-        })}
-      </div>
+                  )}
+                </div>
 
-      {/* 3. PAGINATION CONTROLS PILL (< 1 / 3 >) */}
-      <div className="flex items-center justify-center gap-2 mb-1 flex-shrink-0">
-        <button
-          type="button"
-          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-          disabled={currentPage === 1}
-          className="w-8 h-8 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
-        >
-          ‹
-        </button>
+                <span className="font-fredoka font-bold text-[10px] text-[#382C22] text-center truncate w-full mb-1">
+                  {item.name}
+                </span>
 
-        <div className="bg-white border-[1.5px] border-[#D4981C] rounded-full px-5 py-1 font-fredoka font-black text-xs text-[#633E04] shadow-[0_2px_0_#C2870F]">
-          {currentPage} / {TOTAL_PAGES}
+                {/* Yellow Pill Buy/Equip Button */}
+                <button
+                  type="button"
+                  onClick={() => handleBuyOrEquip(item)}
+                  className={`w-full py-1 px-1 rounded-full font-fredoka font-extrabold text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#D4981C] shadow-[0_2px_0_#C2870F] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+                    isEquipped
+                      ? "bg-[#4CAF50] border-[#388E3C] shadow-[0_2px_0_#2E7D32] text-white"
+                      : isOwned
+                      ? "bg-[#1CB0F6] border-[#0284C7] shadow-[0_2px_0_#0369A1] text-white"
+                      : "bg-gradient-to-b from-[#FED54A] to-[#F5B82E] text-[#633E04]"
+                  }`}
+                >
+                  {isEquipped ? (
+                    <span>✓ Digunakan</span>
+                  ) : isOwned ? (
+                    <span>Pasang</span>
+                  ) : (
+                    <>
+                      <Image
+                        src="/screens_assets/coin.png"
+                        alt="Coin"
+                        width={12}
+                        height={12}
+                        className="object-contain"
+                      />
+                      <span>{item.price} Koin</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
-        <button
-          type="button"
-          onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
-          disabled={currentPage === TOTAL_PAGES}
-          className="w-8 h-8 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
-        >
-          ›
-        </button>
-      </div>
+        {/* 3. PAGINATION CONTROLS PILL (< 1 / 3 >) */}
+        <div className="flex items-center justify-center gap-2 mt-1 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="w-7 h-7 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-xs text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
+          >
+            ‹
+          </button>
 
-      {/* BOTTOM SAFE AREA SPACER */}
-      <div className="w-full h-4 flex-shrink-0" />
+          <div className="bg-white border-[1.5px] border-[#D4981C] rounded-full px-4 py-0.5 font-fredoka font-black text-[11px] text-[#633E04] shadow-[0_2px_0_#C2870F]">
+            {currentPage} / {TOTAL_PAGES}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
+            disabled={currentPage === TOTAL_PAGES}
+            className="w-7 h-7 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-xs text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
+          >
+            ›
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
