@@ -2,196 +2,572 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 
-interface MissionItem {
-  id: string;
-  title: string;
-  desc: string;
-  xpReward: number;
-  coinReward: number;
-  progress: number;
-  target: number;
-  claimed: boolean;
+interface MissionState {
+  m1Claimed: boolean; // Login
+  m2Claimed: boolean; // 1 Node Belajar
+  m3Visited: boolean; // Leaderboard
+  m3Claimed: boolean;
+  m4Visited: boolean; // Toko
+  m4Claimed: boolean;
 }
 
 export default function MissionPage() {
   const { user, updateUser } = useAuth();
-  const [missions, setMissions] = useState<MissionItem[]>([
-    {
-      id: "m1",
-      title: "Membaca Materi Baru",
-      desc: "Buka dan pelajari 1 materi di Peta Belajar",
-      xpReward: 10,
-      coinReward: 15,
-      progress: 0,
-      target: 1,
-      claimed: false,
-    },
-    {
-      id: "m2",
-      title: "Penakluk Kuis Harian",
-      desc: "Jawab kuis pemahaman dengan benar",
-      xpReward: 15,
-      coinReward: 20,
-      progress: 0,
-      target: 1,
-      claimed: false,
-    },
-    {
-      id: "m3",
-      title: "Pilah Kilat di Minigame",
-      desc: "Selesaikan 1 sesi tantangan bertimer",
-      xpReward: 20,
-      coinReward: 25,
-      progress: 0,
-      target: 1,
-      claimed: false,
-    },
-    {
-      id: "m4",
-      title: "Evaluasi Riset ThinkBin",
-      desc: "Isi Kuisioner Awal atau Kuisioner Akhir",
-      xpReward: 30,
-      coinReward: 40,
-      progress: 0,
-      target: 1,
-      claimed: false,
-    },
-  ]);
+  const router = useRouter();
 
+  // State for missions
+  const [missionState, setMissionState] = useState<MissionState>({
+    m1Claimed: true, // Login is completed & claimed by default on app open
+    m2Claimed: false,
+    m3Visited: false,
+    m3Claimed: false,
+    m4Visited: false,
+    m4Claimed: false,
+  });
+
+  // Countdown timer to midnight (00:00:00)
+  const [countdown, setCountdown] = useState<string>("00:00:00");
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Load saved state from localStorage
   useEffect(() => {
     try {
-      const savedClaimed = localStorage.getItem("thinkbin_claimed_missions");
-      if (savedClaimed) {
-        const claimedIds: string[] = JSON.parse(savedClaimed);
-        setMissions((prev) =>
-          prev.map((m) => ({ ...m, claimed: claimedIds.includes(m.id) }))
-        );
+      const saved = localStorage.getItem("thinkbin_missions_progress_v2");
+      if (saved) {
+        setMissionState(JSON.parse(saved));
       }
     } catch {
       // Fallback
     }
   }, []);
 
-  const handleClaim = (missionId: string) => {
-    const mission = missions.find((m) => m.id === missionId);
-    if (!mission || mission.claimed || mission.progress < mission.target) return;
+  // Update countdown every second
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      const diffMs = midnight.getTime() - now.getTime();
 
-    const newXp = (user?.xp ?? 0) + mission.xpReward;
-    const newCoins = (user?.coins ?? 0) + mission.coinReward;
+      if (diffMs <= 0) {
+        setCountdown("00:00:00");
+        return;
+      }
 
-    updateUser({ xp: newXp, coins: newCoins });
+      const hours = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-    const updatedMissions = missions.map((m) =>
-      m.id === missionId ? { ...m, claimed: true } : m
-    );
-    setMissions(updatedMissions);
+      const pad = (n: number) => n.toString().padStart(2, "0");
+      setCountdown(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+    };
 
-    const claimedIds = updatedMissions.filter((m) => m.claimed).map((m) => m.id);
-    localStorage.setItem("thinkbin_claimed_missions", JSON.stringify(claimedIds));
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const saveState = (newState: MissionState) => {
+    setMissionState(newState);
+    try {
+      localStorage.setItem("thinkbin_missions_progress_v2", JSON.stringify(newState));
+    } catch {
+      // ignore
+    }
+  };
+
+  // Completed count
+  const completedCount = [
+    missionState.m1Claimed,
+    missionState.m2Claimed,
+    missionState.m3Claimed,
+    missionState.m4Claimed,
+  ].filter(Boolean).length;
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 3000);
+  };
+
+  const handleClaim = (missionKey: keyof MissionState, coinReward: number, title: string) => {
+    const newCoins = (user?.coins ?? 0) + coinReward;
+    updateUser({ coins: newCoins });
+
+    const updated = { ...missionState, [missionKey]: true };
+    saveState(updated);
+    showToast(`🎉 Berhasil klaim +${coinReward} Coin dari "${title}"!`);
+  };
+
+  const handleNavigate = (path: string, visitKey?: "m3Visited" | "m4Visited") => {
+    if (visitKey) {
+      const updated = { ...missionState, [visitKey]: true };
+      saveState(updated);
+    }
+    router.push(path);
   };
 
   return (
-    <div className="relative flex flex-col min-h-full px-4 pt-3 pb-16 select-none bg-gradient-to-b from-[#FFFDF9] to-[#F5E6CC]">
-      {/* HEADER */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="font-fredoka font-extrabold text-xl text-[#382C22]">
-          🎖️ Misi Harian & Target
+    <div className="relative flex flex-col min-h-full px-4 pt-3 pb-28 select-none bg-[#FDE8A5]">
+      {/* TOAST POPUP NOTIFICATION */}
+      {toastMsg && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#1E293B] text-white border-2 border-[#F59E0B] px-4 py-2 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce">
+          <span className="font-fredoka font-bold text-xs tracking-wide">{toastMsg}</span>
+        </div>
+      )}
+
+      {/* ── 1. HEADER (Title on left, Coin & XP Counter Pills on right) ── */}
+      <header className="flex items-center justify-between pt-1 pb-3">
+        <h1 className="font-fredoka font-extrabold text-[26px] text-[#382C22] tracking-tight">
+          Misi Harian
         </h1>
-        <Link
-          href="/dashboard"
-          className="text-xs font-fredoka font-bold text-[#1CB0F6] bg-white border border-[#BAE6FD] px-3 py-1 rounded-full shadow-xs"
-        >
-          ← Beranda
-        </Link>
-      </div>
 
-      {/* BANNER STREAK DAILY GOAL */}
-      <div className="bg-gradient-to-r from-[#8A62DC] to-[#764DC9] text-white rounded-3xl p-4 mb-4 shadow-md flex items-center justify-between">
-        <div className="flex flex-col text-left">
-          <span className="font-fredoka font-bold text-[11px] text-amber-300 uppercase tracking-wider">
-            TARGET HARIAN • DAY 1
+        <div className="flex items-center gap-2">
+          {/* Coin Pill */}
+          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
+            <Image
+              src="/screens_assets/coin.png"
+              alt="Coin"
+              width={18}
+              height={18}
+              className="object-contain"
+            />
+            <span className="font-fredoka font-black text-sm text-[#382C22]">
+              {user?.coins ?? 705}
+            </span>
+          </div>
+
+          {/* XP Pill */}
+          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
+            <Image
+              src="/assets_game/exp_progress.png"
+              alt="XP"
+              width={16}
+              height={16}
+              className="object-contain"
+            />
+            <span className="font-fredoka font-black text-sm text-[#382C22]">
+              {user?.xp ?? 252}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* ── 2. TOTAL HADIAH HARIAN & RESET BANNER ── */}
+      <div className="bg-gradient-to-br from-[#FFF9E6] to-white border-[2.5px] border-[#382C22] rounded-[22px] p-3.5 flex items-center justify-between shadow-[0_3px_0_rgba(0,0,0,0.05)] mb-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="font-fredoka font-black text-[11px] uppercase text-[#796F65] tracking-wider">
+            TOTAL HADIAH HARIAN
           </span>
-          <h3 className="font-fredoka font-extrabold text-base leading-tight mt-0.5">
-            Pertahankan Streak Belajarmu! 🔥
-          </h3>
-          <p className="font-nunito font-semibold text-xs text-purple-100 mt-1">
-            Selesaikan misi untuk mendapatkan bonus koin & border profil!
-          </p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <Image
+              src="/screens_assets/coin.png"
+              alt="Coin"
+              width={22}
+              height={22}
+              className="object-contain"
+            />
+            <span className="font-fredoka font-black text-[19px] text-[#B45309]">
+              45 Coin
+            </span>
+            <span className="font-fredoka font-bold text-xs text-[#796F65]">
+              / hari
+            </span>
+          </div>
         </div>
-        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl flex-shrink-0">
-          🎯
+
+        {/* Reset Badge */}
+        <div className="bg-[#FFF0E6] border-[1.5px] border-[#EA580C] rounded-2xl px-3 py-1.5 flex flex-col items-end">
+          <span className="font-fredoka font-black text-[9.5px] text-[#EA580C]">
+            Reset jam 00.00
+          </span>
+          <span className="font-fredoka font-black text-[14px] text-[#9A3412] tabular-nums leading-tight">
+            {countdown}
+          </span>
         </div>
       </div>
 
-      {/* MISSIONS LIST */}
-      <div className="flex flex-col gap-3 pb-6">
-        {missions.map((m) => {
-          const isReady = m.progress >= m.target && !m.claimed;
+      {/* ── 3. SUBHEADING: DAFTAR MISI HARI INI + BADGE ── */}
+      <div className="flex items-center justify-between px-1 mb-2.5">
+        <span className="font-fredoka font-black text-[11.5px] text-[#6B5B4F] tracking-wider uppercase">
+          DAFTAR MISI HARI INI
+        </span>
+        <span className="bg-[#DCFCE7] border border-[#86EFAC] text-[#15803D] font-fredoka font-extrabold text-[11px] px-2.5 py-0.5 rounded-full">
+          {completedCount}/4 Selesai
+        </span>
+      </div>
 
-          return (
-            <div
-              key={m.id}
-              className={`flex items-center justify-between p-3.5 rounded-2xl border-[2px] border-b-[4.5px] transition-all shadow-xs ${
-                m.claimed
-                  ? "bg-gray-50 border-gray-200 opacity-60"
-                  : isReady
-                  ? "bg-[#F4FBF0] border-[#58CC02]"
-                  : "bg-white border-[#E5E5E5]"
+      {/* ── 4. STACK OF 4 MISSION CARDS ── */}
+      <div className="flex flex-col gap-2.5 mb-3.5">
+        {/* MISSION 1: Login hari ini (buka app) */}
+        <div
+          className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
+            missionState.m1Claimed
+              ? "bg-[#F0FDF4] border-[#86EFAC]"
+              : "bg-white border-[#382C22]"
+          }`}
+        >
+          <div className="w-11 h-11 min-w-[44px] bg-[#10B981] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="5" y="2" width="14" height="20" rx="3" />
+              <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3" />
+            </svg>
+          </div>
+
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <span
+              className={`font-fredoka font-black text-[13.5px] leading-snug truncate ${
+                missionState.m1Claimed ? "line-through text-[#15803D]" : "text-[#382C22]"
               }`}
             >
-              <div className="flex flex-col text-left max-w-[200px]">
-                <span className="font-fredoka font-bold text-xs text-[#382C22] leading-snug">
-                  {m.title}
-                </span>
-                <p className="font-nunito text-[10.5px] text-[#796F65] leading-tight mt-0.5">
-                  {m.desc}
-                </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="flex items-center gap-1 font-fredoka font-bold text-[10px] text-[#1CB0F6]">
-                    <Image
-                      src="/assets_game/exp_progress.png"
-                      alt="XP Daun Petir"
-                      width={14}
-                      height={14}
-                      className="object-contain"
-                    />
-                    <span>+{m.xpReward} XP</span>
-                  </div>
-                  <span className="text-[#796F65]">•</span>
-                  <div className="flex items-center gap-1 font-fredoka font-bold text-[10px] text-[#F57F17]">
-                    <Image
-                      src="/assets_game/coin.png"
-                      alt="Koin Daun Kuning"
-                      width={14}
-                      height={14}
-                      className="object-contain"
-                    />
-                    <span>+{m.coinReward} Koin</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <button
-                type="button"
-                onClick={() => handleClaim(m.id)}
-                disabled={!isReady}
-                className={`py-2 px-4 rounded-xl font-fredoka font-extrabold text-xs transition-all shadow-xs ${
-                  m.claimed
-                    ? "bg-gray-200 text-gray-400 cursor-default"
-                    : isReady
-                    ? "bg-[#58CC02] hover:bg-[#4CAF00] text-white active:translate-y-0.5 cursor-pointer"
-                    : "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
-                }`}
-              >
-                {m.claimed ? "Sudah Diklaim ✓" : isReady ? "Klaim Hadiah 🎁" : `${m.progress}/${m.target}`}
-              </button>
+              Login hari ini (buka app)
+            </span>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
             </div>
-          );
-        })}
+            {/* Progress track */}
+            <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
+              <div className="h-full bg-[#22C55E] rounded-full w-full" />
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {missionState.m1Claimed ? (
+            <button
+              type="button"
+              disabled
+              className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
+            >
+              Selesai ✓
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleClaim("m1Claimed", 10, "Login hari ini")}
+              className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
+            >
+              Klaim!
+            </button>
+          )}
+        </div>
+
+        {/* MISSION 2: Selesaikan minimal 1 node belajar */}
+        <div
+          className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
+            missionState.m2Claimed
+              ? "bg-[#F0FDF4] border-[#86EFAC]"
+              : "bg-white border-[#382C22]"
+          }`}
+        >
+          <div className="w-11 h-11 min-w-[44px] bg-[#3B82F6] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+          </div>
+
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <span
+              className={`font-fredoka font-black text-[13.5px] leading-snug truncate ${
+                missionState.m2Claimed ? "line-through text-[#15803D]" : "text-[#382C22]"
+              }`}
+            >
+              Selesaikan minimal 1 node belajar
+            </span>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +15 Coin
+              </span>
+            </div>
+            {/* Progress track */}
+            <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
+              <div
+                className="h-full bg-[#22C55E] rounded-full transition-all"
+                style={{ width: missionState.m2Claimed ? "100%" : "100%" }}
+              />
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {missionState.m2Claimed ? (
+            <button
+              type="button"
+              disabled
+              className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
+            >
+              Selesai ✓
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleClaim("m2Claimed", 15, "Selesaikan 1 node belajar")}
+              className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
+            >
+              Klaim!
+            </button>
+          )}
+        </div>
+
+        {/* MISSION 3: Kunjungi Papan Peringkat */}
+        <div
+          className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
+            missionState.m3Claimed
+              ? "bg-[#F0FDF4] border-[#86EFAC]"
+              : "bg-white border-[#382C22]"
+          }`}
+        >
+          <div className="w-11 h-11 min-w-[44px] bg-[#F59E0B] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+              <path d="M4 22h16" />
+              <path d="M10 14.66V17c0 .55-.45 1-1 1H8v4h8v-4h-1c-.55 0-1-.45-1-1v-2.34" />
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
+            </svg>
+          </div>
+
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <span
+              className={`font-fredoka font-black text-[13.5px] leading-snug truncate ${
+                missionState.m3Claimed ? "line-through text-[#15803D]" : "text-[#382C22]"
+              }`}
+            >
+              Kunjungi Papan Peringkat
+            </span>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
+            </div>
+            {/* Progress track */}
+            <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
+              <div
+                className="h-full bg-[#22C55E] rounded-full transition-all"
+                style={{ width: missionState.m3Claimed ? "100%" : "0%" }}
+              />
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {missionState.m3Claimed ? (
+            <button
+              type="button"
+              disabled
+              className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
+            >
+              Selesai ✓
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleNavigate("/leaderboard", "m3Visited")}
+              className="bg-[#F5B82E] hover:bg-[#EAB308] text-[#382C22] font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0"
+            >
+              Buka
+            </button>
+          )}
+        </div>
+
+        {/* MISSION 4: Kunjungi Toko */}
+        <div
+          className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
+            missionState.m4Claimed
+              ? "bg-[#F0FDF4] border-[#86EFAC]"
+              : "bg-white border-[#382C22]"
+          }`}
+        >
+          <div className="w-11 h-11 min-w-[44px] bg-[#EC4899] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </div>
+
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <span
+              className={`font-fredoka font-black text-[13.5px] leading-snug truncate ${
+                missionState.m4Claimed ? "line-through text-[#15803D]" : "text-[#382C22]"
+              }`}
+            >
+              Kunjungi Toko
+            </span>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
+            </div>
+            {/* Progress track */}
+            <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
+              <div
+                className="h-full bg-[#22C55E] rounded-full transition-all"
+                style={{ width: missionState.m4Claimed ? "100%" : "0%" }}
+              />
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {missionState.m4Claimed ? (
+            <button
+              type="button"
+              disabled
+              className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
+            >
+              Selesai ✓
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleNavigate("/toko", "m4Visited")}
+              className="bg-[#F5B82E] hover:bg-[#EAB308] text-[#382C22] font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0"
+            >
+              Buka
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── 5. KUIS TANTANGAN (4 CHECKPOINT) SPECIAL CARD ── */}
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 flex flex-col gap-3 shadow-[0_3px_0_#382C22]">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 min-w-[40px] bg-[#FEF3C7] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#2563EB"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="6" />
+              <circle cx="12" cy="12" r="2" />
+            </svg>
+          </div>
+          <div className="flex flex-col">
+            <h2 className="font-fredoka font-black text-[15px] text-[#382C22] leading-tight">
+              Kuis Tantangan (4 Checkpoint)
+            </h2>
+            <p className="font-fredoka font-semibold text-[11.5px] text-[#796F65] leading-tight mt-0.5">
+              Uji pengetahuan dan kumpulkan koin ekstra!
+            </p>
+          </div>
+        </div>
+
+        {/* Reward Table */}
+        <div className="bg-[#F9FAFB] border-[1.5px] border-[#E5E7EB] rounded-2xl p-2.5 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="font-fredoka font-bold text-xs text-[#4B5563]">
+              Selesai (min. 1 jawaban benar)
+            </span>
+            <div className="flex items-center gap-1 font-fredoka font-black text-xs text-[#D97706]">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span>+20 Coin</span>
+            </div>
+          </div>
+
+          <div className="border-t border-dashed border-[#E5E7EB]" />
+
+          <div className="flex items-center justify-between">
+            <span className="font-fredoka font-extrabold text-xs text-[#92400E]">
+              Full combo (semua benar)
+            </span>
+            <div className="bg-[#FEF3C7] border border-[#FCD34D] rounded-lg px-2 py-0.5 flex items-center gap-1 font-fredoka font-black text-xs text-[#B45309]">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span>35 Coin (total)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Play Quiz Button */}
+        <button
+          type="button"
+          onClick={() => handleNavigate("/belajar")}
+          className="w-full bg-[#3F82E2] hover:bg-[#2563EB] text-white font-fredoka font-black text-sm py-2.5 rounded-2xl border-2 border-[#382C22] shadow-[0_3px_0_#382C22] active:translate-y-0.5 transition-all text-center cursor-pointer"
+        >
+          Mainkan Kuis Sekarang
+        </button>
       </div>
     </div>
   );
