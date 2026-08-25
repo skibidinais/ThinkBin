@@ -21,6 +21,7 @@ body {
   background-color: #334155;
   font-family: 'Fredoka', 'Nunito', sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,9 +40,10 @@ body {
 .tb-mobile-frame {
   width: 100%;
   max-width: 440px;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background-color: #FFFBEA;
@@ -50,10 +52,10 @@ body {
 @media (min-width: 481px) {
   .tb-mobile-frame {
     height: 844px;
-    max-height: 90vh;
+    max-height: 92vh;
     border-radius: 36px;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 8px #1E293B;
-    overflow-y: auto;
+    overflow: hidden;
   }
 }
 
