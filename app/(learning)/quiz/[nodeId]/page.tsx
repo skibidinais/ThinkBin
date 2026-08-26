@@ -20,6 +20,7 @@ export default function QuizPage() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [isRepeatAttempt, setIsRepeatAttempt] = useState<boolean>(false);
   const [showHintModal, setShowHintModal] = useState<boolean>(false);
 
   // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16)
@@ -80,8 +81,8 @@ export default function QuizPage() {
     setIsSubmitted(true);
 
     if (correct) {
-      // 1. Record node completion in Supabase & LocalStorage
-      await recordNodeCompletion({
+      // 1. Record node completion in Supabase & LocalStorage (detects repeat)
+      const result = await recordNodeCompletion({
         userId: user?.id || "usr_guest",
         nodeId,
         xpEarned: node.xpReward,
@@ -90,13 +91,17 @@ export default function QuizPage() {
         isCorrect: true,
       });
 
-      // 2. Update reactive state in AuthContext
-      const currentXp = user?.xp || 0;
-      const currentCoins = user?.coins || 0;
-      updateUser({
-        xp: currentXp + node.xpReward,
-        coins: currentCoins + node.coinReward,
-      });
+      setIsRepeatAttempt(result.isRepeat);
+
+      // 2. Update reactive state in AuthContext only on first completion
+      if (!result.isRepeat && (result.xpAwarded > 0 || result.coinsAwarded > 0)) {
+        const currentXp = user?.xp || 0;
+        const currentCoins = user?.coins || 0;
+        updateUser({
+          xp: currentXp + result.xpAwarded,
+          coins: currentCoins + result.coinsAwarded,
+        });
+      }
     }
   };
 
@@ -316,14 +321,16 @@ export default function QuizPage() {
               </h2>
 
               <div
-                className={`px-5 py-2 rounded-2xl font-fredoka font-black text-[15px] border-[2.5px] shadow-xs ${
+                className={`px-5 py-2 rounded-2xl font-fredoka font-black text-[14px] border-[2.5px] shadow-xs ${
                   isCorrect
                     ? "bg-[#ebf9e5] border-[#3fa427] text-[#2c7a1c]"
                     : "bg-[#fef2f2] border-[#ef4444] text-[#b91c1c]"
                 }`}
               >
                 {isCorrect
-                  ? `+${node.xpReward} XP • +${node.coinReward} Koin`
+                  ? isRepeatAttempt
+                    ? "+0 XP • +0 Koin (Latihan Ulang)"
+                    : `+${node.xpReward} XP • +${node.coinReward} Koin`
                   : "Coba pelajari lagi konsep intinya"}
               </div>
 

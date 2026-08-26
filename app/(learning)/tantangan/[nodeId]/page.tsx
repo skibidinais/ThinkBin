@@ -29,6 +29,7 @@ export default function TantanganPage() {
   const [gameItems, setGameItems] = useState<GameItem[]>([]);
   const [bins, setBins] = useState<string[]>([]);
   const [hasUnlocked, setHasUnlocked] = useState<boolean>(false);
+  const [isRepeatAttempt, setIsRepeatAttempt] = useState<boolean>(false);
 
   // Define game data based on the node
   useEffect(() => {
@@ -135,8 +136,8 @@ export default function TantanganPage() {
       const xpReward = node?.xpReward || 12;
       const coinsReward = (node?.coinReward || 15) + 10;
 
-      // 1. Record node completion in Supabase & Local
-      await recordNodeCompletion({
+      // 1. Record node completion in Supabase & Local (detects repeat)
+      const result = await recordNodeCompletion({
         userId: user?.id || 'usr_guest',
         nodeId,
         xpEarned: xpReward,
@@ -144,13 +145,17 @@ export default function TantanganPage() {
         isCorrect: true,
       });
 
-      // 2. Update reactive state in AuthContext
-      const currentXp = user?.xp || 0;
-      const currentCoins = user?.coins || 0;
-      updateUser({
-        xp: currentXp + xpReward,
-        coins: currentCoins + coinsReward,
-      });
+      setIsRepeatAttempt(result.isRepeat);
+
+      // 2. Update reactive state in AuthContext only on first completion
+      if (!result.isRepeat && (result.xpAwarded > 0 || result.coinsAwarded > 0)) {
+        const currentXp = user?.xp || 0;
+        const currentCoins = user?.coins || 0;
+        updateUser({
+          xp: currentXp + result.xpAwarded,
+          coins: currentCoins + result.coinsAwarded,
+        });
+      }
     }
   };
 
@@ -178,35 +183,37 @@ export default function TantanganPage() {
     <div className="min-h-screen bg-slate-900 text-white flex flex-col justify-between p-4">
       
       {/* Top statistics Header */}
-      <div className="w-full max-w-md mx-auto flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="w-full max-w-md mx-auto flex items-center justify-between py-2 border-b border-slate-800">
         <button
           onClick={() => router.push('/belajar')}
-          className="text-slate-400 hover:text-white font-extrabold text-sm"
+          className="text-slate-400 hover:text-white flex items-center gap-1 font-bold text-xs"
         >
-          ✕ Keluar
+          ← Peta Belajar
         </button>
-        <span className="text-xs font-black text-amber-500 uppercase tracking-widest animate-pulse">
-          🎯 Mini-Game Checkpoint
+        <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-black">
+          Tantangan #{nodeId}
         </span>
-        <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-full text-xs font-black text-red-400">
-          ⏱️ {timeLeft}s
-        </div>
       </div>
 
-      {/* Main Container */}
-      <div className="flex-1 w-full max-w-md mx-auto flex flex-col justify-center items-center py-6">
+      {/* Main Game Card Interface */}
+      <div className="w-full max-w-md mx-auto flex-1 flex flex-col justify-center items-center my-4">
         {!gameStarted ? (
-          <div className="bg-slate-800 rounded-2xl border-2 border-amber-500 p-6 text-center shadow-xl w-full animate-scaleUp">
+          <div className="bg-slate-800 rounded-2xl border-2 border-slate-700 p-6 text-center shadow-xl w-full">
             <div className="text-5xl mb-4">🎮</div>
-            <h2 className="text-lg font-black text-amber-400 mb-2">
-              {node?.title}
-            </h2>
+            <h1 className="text-xl font-black mb-2">{node?.title || 'Tantangan Interaktif'}</h1>
             <p className="text-xs text-slate-300 leading-relaxed mb-6">
-              {node?.konsepInti} <br/>
-              <span className="text-emerald-400 font-extrabold mt-2 block">
-                Target: Minimal 3 jawaban benar dalam 30 detik!
-              </span>
+              Pilah sampah yang muncul ke tempat pembuangan yang tepat sebelum waktu habis!
             </p>
+            <div className="bg-slate-900/60 rounded-xl p-4 mb-6 border border-slate-700/50 flex justify-around">
+              <div>
+                <span className="block text-[10px] text-slate-400 font-bold uppercase">Waktu</span>
+                <span className="text-sm font-black text-amber-400">30 Detik</span>
+              </div>
+              <div>
+                <span className="block text-[10px] text-slate-400 font-bold uppercase">Target Benar</span>
+                <span className="text-sm font-black text-emerald-400">Min. 3 Sampah</span>
+              </div>
+            </div>
             <button
               onClick={handleStartGame}
               className="w-full bg-gradient-to-r from-amber-500 to-orange-600 border-b-4 border-orange-700 text-slate-900 font-black text-sm py-4 rounded-xl hover:brightness-105 active:border-b-0 active:translate-y-1 transition-all"
@@ -224,7 +231,9 @@ export default function TantanganPage() {
               Kamu berhasil menjawab <strong className="text-amber-400 text-sm font-black">{score} / {gameItems.length}</strong> sampah secara benar!
               {isPassing && (
                 <span className="text-emerald-400 font-extrabold mt-2 block">
-                  🎁 +{node?.xpReward || 12} XP / +{(node?.coinReward || 15) + 10} Koin (Termasuk bonus tantangan!)
+                  {isRepeatAttempt
+                    ? "🎁 +0 XP / +0 Koin (Latihan Ulang / Sudah Diselesaikan)"
+                    : `🎁 +${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10} Koin (Termasuk bonus tantangan!)`}
                 </span>
               )}
             </p>

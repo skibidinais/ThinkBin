@@ -259,8 +259,15 @@ export async function fetchUserCompletedNodes(userId: string): Promise<number[]>
   return [];
 }
 
+export interface NodeCompletionResult {
+  success: boolean;
+  isRepeat: boolean;
+  xpAwarded: number;
+  coinsAwarded: number;
+}
+
 /**
- * Record Node Completion to Supabase & Increment User XP/Coins
+ * Record Node Completion to Supabase & Increment User XP/Coins (Only on First Completion)
  */
 export async function recordNodeCompletion(payload: {
   userId: string;
@@ -269,36 +276,63 @@ export async function recordNodeCompletion(payload: {
   coinsEarned: number;
   quizAnswer?: string;
   isCorrect?: boolean;
-}): Promise<boolean> {
+}): Promise<NodeCompletionResult> {
+  let isAlreadyCompleted = false;
+
+  // Check LocalStorage first
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("thinkbin_completed_nodes");
+    const completed: number[] = saved ? JSON.parse(saved) : [];
+    if (completed.includes(payload.nodeId)) {
+      isAlreadyCompleted = true;
+    }
+  }
+
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
-      // 1. Insert progress record
+      const { data: existingProgress } = await supabase
+        .from("learning_node_progress")
+        .select("node_id")
+        .eq("user_id", payload.userId)
+        .eq("node_id", payload.nodeId)
+        .maybeSingle();
+
+      if (existingProgress) {
+        isAlreadyCompleted = true;
+      }
+
+      // Upsert progress with actual answers
+      const actualXp = isAlreadyCompleted ? 0 : payload.xpEarned;
+      const actualCoins = isAlreadyCompleted ? 0 : payload.coinsEarned;
+
       await supabase.from("learning_node_progress").upsert([
         {
           user_id: payload.userId,
           node_id: payload.nodeId,
-          xp_earned: payload.xpEarned,
-          coins_earned: payload.coinsEarned,
+          xp_earned: actualXp,
+          coins_earned: actualCoins,
           quiz_answer: payload.quizAnswer || null,
           is_correct: payload.isCorrect ?? true,
         },
       ]);
 
-      // 2. Increment user XP & Coins
-      const { data: userProfile } = await supabase
-        .from("user_profiles")
-        .select("xp, coins")
-        .eq("id", payload.userId)
-        .maybeSingle();
-
-      if (userProfile) {
-        await supabase
+      // Only increment XP/Coins if this is the FIRST time completing the node
+      if (!isAlreadyCompleted && (actualXp > 0 || actualCoins > 0)) {
+        const { data: userProfile } = await supabase
           .from("user_profiles")
-          .update({
-            xp: (userProfile.xp || 0) + payload.xpEarned,
-            coins: (userProfile.coins || 0) + payload.coinsEarned,
-          })
-          .eq("id", payload.userId);
+          .select("xp, coins")
+          .eq("id", payload.userId)
+          .maybeSingle();
+
+        if (userProfile) {
+          await supabase
+            .from("user_profiles")
+            .update({
+              xp: (userProfile.xp || 0) + actualXp,
+              coins: (userProfile.coins || 0) + actualCoins,
+            })
+            .eq("id", payload.userId);
+        }
       }
     } catch (err) {
       console.warn("Could not record node completion to Supabase:", err);
@@ -312,13 +346,21 @@ export async function recordNodeCompletion(payload: {
       completed.push(payload.nodeId);
       localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(completed));
     }
-    const currentXp = parseInt(localStorage.getItem("thinkbin_xp") || "0", 10);
-    const currentCoins = parseInt(localStorage.getItem("thinkbin_coins") || "0", 10);
-    localStorage.setItem("thinkbin_xp", (currentXp + payload.xpEarned).toString());
-    localStorage.setItem("thinkbin_coins", (currentCoins + payload.coinsEarned).toString());
+
+    if (!isAlreadyCompleted) {
+      const currentXp = parseInt(localStorage.getItem("thinkbin_xp") || "0", 10);
+      const currentCoins = parseInt(localStorage.getItem("thinkbin_coins") || "0", 10);
+      localStorage.setItem("thinkbin_xp", (currentXp + payload.xpEarned).toString());
+      localStorage.setItem("thinkbin_coins", (currentCoins + payload.coinsEarned).toString());
+    }
   }
 
-  return true;
+  return {
+    success: true,
+    isRepeat: isAlreadyCompleted,
+    xpAwarded: isAlreadyCompleted ? 0 : payload.xpEarned,
+    coinsAwarded: isAlreadyCompleted ? 0 : payload.coinsEarned,
+  };
 }
 
 /**

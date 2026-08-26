@@ -366,29 +366,37 @@ export default function BelajarPage() {
             </p>
 
             {/* Rewards Pill */}
-            <div className="flex items-center justify-center gap-3 bg-[#FDE8A5] border-[2px] border-[#D39A1C] rounded-xl p-2 mb-4">
-              <div className="flex items-center gap-1.5 font-fredoka font-bold text-xs text-[#1CB0F6]">
-                <Image
-                  src="/assets_game/exp_progress.png"
-                  alt="XP Daun Petir"
-                  width={18}
-                  height={18}
-                  className="object-contain"
-                />
-                <span>+{selectedLevel.xpReward} XP</span>
+            {completedNodeIds.includes(selectedLevel.nodeId) ? (
+              <div className="flex items-center justify-center gap-2 bg-[#ecfccb] border-[2px] border-[#65a30d] rounded-xl p-2 mb-4">
+                <span className="font-fredoka font-black text-xs text-[#3f6212]">
+                  ✅ Sudah Selesai (Latihan Ulang: +0 XP, +0 Koin)
+                </span>
               </div>
-              <span className="text-[#D39A1C]">•</span>
-              <div className="flex items-center gap-1.5 font-fredoka font-bold text-xs text-[#F57F17]">
-                <Image
-                  src="/assets_game/coin.png"
-                  alt="Koin Daun Kuning"
-                  width={18}
-                  height={18}
-                  className="object-contain"
-                />
-                <span>+{selectedLevel.coinReward} Koin</span>
+            ) : (
+              <div className="flex items-center justify-center gap-3 bg-[#FDE8A5] border-[2px] border-[#D39A1C] rounded-xl p-2 mb-4">
+                <div className="flex items-center gap-1.5 font-fredoka font-bold text-xs text-[#1CB0F6]">
+                  <Image
+                    src="/assets_game/exp_progress.png"
+                    alt="XP Daun Petir"
+                    width={18}
+                    height={18}
+                    className="object-contain"
+                  />
+                  <span>+{selectedLevel.xpReward} XP</span>
+                </div>
+                <span className="text-[#D39A1C]">•</span>
+                <div className="flex items-center gap-1.5 font-fredoka font-bold text-xs text-[#F57F17]">
+                  <Image
+                    src="/assets_game/coin.png"
+                    alt="Koin Daun Kuning"
+                    width={18}
+                    height={18}
+                    className="object-contain"
+                  />
+                  <span>+{selectedLevel.coinReward} Koin</span>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="flex flex-col gap-2">
               <button
@@ -396,7 +404,13 @@ export default function BelajarPage() {
                 onClick={handleStartLevel}
                 className="w-full py-3.5 bg-[#58CC02] hover:bg-[#4CAF00] text-white font-fredoka font-extrabold text-base rounded-2xl shadow-[0_5px_0_#4CAF00] active:translate-y-1 active:shadow-none transition-all cursor-pointer uppercase tracking-wide"
               >
-                {selectedLevel.type === "kuis"
+                {completedNodeIds.includes(selectedLevel.nodeId)
+                  ? selectedLevel.type === "kuis"
+                    ? "🔄 Ulangi Kuis Tantangan"
+                    : selectedLevel.type === "komitmen"
+                    ? "✍️ Baca Komitmen Hijau"
+                    : "📖 Baca Ulang Materi"
+                  : selectedLevel.type === "kuis"
                   ? "🎮 Mulai Kuis Tantangan"
                   : selectedLevel.type === "komitmen"
                   ? "✍️ Tulis Komitmen Hijau"
