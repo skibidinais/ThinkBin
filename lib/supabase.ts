@@ -457,15 +457,17 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
     }
   }
 
-  // Local Storage fallback for testing
+  // Fallback to active user only if Supabase has no data
   if (typeof window !== "undefined") {
-    const raw = localStorage.getItem("tb_registered_users");
+    // Purge deprecated test cache
+    localStorage.removeItem("tb_registered_users");
+    const raw = localStorage.getItem("tb_active_user");
     if (raw) {
-      const users: UserProfile[] = JSON.parse(raw);
-      const filtered = className && className !== "ALL"
-        ? users.filter((u) => u.class_name === className)
-        : users;
-      return filtered.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+      const u: UserProfile = JSON.parse(raw);
+      if (className && className !== "ALL" && u.class_name !== className) {
+        return [];
+      }
+      return [u];
     }
   }
 
@@ -512,21 +514,22 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
     }
   }
 
-  // Local Storage fallback
+  // Fallback to active user's class only
   if (typeof window !== "undefined") {
-    const raw = localStorage.getItem("tb_registered_users");
+    // Purge deprecated test cache
+    localStorage.removeItem("tb_registered_users");
+    const raw = localStorage.getItem("tb_active_user");
     if (raw) {
-      const users: UserProfile[] = JSON.parse(raw);
-      const classMap: Record<string, { total_xp: number; student_count: number }> = {};
-      for (const u of users) {
-        if (!u.class_name) continue;
-        if (!classMap[u.class_name]) classMap[u.class_name] = { total_xp: 0, student_count: 0 };
-        classMap[u.class_name].total_xp += (u.xp || 0);
-        classMap[u.class_name].student_count += 1;
+      const u: UserProfile = JSON.parse(raw);
+      if (u.class_name) {
+        return [
+          {
+            class_name: u.class_name,
+            total_xp: u.xp || 0,
+            student_count: 1,
+          },
+        ];
       }
-      return Object.keys(classMap)
-        .map((cn) => ({ class_name: cn, total_xp: classMap[cn].total_xp, student_count: classMap[cn].student_count }))
-        .sort((a, b) => b.total_xp - a.total_xp);
     }
   }
 
