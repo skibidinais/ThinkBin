@@ -23,16 +23,16 @@ export default function LoginPage() {
 
   return (
     <div
-      className="flex flex-col min-h-screen h-[100dvh] justify-between p-6 pb-9 select-none overflow-hidden"
+      className="relative w-full h-[100dvh] min-h-[100dvh] flex flex-col justify-between items-center px-6 py-5 select-none overflow-hidden"
       style={{
         background: "linear-gradient(180deg, #85dd16 0%, #68c309 100%)",
       }}
     >
-      {/* ── CSS FOR MASCOT BREATHING & WAVING ANIMATION ── */}
+      {/* ── CSS FOR MASCOT FLOATING ANIMATION ── */}
       <style jsx>{`
         @keyframes mascotFloat {
           0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(-1.5deg); }
+          50% { transform: translateY(-6px) rotate(-1.5deg); }
           100% { transform: translateY(0px) rotate(0deg); }
         }
         .mascot-hero {
@@ -40,44 +40,46 @@ export default function LoginPage() {
         }
       `}</style>
 
-      {/* ── 1. LARGE MASCOT ILLUSTRATION (TOP ~60% OF SCREEN) ── */}
-      <div className="w-full flex-1 flex items-center justify-center pt-4 pb-2 relative">
-        {/* Subtle waving motion arcs on top-right */}
-        <div className="absolute top-10 right-10 text-[#4a8500] font-black text-2xl opacity-60 pointer-events-none select-none">
-          ))
+      {/* ── CENTERED SINGLE-VIEWPORT CONTENT GROUP ── */}
+      <div className="w-full flex-1 flex flex-col items-center justify-center my-auto max-w-[340px]">
+        
+        {/* 1. MASCOT HERO ILLUSTRATION (Proportionate, fits 100% on 375x812) */}
+        <div className="relative w-full flex items-center justify-center mb-3">
+          {/* Subtle waving motion arcs on top-right */}
+          <div className="absolute top-2 right-4 text-[#4a8500] font-black text-xl opacity-60 pointer-events-none select-none">
+            ))
+          </div>
+
+          <div className="mascot-hero relative w-52 h-52 sm:w-56 sm:h-56 max-h-[34vh] aspect-square flex items-center justify-center">
+            <Image
+              src="/screens_assets/mascot_main.png"
+              alt="ThinkBin Mascot Hero"
+              width={240}
+              height={240}
+              className="w-full h-full object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.22)] pointer-events-none"
+              priority
+            />
+          </div>
         </div>
 
-        <div className="mascot-hero relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
-          <Image
-            src="/screens_assets/mascot_main.png"
-            alt="ThinkBin Mascot Hero"
-            width={320}
-            height={320}
-            className="w-full h-full object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.22)] pointer-events-none"
-            priority
-          />
+        {/* 2. WELCOME TEXT (Heading & Subtext) */}
+        <div className="text-center px-1 mb-5">
+          <h1 className="font-fredoka font-black text-[25px] sm:text-[27px] text-[#0b1a2d] leading-tight mb-2 tracking-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)]">
+            Selamat Datang di ThinkBin!
+          </h1>
+          <p className="font-nunito font-extrabold text-[13.5px] sm:text-[14px] text-[#1e3a1e] leading-relaxed">
+            Belajar memilah sampah cerdas, kumpulkan poin, dan raih rank tertinggi bersama teman sekelasmu!
+          </p>
         </div>
-      </div>
 
-      {/* ── 2. WELCOME TEXT (Heading & Subtext with high contrast against green) ── */}
-      <div className="text-center px-2 mb-6">
-        <h1 className="font-fredoka font-black text-[30px] sm:text-[32px] text-[#0b1a2d] leading-tight mb-2.5 tracking-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)]">
-          Selamat Datang di ThinkBin!
-        </h1>
-        <p className="font-nunito font-extrabold text-[14.5px] sm:text-[15px] text-[#1e3a1e] leading-relaxed max-w-[320px] mx-auto">
-          Belajar memilah sampah cerdas, kumpulkan poin, dan raih rank tertinggi bersama teman sekelasmu!
-        </p>
-      </div>
-
-      {/* ── 3. GOOGLE SIGN-IN BUTTON ── */}
-      <div className="w-full flex flex-col items-center">
+        {/* 3. GOOGLE SIGN-IN BUTTON */}
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full max-w-[320px] h-14 bg-white border-[2.5px] border-[#2b2b2b] rounded-[22px] shadow-[0_5px_0_#2b2b2b] active:translate-y-[3px] active:shadow-[0_2px_0_#2b2b2b] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-[#f8fafc]"
+          className="w-full h-13 sm:h-14 bg-white border-[2.5px] border-[#2b2b2b] rounded-[22px] shadow-[0_4.5px_0_#2b2b2b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#2b2b2b] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-[#f8fafc]"
         >
           {/* Google Official SVG Icon */}
-          <svg className="w-[22px] h-[22px]" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -95,11 +97,12 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          <span className="font-fredoka font-black text-[17px] text-[#1e293b] tracking-wide">
+          <span className="font-fredoka font-black text-base text-[#1e293b] tracking-wide">
             Google
           </span>
         </button>
       </div>
+
     </div>
   );
 }
