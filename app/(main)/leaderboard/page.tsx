@@ -91,18 +91,72 @@ export default function LeaderboardPage() {
   const restEntries = entries.filter((e) => e.rank >= 4);
 
   return (
-    <div className="relative flex flex-col min-h-full pb-28 select-none bg-gradient-to-b from-[#aee0fd] via-[#d7f0fd] to-[#ebf7ff] overflow-y-auto no-scrollbar">
-      {/* ── 1. ANIMATED CLOUDS SKY BACKDROP ── */}
+    <div
+      className="relative flex flex-col min-h-full pb-28 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
+      style={{
+        backgroundColor: "#bfe8ff",
+        backgroundImage: "url('/screens_assets/background_scenery.png')",
+      }}
+    >
+      {/* ── CSS FOR FLOATING CLOUDS AND HEARTS ANIMATION ── */}
+      <style jsx>{`
+        @keyframes cloudDriftRight {
+          0% { transform: translateX(-150px); }
+          100% { transform: translateX(450px); }
+        }
+        @keyframes floatHeart {
+          0% { transform: translateY(14px) scale(0.7); opacity: 0; }
+          50% { opacity: 1; transform: translateY(-6px) scale(1.2); }
+          100% { transform: translateY(-26px) scale(0.9); opacity: 0; }
+        }
+        .cloud-drift-1 {
+          animation: cloudDriftRight 26s linear infinite;
+        }
+        .cloud-drift-2 {
+          animation: cloudDriftRight 38s linear infinite;
+          animation-delay: -14s;
+        }
+        .cloud-drift-3 {
+          animation: cloudDriftRight 45s linear infinite;
+          animation-delay: -28s;
+        }
+        .cloud-drift-4 {
+          animation: cloudDriftRight 32s linear infinite;
+          animation-delay: -7s;
+        }
+        .h1 { animation: floatHeart 2.5s ease-in-out infinite; animation-delay: 0s; }
+        .h2 { animation: floatHeart 2.5s ease-in-out infinite; animation-delay: 0.8s; }
+        .h3 { animation: floatHeart 2.5s ease-in-out infinite; animation-delay: 1.5s; }
+      `}</style>
+
+      {/* ── 1. AUTHENTIC ANIMATED CLOUDS SKY LAYER ── */}
       <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-3 left-3 w-28 h-9 bg-white/90 rounded-full opacity-90 filter drop-shadow-sm animate-pulse" />
-        <div className="absolute top-10 right-4 w-36 h-11 bg-white/85 rounded-full opacity-85 filter drop-shadow-sm" />
-        <div className="absolute top-24 left-16 w-24 h-7 bg-white/80 rounded-full opacity-80 filter drop-shadow-sm" />
+        {/* Cloud 1 */}
+        <div className="cloud-drift-1 absolute top-4 w-[90px] h-[28px] bg-white rounded-full opacity-92 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+          <div className="absolute -top-[18px] left-[16px] w-[38px] h-[38px] bg-white rounded-full" />
+          <div className="absolute -top-[10px] left-[45px] w-[26px] h-[26px] bg-white rounded-full" />
+        </div>
+        {/* Cloud 2 */}
+        <div className="cloud-drift-2 absolute top-12 w-[120px] h-[36px] bg-white rounded-full opacity-88 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+          <div className="absolute -top-[24px] left-[24px] w-[52px] h-[52px] bg-white rounded-full" />
+          <div className="absolute -top-[14px] left-[64px] w-[36px] h-[36px] bg-white rounded-full" />
+        </div>
+        {/* Cloud 3 */}
+        <div className="cloud-drift-3 absolute top-24 w-[60px] h-[20px] bg-white rounded-full opacity-75 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+          <div className="absolute -top-[12px] left-[10px] w-[26px] h-[26px] bg-white rounded-full" />
+          <div className="absolute -top-[8px] left-[30px] w-[18px] h-[18px] bg-white rounded-full" />
+        </div>
+        {/* Cloud 4 */}
+        <div className="cloud-drift-4 absolute top-36 w-[105px] h-[32px] bg-white rounded-full opacity-70 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+          <div className="absolute -top-[20px] left-[18px] w-[44px] h-[44px] bg-white rounded-full" />
+          <div className="absolute -top-[12px] left-[54px] w-[30px] h-[30px] bg-white rounded-full" />
+        </div>
       </div>
 
       <div className="relative z-10 px-4 pt-3">
-        {/* ── 2. HEADER (Title & Stat Pills) ── */}
+        {/* ── 2. HEADER SECTION (Title & Stat Pills) ── */}
         <header className="flex items-center justify-between mb-3">
-          <h1 className="font-fredoka font-black text-[26px] text-[#0f172a] tracking-tight drop-shadow-xs">
+          <h1 className="font-fredoka font-black text-[26px] text-[#0f172a] tracking-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
             Leaderboard
           </h1>
 
@@ -121,7 +175,7 @@ export default function LeaderboardPage() {
               </span>
             </div>
 
-            {/* XP Pill */}
+            {/* Energy XP Pill */}
             <div className="flex items-center gap-1.5 bg-white border-2 border-[#fde047] rounded-full px-3 py-1 shadow-[0_4px_10px_rgba(0,0,0,0.08)]">
               <Image
                 src="/assets_game/exp_progress.png"
@@ -138,7 +192,7 @@ export default function LeaderboardPage() {
         </header>
 
         {/* ── 3. VIEW TOGGLE (2 PILIHAN: INDIVIDU vs KELAS) ── */}
-        <div className="w-full max-w-[280px] mx-auto bg-white/80 p-1 rounded-full border-2 border-[#7dd3fc] shadow-sm flex items-center justify-between mb-6 backdrop-blur-xs">
+        <div className="w-full max-w-[280px] mx-auto bg-white/85 p-1 rounded-full border-2 border-[#7dd3fc] shadow-sm flex items-center justify-between mb-8 backdrop-blur-xs">
           <button
             type="button"
             onClick={() => setActiveTab("individu")}
@@ -168,10 +222,10 @@ export default function LeaderboardPage() {
           {/* RANK 2: LEFT STUMP (LEONARDO) */}
           <div className="flex-1 flex flex-col items-center">
             {/* Mascot Rank 2 */}
-            <div className="relative w-20 h-20 -mb-3 z-20">
+            <div className="relative w-20 h-20 -mb-3 z-20 flex items-center justify-center">
               <Image
-                src="/screens_assets/mascot_thumbsup_transparent.png"
-                alt="Rank 2 Mascot"
+                src="/screens_assets/mascot_leonardo.png"
+                alt="Leonardo Mascot"
                 width={80}
                 height={80}
                 className="object-contain drop-shadow-md"
@@ -184,13 +238,13 @@ export default function LeaderboardPage() {
                 <div className="w-3/5 h-1/2 border border-[#8a4d1e]/40 rounded-full" />
               </div>
               {/* Stump Bark */}
-              <div className="w-full h-28 bg-gradient-to-b from-[#a4622f] via-[#87471a] to-[#69320e] rounded-b-2xl flex flex-col items-center pt-3 pb-2 px-1 shadow-[inset_-6px_0_10px_rgba(0,0,0,0.25),inset_6px_0_10px_rgba(255,255,255,0.12),0_8px_16px_rgba(0,0,0,0.15)] text-white relative">
-                {/* Sprout Branch */}
+              <div className="w-full h-28 bg-gradient-to-b from-[#a4622f] via-[#87471a] to-[#69320e] rounded-b-2xl border-x-2 border-b-2 border-[#5c2a08] flex flex-col items-center pt-3 pb-2 px-1 shadow-[inset_-6px_0_10px_rgba(0,0,0,0.25),inset_6px_0_10px_rgba(255,255,255,0.12),0_8px_16px_rgba(0,0,0,0.15)] text-white relative">
+                {/* Sprout Branch Left */}
                 <div className="absolute top-8 -left-3 flex items-center -rotate-20 z-20 pointer-events-none">
                   <div className="w-3 h-1 bg-[#78350f] rounded-full" />
-                  <div className="w-3 h-2 bg-gradient-to-br from-[#84cc16] to-[#4d7c0f] rounded-tr-md rounded-bl-md shadow-xs -mt-1 -ml-1" />
+                  <div className="w-3.5 h-2 bg-gradient-to-br from-[#84cc16] to-[#4d7c0f] rounded-tr-md rounded-bl-md shadow-xs -mt-1 -ml-1" />
                 </div>
-                {/* Medal 2 */}
+                {/* Silver/Orange Medal 2 */}
                 <div className="w-8 h-8 rounded-full bg-[radial-gradient(circle_at_35%_30%,#fed7aa_0%,#ea580c_55%,#9a3412_100%)] border-[2.5px] border-[#9a3412] flex items-center justify-center font-fredoka font-black text-sm text-white shadow-md mb-1">
                   2
                 </div>
@@ -213,11 +267,11 @@ export default function LeaderboardPage() {
                 👑
               </span>
               <Image
-                src="/screens_assets/mascot_cheer.jpg"
-                alt="Rank 1 Mascot"
+                src="/screens_assets/mascot_max.png"
+                alt="Max Mascot"
                 width={88}
                 height={88}
-                className="object-contain drop-shadow-lg rounded-full"
+                className="object-contain drop-shadow-lg"
               />
             </div>
             {/* Tree Stump Tall */}
@@ -226,8 +280,8 @@ export default function LeaderboardPage() {
               <div className="w-[96%] h-6 bg-[radial-gradient(ellipse_at_50%_50%,#e8c697_0%,#d4a76f_40%,#b8864e_85%,#8c4e1f_100%)] rounded-full -mb-3 z-10 shadow-inner flex items-center justify-center">
                 <div className="w-3/5 h-1/2 border border-[#8a4d1e]/40 rounded-full" />
               </div>
-              {/* Stump Bark */}
-              <div className="w-full h-36 bg-gradient-to-b from-[#a4622f] via-[#87471a] to-[#69320e] rounded-b-2xl flex flex-col items-center pt-3.5 pb-2 px-1 shadow-[inset_-6px_0_10px_rgba(0,0,0,0.25),inset_6px_0_10px_rgba(255,255,255,0.12),0_8px_16px_rgba(0,0,0,0.15)] text-white relative">
+              {/* Stump Bark Tall */}
+              <div className="w-full h-36 bg-gradient-to-b from-[#a4622f] via-[#87471a] to-[#69320e] rounded-b-2xl border-x-2 border-b-2 border-[#5c2a08] flex flex-col items-center pt-3.5 pb-2 px-1 shadow-[inset_-6px_0_10px_rgba(0,0,0,0.25),inset_6px_0_10px_rgba(255,255,255,0.12),0_8px_16px_rgba(0,0,0,0.15)] text-white relative">
                 {/* Gold Medal 1 */}
                 <div className="w-9 h-9 rounded-full bg-[radial-gradient(circle_at_35%_30%,#fef08a_0%,#f59e0b_50%,#b45309_100%)] border-[2.5px] border-[#d97706] flex items-center justify-center font-fredoka font-black text-base text-white shadow-md mb-1 animate-pulse">
                   1
@@ -246,11 +300,15 @@ export default function LeaderboardPage() {
           {/* RANK 3: RIGHT STUMP (SUSAN) */}
           <div className="flex-1 flex flex-col items-center">
             {/* Mascot Rank 3 + Floating Hearts */}
-            <div className="relative w-20 h-20 -mb-3 z-20">
-              <div className="absolute -top-2 right-0 text-xs animate-ping">❤️</div>
+            <div className="relative w-20 h-20 -mb-3 z-20 flex items-center justify-center">
+              <div className="absolute -top-3 right-0 flex flex-col gap-1 pointer-events-none z-30">
+                <span className="h1 text-sm">❤️</span>
+                <span className="h2 text-xs -ml-2">❤️</span>
+                <span className="h3 text-xs -mr-1">💖</span>
+              </div>
               <Image
-                src="/screens_assets/mascot_wink.png"
-                alt="Rank 3 Mascot"
+                src="/screens_assets/mascot_susan.png"
+                alt="Susan Mascot"
                 width={80}
                 height={80}
                 className="object-contain drop-shadow-md"
@@ -263,13 +321,13 @@ export default function LeaderboardPage() {
                 <div className="w-3/5 h-1/2 border border-[#8a4d1e]/40 rounded-full" />
               </div>
               {/* Stump Bark */}
-              <div className="w-full h-24 bg-gradient-to-b from-[#a4622f] via-[#87471a] to-[#69320e] rounded-b-2xl flex flex-col items-center pt-3 pb-2 px-1 shadow-[inset_-6px_0_10px_rgba(0,0,0,0.25),inset_6px_0_10px_rgba(255,255,255,0.12),0_8px_16px_rgba(0,0,0,0.15)] text-white relative">
-                {/* Sprout Branch */}
+              <div className="w-full h-24 bg-gradient-to-b from-[#a4622f] via-[#87471a] to-[#69320e] rounded-b-2xl border-x-2 border-b-2 border-[#5c2a08] flex flex-col items-center pt-3 pb-2 px-1 shadow-[inset_-6px_0_10px_rgba(0,0,0,0.25),inset_6px_0_10px_rgba(255,255,255,0.12),0_8px_16px_rgba(0,0,0,0.15)] text-white relative">
+                {/* Sprout Branch Right */}
                 <div className="absolute top-7 -right-3 flex items-center rotate-20 z-20 pointer-events-none">
                   <div className="w-3 h-1 bg-[#78350f] rounded-full" />
-                  <div className="w-3 h-2 bg-gradient-to-br from-[#84cc16] to-[#4d7c0f] rounded-tl-md rounded-br-md shadow-xs -mt-1 -mr-1" />
+                  <div className="w-3.5 h-2 bg-gradient-to-br from-[#84cc16] to-[#4d7c0f] rounded-tl-md rounded-br-md shadow-xs -mt-1 -mr-1" />
                 </div>
-                {/* Bronze Medal 3 */}
+                {/* Bronze/Silver Medal 3 */}
                 <div className="w-8 h-8 rounded-full bg-[radial-gradient(circle_at_35%_30%,#ffffff_0%,#cbd5e1_55%,#64748b_100%)] border-[2.5px] border-[#94a3b8] flex items-center justify-center font-fredoka font-black text-sm text-[#334155] shadow-md mb-1">
                   3
                 </div>
