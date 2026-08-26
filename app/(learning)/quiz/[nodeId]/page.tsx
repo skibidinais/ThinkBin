@@ -166,8 +166,8 @@ export default function QuizPage() {
           </div>
         </header>
 
-        {/* ── 4. NARROWER WHITE QUIZ CARD CONTAINER (Shows generous wood margin on both sides) ── */}
-        <div className="relative z-10 w-[90%] max-w-[365px] mx-auto bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.35)] px-4 pt-10 pb-7 flex flex-col gap-3.5 mb-6">
+        {/* ── 4. NARROWER WHITE QUIZ CARD CONTAINER ── */}
+        <div className="relative z-10 w-[90%] max-w-[365px] mx-auto bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.35)] px-4 pt-10 pb-7 flex flex-col gap-3.5 mb-6 min-h-[420px] justify-center">
           
           {/* Floating Pill Badge: Soal Pemahaman • Node X */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] px-6 py-2 rounded-full z-20 whitespace-nowrap">
@@ -177,7 +177,7 @@ export default function QuizPage() {
           </div>
 
           {!isSubmitted ? (
-            <>
+            <div className="flex flex-col gap-3.5 w-full">
               {/* Bantuan (Hint) Pill Button */}
               <button
                 type="button"
@@ -238,7 +238,7 @@ export default function QuizPage() {
                 })}
               </div>
 
-              {/* JAWAB Button (Unobstructed & Clean) */}
+              {/* JAWAB Button */}
               <div className="w-full flex justify-center pt-2">
                 <button
                   type="button"
@@ -253,26 +253,27 @@ export default function QuizPage() {
                   JAWAB
                 </button>
               </div>
-            </>
+            </div>
           ) : (
-            /* Result Feedback Card */
-            <div className="flex flex-col items-center text-center py-2 gap-3 animate-in zoom-in-95 duration-200">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-0.5">
+            /* ── PERFECTLY VERTICALLY CENTERED RESULT FEEDBACK CARD ── */
+            <div className="flex flex-col items-center justify-center text-center my-auto py-2 gap-3.5 w-full animate-in zoom-in-95 duration-200">
+              {/* Prominent, Large ThinkBin Mascot Logo */}
+              <div className="w-28 h-16 flex items-center justify-center mb-0.5">
                 <Image
                   src="/screens_assets/logo.png"
-                  alt="ThinkBin"
-                  width={56}
+                  alt="ThinkBin Logo"
+                  width={105}
                   height={56}
-                  className="object-contain"
+                  className="object-contain w-auto h-full max-h-14 drop-shadow-xs"
                 />
               </div>
 
-              <h2 className="font-fredoka font-black text-lg text-[#291e13]">
+              <h2 className="font-fredoka font-black text-[20px] text-[#291e13] leading-tight">
                 {isCorrect ? "Jawaban Benar!" : "Jawaban Kurang Tepat"}
               </h2>
 
               <div
-                className={`px-4 py-1.5 rounded-2xl font-fredoka font-black text-sm border-[2.5px] ${
+                className={`px-5 py-2 rounded-2xl font-fredoka font-black text-[15px] border-[2.5px] shadow-xs ${
                   isCorrect
                     ? "bg-[#ebf9e5] border-[#3fa427] text-[#2c7a1c]"
                     : "bg-[#fef2f2] border-[#ef4444] text-[#b91c1c]"
@@ -283,16 +284,18 @@ export default function QuizPage() {
                   : "Coba pelajari lagi konsep intinya"}
               </div>
 
-              <p className="font-nunito font-semibold text-xs text-[#553e2a] leading-relaxed max-w-[280px] bg-[#FFFDF5] p-3 rounded-xl border border-[#EADFC9]">
-                {question.explanation}
-              </p>
+              <div className="w-full bg-[#FFFDF5] border-[1.5px] border-[#EADFC9] rounded-2xl p-3.5 text-center shadow-inner">
+                <p className="font-nunito font-bold text-[13px] text-[#553e2a] leading-relaxed">
+                  {question.explanation}
+                </p>
+              </div>
 
               <div className="flex items-center gap-3 w-full justify-center pt-2">
                 {!isCorrect ? (
                   <button
                     type="button"
                     onClick={handleRestart}
-                    className="flex-1 max-w-[130px] py-2.5 bg-white border-[3px] border-[#6b3506] shadow-[0_3px_0_#542803] rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase cursor-pointer"
+                    className="flex-1 max-w-[135px] py-3 bg-white border-[3px] border-[#6b3506] shadow-[0_3px_0_#542803] active:translate-y-0.5 active:shadow-none rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase cursor-pointer"
                   >
                     MAIN LAGI
                   </button>
@@ -301,7 +304,7 @@ export default function QuizPage() {
                 <button
                   type="button"
                   onClick={handleContinue}
-                  className="flex-1 max-w-[150px] py-2.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase tracking-wider cursor-pointer"
+                  className="flex-1 max-w-[155px] py-3 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-0.5 active:shadow-none rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase tracking-wider cursor-pointer"
                 >
                   LANJUT
                 </button>
