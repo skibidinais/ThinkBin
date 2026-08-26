@@ -155,65 +155,59 @@ export default function ProfilPage() {
   const equippedConfig = selectedFrame ? BORDERS_CATALOG[selectedFrame] : null;
 
   return (
-    <div className="relative flex flex-col min-h-full px-4 pt-3 pb-28 select-none bg-[#FFFBEA]">
+    <div className="relative flex flex-col min-h-full px-4 pt-3 pb-28 select-none bg-[#FDE8A5]">
       
-      {/* ── 1. HEADER (Circular Back Button & Title, NO Logout Button) ── */}
-      <header className="flex items-center gap-3 mb-3.5 pt-1">
+      {/* ── 1. HEADER (Back Button & Title) ── */}
+      <header className="flex items-center gap-3 mb-3 pt-1">
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="w-11 h-11 rounded-full bg-white border-[2.8px] border-[#382C22] shadow-[0_3px_0_#382C22] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer transition-transform"
-          aria-label="Kembali ke Beranda"
+          className="w-10 h-10 rounded-[16px] bg-white border-[2.5px] border-[#382C22] shadow-[0_3px_0_#382C22] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer transition-transform"
+          aria-label="Kembali"
         >
-          <svg viewBox="0 0 24 24" className="w-5 h-5 mr-0.5">
-            <path
-              d="M15 19l-7-7 7-7"
-              fill="none"
-              stroke="#382C22"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#382C22" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
           </svg>
         </button>
 
-        <h1 className="font-fredoka font-black text-[22px] text-[#382C22]">
+        <h1 className="font-fredoka font-black text-[24px] text-[#382C22] tracking-tight">
           Profil Saya
         </h1>
       </header>
 
-      {/* ── 2. PROFILE HERO BANNER CARD (Cover Landscape, Centered Avatar, Name, XP Bar) ── */}
-      <div className="relative bg-white border-[3px] border-[#382C22] rounded-[28px] overflow-hidden shadow-[0_5px_0_#382C22] mb-3.5">
+      {/* ── 2. CARD 1: PROFILE HERO BANNER CARD (Cover Landscape, Mascot Avatar, Name, Level Bar) ── */}
+      <div className="relative bg-[#E8F5E9] border-[2.5px] border-[#382C22] rounded-[24px] overflow-hidden shadow-[0_4px_0_rgba(0,0,0,0.05)] mb-3">
         {/* Landscape Cover */}
-        <div className="relative w-full h-28 sm:h-32 overflow-hidden bg-[#e0f2fe]">
+        <div className="relative w-full h-32 sm:h-36 overflow-hidden">
           <Image
             src="/screens_assets/hero_bg.jpg"
             alt="Hero Landscape"
             fill
-            className="object-cover"
+            className="object-cover object-bottom"
             priority
           />
         </div>
 
-        {/* Content Container */}
-        <div className="relative flex flex-col items-center px-4 pb-4 -mt-14">
+        {/* Content Layer Over Landscape */}
+        <div className="relative flex flex-col items-center px-4 pb-4 -mt-16 z-10">
           
           {/* Avatar Container with Frame Overlay & Camera Edit Button */}
-          <div className="relative w-24 h-24 mb-2 flex items-center justify-center">
-            <div className="w-[84px] h-[84px] rounded-[24px] bg-white border-[3px] border-[#382C22] flex items-center justify-center overflow-hidden shadow-md">
+          <div className="relative w-[94px] h-[94px] mb-2 flex items-center justify-center">
+            <div className="w-[68px] h-[68px] rounded-[16px] bg-white border-[2px] border-[#382C22] flex items-center justify-center overflow-hidden shadow-sm">
               <Image
                 src="/screens_assets/mascot_thumbsup_transparent.png"
-                alt="Avatar Mascot"
-                width={70}
-                height={70}
+                alt="User Avatar"
+                width={54}
+                height={54}
                 className="object-contain"
               />
             </div>
 
-            {/* Equipped Frame Overlay */}
+            {/* Equipped Border Overlay */}
             {equippedConfig && (
               <div
-                className="absolute inset-0 pointer-events-none scale-110 flex items-center justify-center"
+                className="absolute inset-0 pointer-events-none scale-105 flex items-center justify-center z-20"
                 style={{ filter: equippedConfig.filter || "none" }}
               >
                 <Image
@@ -227,10 +221,10 @@ export default function ProfilPage() {
 
             {/* Camera / Edit Icon Button */}
             <div
-              className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#22c55e] border-[2px] border-[#382C22] rounded-lg shadow-xs flex items-center justify-center"
+              className="absolute bottom-1 right-1 w-7 h-7 bg-[#4CAF50] border-[2px] border-[#382C22] rounded-[10px] shadow-[0_2px_0_#318B35] flex items-center justify-center cursor-pointer z-30"
               title="Foto Profil"
             >
-              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
               </svg>
@@ -238,19 +232,19 @@ export default function ProfilPage() {
           </div>
 
           {/* User Display Name */}
-          <h2 className="font-fredoka font-black text-[20px] text-[#0b1a2d] text-center leading-tight mb-2.5">
-            {user?.display_name || "Siswa ThinkBin"}
+          <h2 className="font-fredoka font-black text-[22px] text-[#1F2937] text-center leading-tight mb-2 drop-shadow-sm">
+            {user?.display_name || "Hendra Wijaya"}
           </h2>
 
-          {/* XP Progress Bar */}
-          <div className="w-full max-w-[290px] flex flex-col items-center gap-1">
-            <div className="w-full h-3.5 bg-[#f1f5f9] border-[2px] border-[#382C22] rounded-full overflow-hidden p-0.5">
+          {/* Level XP Progress Bar Container */}
+          <div className="w-full max-w-[280px] bg-white/95 backdrop-blur-xs border-[1.5px] border-[#382C22] rounded-[14px] px-3.5 py-1.5 shadow-[0_2px_0_#382C22] flex flex-col items-center gap-1">
+            <div className="w-full h-3 bg-[#E5E7EB] border-[1.5px] border-[#382C22] rounded-[8px] overflow-hidden p-0.5">
               <div
-                className="h-full bg-gradient-to-r from-[#fad85e] to-[#e7a627] rounded-full transition-all duration-500"
-                style={{ width: `${Math.max(progressPercent, 8)}%` }}
+                className="h-full bg-[#F5B82E] rounded-[6px] transition-all duration-500"
+                style={{ width: `${Math.max(progressPercent, 10)}%` }}
               />
             </div>
-            <span className="font-fredoka font-extrabold text-[11px] text-[#382C22]">
+            <span className="font-fredoka font-black text-[11px] text-[#382C22]">
               {userXp} / {currentRank.maxXp} XP
             </span>
           </div>
@@ -258,12 +252,12 @@ export default function ProfilPage() {
         </div>
       </div>
 
-      {/* ── 3. THREE SEPARATE STATS CARDS (Streak, XP, Koin) ── */}
-      <div className="grid grid-cols-3 gap-2.5 mb-3.5">
+      {/* ── 3. CARD 2: THREE SEPARATE SQUARE STATS CARDS (Streak, XP, Koin) ── */}
+      <div className="grid grid-cols-3 gap-2.5 mb-3">
         
-        {/* Card 1: Streak */}
-        <div className="flex flex-col items-center bg-white border-[3px] border-[#382C22] rounded-[22px] p-2.5 shadow-[0_4px_0_#382C22]">
-          <div className="w-11 h-11 rounded-2xl bg-[#FFF7ED] border-[1.5px] border-[#FDBA74] flex items-center justify-center mb-1.5 overflow-hidden">
+        {/* Square 1: Streak */}
+        <div className="flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-[22px] p-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
+          <div className="w-12 h-12 rounded-[16px] bg-[#FFF0E6] border-[2px] border-[#382C22] shadow-[0_2.5px_0_#382C22] flex items-center justify-center mb-1.5 overflow-hidden">
             <Image
               src="/screens_assets/streak_icon.png"
               alt="Streak Icon"
@@ -272,17 +266,17 @@ export default function ProfilPage() {
               className="object-contain"
             />
           </div>
-          <span className="font-fredoka font-black text-[15px] text-[#382C22] leading-tight">
+          <span className="font-fredoka font-black text-[16px] text-[#382C22] leading-tight">
             {user?.streak ?? 1} Hari
           </span>
-          <span className="font-nunito font-bold text-[11px] text-[#796F65]">
+          <span className="font-fredoka font-bold text-[11px] text-[#796F65]">
             Streak
           </span>
         </div>
 
-        {/* Card 2: XP */}
-        <div className="flex flex-col items-center bg-white border-[3px] border-[#382C22] rounded-[22px] p-2.5 shadow-[0_4px_0_#382C22]">
-          <div className="w-11 h-11 rounded-2xl bg-[#FEFCE8] border-[1.5px] border-[#FDE047] flex items-center justify-center mb-1.5 overflow-hidden">
+        {/* Square 2: XP */}
+        <div className="flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-[22px] p-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
+          <div className="w-12 h-12 rounded-[16px] bg-[#FFF7E6] border-[2px] border-[#382C22] shadow-[0_2.5px_0_#382C22] flex items-center justify-center mb-1.5 overflow-hidden">
             <Image
               src="/screens_assets/xp_icon.png"
               alt="XP Icon"
@@ -291,29 +285,29 @@ export default function ProfilPage() {
               className="object-contain"
             />
           </div>
-          <span className="font-fredoka font-black text-[15px] text-[#382C22] leading-tight">
+          <span className="font-fredoka font-black text-[16px] text-[#382C22] leading-tight">
             {userXp.toLocaleString("id-ID")}
           </span>
-          <span className="font-nunito font-bold text-[11px] text-[#796F65]">
+          <span className="font-fredoka font-bold text-[11px] text-[#796F65]">
             XP
           </span>
         </div>
 
-        {/* Card 3: Koin */}
-        <div className="flex flex-col items-center bg-white border-[3px] border-[#382C22] rounded-[22px] p-2.5 shadow-[0_4px_0_#382C22]">
-          <div className="w-11 h-11 rounded-2xl bg-[#F0FDF4] border-[1.5px] border-[#86EFAC] flex items-center justify-center mb-1.5 overflow-hidden">
+        {/* Square 3: Koin */}
+        <div className="flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-[22px] p-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
+          <div className="w-12 h-12 rounded-[16px] bg-[#EEF8EC] border-[2px] border-[#382C22] shadow-[0_2.5px_0_#382C22] flex items-center justify-center mb-1.5 overflow-hidden">
             <Image
               src="/screens_assets/leaf_coin.jpg"
-              alt="Koin Icon"
+              alt="Coin Icon"
               width={30}
               height={30}
               className="object-contain rounded-full"
             />
           </div>
-          <span className="font-fredoka font-black text-[15px] text-[#382C22] leading-tight">
+          <span className="font-fredoka font-black text-[16px] text-[#382C22] leading-tight">
             {(user?.coins ?? 0).toLocaleString("id-ID")}
           </span>
-          <span className="font-nunito font-bold text-[11px] text-[#796F65]">
+          <span className="font-fredoka font-bold text-[11px] text-[#796F65]">
             Koin
           </span>
         </div>
@@ -322,19 +316,19 @@ export default function ProfilPage() {
 
       {/* NOTIFICATION TOAST */}
       {equipNotice && (
-        <div className="p-2.5 mb-3 bg-[#ecfccb] border-[2px] border-[#65a30d] rounded-2xl font-fredoka font-black text-xs text-[#3f6212] text-center shadow-xs animate-in zoom-in duration-200">
+        <div className="p-2 mb-2 bg-[#ecfccb] border-[2px] border-[#65a30d] rounded-2xl font-fredoka font-black text-xs text-[#3f6212] text-center shadow-xs animate-in zoom-in duration-200">
           {equipNotice}
         </div>
       )}
 
-      {/* ── 4. BORDER AVATAR COLLECTION (Only shows Polos + purchased borders) ── */}
-      <div className="bg-white border-[3px] border-[#382C22] rounded-[28px] p-4 mb-3.5 shadow-[0_4px_0_#382C22]">
+      {/* ── 4. CARD 2.5: BORDER AVATAR COLLECTION (Pasang & Koleksi Border) ── */}
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 mb-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex flex-col">
-            <span className="font-fredoka font-extrabold text-[10px] text-[#94a3b8] uppercase tracking-wider">
+            <span className="font-fredoka font-black text-[11px] text-[#796F65] uppercase tracking-wider">
               BORDER AVATAR
             </span>
-            <span className="font-fredoka font-black text-[16px] text-[#382C22]">
+            <span className="font-fredoka font-black text-[17px] text-[#382C22]">
               Pasang & Koleksi Border
             </span>
           </div>
@@ -348,17 +342,17 @@ export default function ProfilPage() {
           </button>
         </div>
 
-        {/* Borders Row */}
+        {/* Borders Row (Shows Polos + Owned/Purchased Borders) */}
         <div className="flex items-center gap-3 overflow-x-auto pb-1 no-scrollbar">
           
           {/* Always Owned: Polos */}
           <button
             type="button"
             onClick={() => handleEquipBorder("")}
-            className="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer group"
+            className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group"
           >
             <div
-              className={`relative w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+              className={`relative w-15 h-15 rounded-[18px] flex items-center justify-center transition-all ${
                 !selectedFrame
                   ? "bg-[#ecfccb] border-[3px] border-[#22c55e] shadow-xs scale-105"
                   : "bg-[#f8fafc] border-[2px] border-[#e2e8f0] group-hover:border-[#cbd5e1]"
@@ -367,13 +361,13 @@ export default function ProfilPage() {
               <Image
                 src="/screens_assets/mascot_thumbsup_transparent.png"
                 alt="Polos"
-                width={36}
-                height={36}
+                width={38}
+                height={38}
                 className="object-contain"
               />
             </div>
             <span
-              className={`font-fredoka text-xs ${
+              className={`font-fredoka text-[12px] ${
                 !selectedFrame ? "font-black text-[#15803d]" : "font-bold text-[#64748b]"
               }`}
             >
@@ -393,10 +387,10 @@ export default function ProfilPage() {
                   key={fId}
                   type="button"
                   onClick={() => handleEquipBorder(fId)}
-                  className="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer group"
+                  className="flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group"
                 >
                   <div
-                    className={`relative w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+                    className={`relative w-15 h-15 rounded-[18px] flex items-center justify-center transition-all ${
                       isEquipped
                         ? "bg-[#ecfccb] border-[3px] border-[#22c55e] shadow-xs scale-105"
                         : "bg-[#f8fafc] border-[2px] border-[#e2e8f0] group-hover:border-[#cbd5e1]"
@@ -405,8 +399,8 @@ export default function ProfilPage() {
                     <Image
                       src="/screens_assets/mascot_thumbsup_transparent.png"
                       alt={border.name}
-                      width={32}
-                      height={32}
+                      width={34}
+                      height={34}
                       className="object-contain"
                     />
                     <div
@@ -422,7 +416,7 @@ export default function ProfilPage() {
                     </div>
                   </div>
                   <span
-                    className={`font-fredoka text-xs ${
+                    className={`font-fredoka text-[12px] ${
                       isEquipped ? "font-black text-[#15803d]" : "font-bold text-[#64748b]"
                     }`}
                   >
@@ -434,26 +428,26 @@ export default function ProfilPage() {
         </div>
       </div>
 
-      {/* ── 5. RANK SAAT INI CARD ── */}
-      <div className="bg-white border-[3px] border-[#382C22] rounded-[28px] p-4 mb-3.5 shadow-[0_4px_0_#382C22]">
+      {/* ── 5. CARD 3: RANK SAAT INI CARD ── */}
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 mb-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
         <div className="flex items-center justify-between">
           <div className="flex flex-col flex-1 pr-3">
-            <span className="font-fredoka font-black text-[11px] text-[#ea580c] uppercase tracking-wider mb-0.5">
+            <span className="font-fredoka font-black text-[11px] text-[#D97706] uppercase tracking-wider mb-0.5">
               RANK SAAT INI
             </span>
-            <h3 className="font-fredoka font-black text-[24px] text-[#382C22] leading-tight mb-2">
+            <h3 className="font-fredoka font-black text-[26px] text-[#382C22] leading-tight mb-2.5">
               {currentRank.name}
             </h3>
 
-            {/* XP Progress Bar */}
+            {/* XP Progress Bar Track */}
             <div className="flex items-center gap-2">
-              <span className="bg-[#fad85e] border-[1.5px] border-[#6b3506] text-[#3b1d03] font-fredoka font-black text-[10px] px-2 py-0.5 rounded-md shadow-xs">
+              <span className="bg-[#F5B82E] border-[1.5px] border-[#382C22] text-[#4D3300] font-fredoka font-black text-[10px] px-2 py-0.5 rounded-[8px] shadow-xs">
                 XP
               </span>
-              <div className="flex-1 h-3.5 bg-[#f1f5f9] border-[1.5px] border-[#382C22] rounded-full overflow-hidden p-0.5">
+              <div className="flex-1 h-3.5 bg-[#F1EBE3] border-[2px] border-[#382C22] rounded-[10px] overflow-hidden p-0.5">
                 <div
-                  className="h-full bg-gradient-to-r from-[#22c55e] to-[#15803d] rounded-full transition-all duration-500"
-                  style={{ width: `${Math.max(progressPercent, 8)}%` }}
+                  className="h-full bg-[#4CAF50] rounded-[8px] transition-all duration-500"
+                  style={{ width: `${Math.max(progressPercent, 10)}%` }}
                 />
               </div>
               <span className="font-fredoka font-black text-xs text-[#382C22] whitespace-nowrap">
@@ -462,21 +456,21 @@ export default function ProfilPage() {
             </div>
           </div>
 
-          {/* Large Rank Badge Right */}
-          <div className="w-16 h-16 relative flex-shrink-0 flex items-center justify-center">
+          {/* Right Large Round Badge */}
+          <div className="w-[72px] h-[72px] min-w-[72px] min-h-[72px] relative flex-shrink-0 flex items-center justify-center">
             <Image
               src={currentRank.badgeImg}
               alt={currentRank.name}
-              width={64}
-              height={64}
-              className="object-contain"
+              width={72}
+              height={72}
+              className="object-cover rounded-full border-[3px] border-[#382C22] shadow-[0_3.5px_0_#382C22]"
             />
           </div>
         </div>
       </div>
 
-      {/* ── 6. JALUR RANK CARD (All 5 Ranks Connected by Arrows, No Text Cut Off) ── */}
-      <div className="bg-white border-[3px] border-[#382C22] rounded-[28px] p-4 shadow-[0_4px_0_#382C22]">
+      {/* ── 6. CARD 4: JALUR RANK CARD (All 5 Ranks with Arrows & Gold Highlight on Current) ── */}
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
         <h3 className="font-fredoka font-black text-[18px] text-[#382C22] mb-3">
           Jalur Rank
         </h3>
@@ -487,12 +481,12 @@ export default function ProfilPage() {
 
             return (
               <React.Fragment key={tier.name}>
-                <div className="flex flex-col items-center flex-shrink-0 gap-1">
+                <div className="flex flex-col items-center flex-shrink-0 gap-1.5">
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
                       isCurrent
-                        ? "border-[3px] border-[#f59e0b] ring-2 ring-[#f59e0b] shadow-md scale-105 bg-[#fffbeb]"
-                        : "border-[2px] border-[#382C22] bg-[#f8fafc]"
+                        ? "border-[2.5px] border-[#382C22] shadow-[0_3.5px_0_#382C22] ring-[3.5px] ring-[#F5B82E] scale-110 bg-white"
+                        : "border-[2.5px] border-[#382C22] bg-white shadow-[0_3px_0_#382C22]"
                     }`}
                   >
                     <Image
@@ -505,10 +499,10 @@ export default function ProfilPage() {
                   </div>
 
                   <span
-                    className={`font-fredoka text-[11.5px] ${
+                    className={`font-fredoka text-[11px] ${
                       isCurrent
-                        ? "font-black text-[#0f172a]"
-                        : "font-bold text-[#64748b]"
+                        ? "font-black text-[#1F2937]"
+                        : "font-bold text-[#796F65]"
                     }`}
                   >
                     {tier.name}
@@ -516,8 +510,10 @@ export default function ProfilPage() {
                 </div>
 
                 {idx < RANK_TIERS.length - 1 && (
-                  <div className="text-[#9ca3af] font-black text-sm px-0.5 flex-shrink-0">
-                    &gt;
+                  <div className="text-[#9CA3AF] font-black text-sm px-0.5 flex-shrink-0 mb-4">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9CA3AF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
                   </div>
                 )}
               </React.Fragment>
