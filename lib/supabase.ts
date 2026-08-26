@@ -420,27 +420,16 @@ export interface PurchaseResult {
  * Purchase Frame Transaction in Supabase via Atomic RPC
  */
 export async function purchaseFrameTransaction(payload: {
-  userId: string;
+  userId?: string;
   frameId: string;
   frameName?: string;
   priceCoins?: number;
 }): Promise<PurchaseResult> {
   if (isSupabaseConfigured()) {
     try {
-      // 1. Try with p_item_id and p_user_id
-      let { data, error } = await supabase.rpc("purchase_shop_item", {
+      const { data, error } = await supabase.rpc("purchase_shop_item", {
         p_item_id: payload.frameId,
-        p_user_id: payload.userId,
       });
-
-      // 2. If signature mismatch in schema cache, fallback to p_item_id only (uses auth.uid())
-      if (error && error.message?.includes("schema cache")) {
-        const retry = await supabase.rpc("purchase_shop_item", {
-          p_item_id: payload.frameId,
-        });
-        data = retry.data;
-        error = retry.error;
-      }
 
       if (error) {
         console.error("purchase_shop_item RPC error:", error);
@@ -482,18 +471,9 @@ export async function purchaseFrameTransaction(payload: {
 export async function equipFrameInDatabase(userId: string, frameId: string): Promise<boolean> {
   if (isSupabaseConfigured()) {
     try {
-      let { data, error } = await supabase.rpc("equip_shop_item", {
+      const { data, error } = await supabase.rpc("equip_shop_item", {
         p_item_id: frameId,
-        p_user_id: userId,
       });
-
-      if (error && error.message?.includes("schema cache")) {
-        const retry = await supabase.rpc("equip_shop_item", {
-          p_item_id: frameId,
-        });
-        data = retry.data;
-        error = retry.error;
-      }
 
       if (error) {
         console.error("equip_shop_item RPC error:", error);
@@ -521,18 +501,10 @@ export interface MysteryBoxResult {
 /**
  * Open Mystery Box in Supabase via Atomic RPC (Price 40 coins, Random 15-39 XP)
  */
-export async function openMysteryBoxTransaction(userId: string): Promise<MysteryBoxResult> {
+export async function openMysteryBoxTransaction(userId?: string): Promise<MysteryBoxResult> {
   if (isSupabaseConfigured()) {
     try {
-      let { data, error } = await supabase.rpc("open_mystery_box", {
-        p_user_id: userId,
-      });
-
-      if (error && error.message?.includes("schema cache")) {
-        const retry = await supabase.rpc("open_mystery_box");
-        data = retry.data;
-        error = retry.error;
-      }
+      const { data, error } = await supabase.rpc("open_mystery_box");
 
       if (error) {
         console.error("open_mystery_box RPC error:", error);

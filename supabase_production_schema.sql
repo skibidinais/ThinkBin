@@ -253,8 +253,7 @@ $$;
 -- Mengambil harga resmi dari shop_catalog, cek saldo, potong coin, catat kepemilikan.
 -- =========================================================================
 CREATE OR REPLACE FUNCTION public.purchase_shop_item(
-    p_item_id TEXT,
-    p_user_id TEXT DEFAULT NULL
+    p_item_id TEXT
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -268,17 +267,10 @@ DECLARE
     v_updated_rows INT;
     v_new_coins INT;
 BEGIN
-    -- Resolusi User ID
-    IF auth.uid() IS NOT NULL THEN
-        v_user_id := auth.uid();
-    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
-        v_user_id := p_user_id::UUID;
-    ELSIF p_user_id IS NOT NULL THEN
-        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
-    END IF;
+    v_user_id := auth.uid();
 
     IF v_user_id IS NULL THEN
-        RETURN jsonb_build_object('success', false, 'status', 'unauthorized', 'message', 'Unauthorized: User tidak ditemukan');
+        RETURN jsonb_build_object('success', false, 'status', 'unauthorized', 'message', 'Unauthorized');
     END IF;
 
     -- Validasi item dari shop_catalog server
@@ -303,7 +295,7 @@ BEGIN
         RETURN jsonb_build_object(
             'success', true,
             'status', 'already_owned',
-            'message', 'Item sudah dimiliki dan berhasil dipasang!',
+            'message', 'Item sudah dimiliki dan berhasil dipasang.',
             'current_coins', v_new_coins
         );
     END IF;
@@ -322,7 +314,7 @@ BEGIN
         RETURN jsonb_build_object(
             'success', false,
             'status', 'insufficient_funds',
-            'message', 'Koin kamu tidak cukup untuk membeli item ini!'
+            'message', 'Koin kamu tidak cukup untuk membeli item ini.'
         );
     END IF;
 
@@ -340,7 +332,7 @@ BEGIN
         RETURN jsonb_build_object(
             'success', true,
             'status', 'already_owned',
-            'message', 'Item sudah dimiliki!',
+            'message', 'Item sudah dimiliki.',
             'current_coins', v_new_coins
         );
     END;
@@ -348,7 +340,7 @@ BEGIN
     RETURN jsonb_build_object(
         'success', true,
         'status', 'success',
-        'message', 'Item berhasil dibeli dan dipasang!',
+        'message', 'Item berhasil dibeli dan dipasang.',
         'current_coins', v_new_coins
     );
 END;
@@ -359,8 +351,7 @@ $$;
 -- Memasang border yang sudah dimiliki user ke profilnya
 -- =========================================================================
 CREATE OR REPLACE FUNCTION public.equip_shop_item(
-    p_item_id TEXT,
-    p_user_id TEXT DEFAULT NULL
+    p_item_id TEXT
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -370,13 +361,7 @@ AS $$
 DECLARE
     v_user_id UUID;
 BEGIN
-    IF auth.uid() IS NOT NULL THEN
-        v_user_id := auth.uid();
-    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
-        v_user_id := p_user_id::UUID;
-    ELSIF p_user_id IS NOT NULL THEN
-        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
-    END IF;
+    v_user_id := auth.uid();
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
@@ -390,7 +375,7 @@ BEGIN
         SET selected_frame = p_item_id, updated_at = NOW()
         WHERE id = v_user_id;
 
-        RETURN jsonb_build_object('success', true, 'message', 'Border berhasil dipasang!');
+        RETURN jsonb_build_object('success', true, 'message', 'Border berhasil dipasang.');
     ELSE
         RETURN jsonb_build_object('success', false, 'message', 'Kamu belum memiliki border ini.');
     END IF;
@@ -401,9 +386,7 @@ $$;
 -- 12. ATOMIC RPC 4: open_mystery_box
 -- Potong 40 koin & tambah random 15-39 XP secara atomik
 -- =========================================================================
-CREATE OR REPLACE FUNCTION public.open_mystery_box(
-    p_user_id TEXT DEFAULT NULL
-)
+CREATE OR REPLACE FUNCTION public.open_mystery_box()
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -417,13 +400,7 @@ DECLARE
     v_new_xp INT;
     v_new_coins INT;
 BEGIN
-    IF auth.uid() IS NOT NULL THEN
-        v_user_id := auth.uid();
-    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
-        v_user_id := p_user_id::UUID;
-    ELSIF p_user_id IS NOT NULL THEN
-        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
-    END IF;
+    v_user_id := auth.uid();
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
@@ -446,7 +423,7 @@ BEGIN
         RETURN jsonb_build_object(
             'success', false,
             'status', 'insufficient_funds',
-            'message', 'Koin tidak cukup untuk Mystery Box!'
+            'message', 'Koin tidak cukup untuk Mystery Box.'
         );
     END IF;
 
