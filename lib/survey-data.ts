@@ -33,7 +33,7 @@ export interface SurveyConfig {
  */
 export const PRE_TEST_SURVEY: SurveyConfig = {
   type: "awal",
-  title: "Kuisioner Pengetahuan Awal 📝",
+  title: "Kuisioner Pengetahuan Awal",
   subtitle: "Jawab 8 pertanyaan singkat berikut sebelum memulai petualangan belajarmu.",
   stepLabel: "Langkah 2 dari 2: Kuisioner Awal",
   reward: {
@@ -146,7 +146,7 @@ export const PRE_TEST_SURVEY: SurveyConfig = {
  */
 export const POST_TEST_SURVEY: SurveyConfig = {
   type: "akhir",
-  title: "Kuisioner Evaluasi Akhir 🌟",
+  title: "Kuisioner Evaluasi Akhir",
   subtitle: "Uji pemahaman dan pengalaman belajarmu setelah menyelesaikan modul ThinkBin.",
   stepLabel: "Evaluasi Akhir Pembelajaran",
   reward: {

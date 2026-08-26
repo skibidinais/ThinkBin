@@ -232,7 +232,9 @@ export default function SetupProfilPage() {
             {/* Inline Duplicate Alert Warning */}
             {duplicateError && (
               <div className="bg-[#fef2f2] border-[2px] border-[#f87171] rounded-2xl p-3 flex items-center gap-2 text-[#991b1b] font-nunito font-bold text-xs">
-                <span>⚠️</span>
+                <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0" fill="currentColor">
+                  <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
+                </svg>
                 <span>{duplicateError}</span>
               </div>
             )}
@@ -387,8 +389,11 @@ export default function SetupProfilPage() {
       {showDuplicateModal && (
         <div className="fixed inset-0 bg-[#0f172a]/65 backdrop-blur-xs z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
           <div className="bg-white border-[3.5px] border-[#1e293b] rounded-[28px] max-w-[330px] w-full p-6 text-center shadow-[0_16px_36px_rgba(0,0,0,0.25),0_6px_0_#1e293b] flex flex-col items-center">
-            <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center text-3xl mb-3">
-              🚫
+            <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+              </svg>
             </div>
             <h3 className="font-fredoka font-black text-lg text-[#0f172a] mb-1">
               Data Siswa Sudah Terdaftar!

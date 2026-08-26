@@ -91,7 +91,7 @@ function KuisionerContent() {
           <span>{config.stepLabel}</span>
         </div>
 
-        {/* Header Title */}
+        {/* Header Title (Clean without emoji) */}
         <div className="mb-4">
           <h1 className="font-fredoka font-black text-[24px] text-[#0b1a2d] leading-tight mb-1">
             {config.title}
@@ -153,19 +153,18 @@ function KuisionerContent() {
             </div>
           ))}
 
-          {/* Submit CTA Button */}
+          {/* Submit CTA Button (Clean without emoji) */}
           <button
             type="submit"
             disabled={!isAllAnswered || isSubmitting}
             className="w-full h-[54px] bg-gradient-to-b from-[#fad85e] to-[#e7a627] hover:brightness-105 disabled:bg-none disabled:bg-[#e2e8f0] disabled:border-[#cbd5e1] disabled:text-[#94a3b8] disabled:shadow-none disabled:cursor-not-allowed border-[3px] border-[#1e293b] rounded-[22px] text-[#1e293b] font-fredoka font-black text-base shadow-[0_5px_0_#1e293b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#1e293b] mt-2 mb-6 transition-all cursor-pointer uppercase tracking-wide flex items-center justify-center gap-2"
           >
             <span>{isSubmitting ? "Menyimpan Jawaban..." : "Selesai & Masuk Dashboard"}</span>
-            {!isSubmitting && <span>🚀</span>}
           </button>
         </form>
       </div>
 
-      {/* CELEBRATION REWARD MODAL */}
+      {/* CELEBRATION REWARD MODAL (Clean without emoji) */}
       {showRewardModal && (
         <div className="fixed inset-0 bg-[#0f172a]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in zoom-in-95 duration-200">
           <div className="bg-white border-[3.5px] border-[#1e293b] rounded-[28px] max-w-[340px] w-full p-6 text-center shadow-[0_16px_36px_rgba(0,0,0,0.35),0_6px_0_#1e293b] flex flex-col items-center">
@@ -180,7 +179,7 @@ function KuisionerContent() {
             </div>
 
             <h3 className="font-fredoka font-black text-xl text-[#0f172a] mb-1">
-              Kuisioner Selesai! 🎉
+              Kuisioner Selesai!
             </h3>
             <p className="font-nunito font-semibold text-xs text-[#64748b] mb-4">
               Terima kasih! Kamu telah membuka akses penuh ke petualangan ThinkBin.
@@ -202,7 +201,6 @@ function KuisionerContent() {
               </div>
               <div className="w-[1.5px] h-6 bg-[#f59e0b]/40" />
               <div className="flex items-center gap-1.5">
-                <span className="font-fredoka font-black text-lg text-[#eab308]">🪙</span>
                 <span className="font-fredoka font-extrabold text-base text-[#d97706]">
                   +{config.reward.coins} Koin
                 </span>

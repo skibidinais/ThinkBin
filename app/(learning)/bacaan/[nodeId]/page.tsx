@@ -200,9 +200,8 @@ export default function BacaanPage() {
 
           {/* Contoh Nyata Box (Light Green) */}
           <div className="w-full bg-[#F0FDF4] border-[1.5px] border-[#BBF7D0] border-l-[5px] border-l-[#22C55E] rounded-2xl p-3.5 flex flex-col gap-1 shadow-xs">
-            <div className="font-fredoka font-black text-xs text-[#15803D] flex items-center gap-1.5">
-              <span>💡</span>
-              <span>Contoh Nyata:</span>
+            <div className="font-fredoka font-black text-xs text-[#15803D]">
+              Contoh Nyata:
             </div>
             <p className="font-nunito font-bold text-[13px] text-[#166534] leading-relaxed">
               {node.contoh}
