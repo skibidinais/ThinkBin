@@ -243,7 +243,7 @@ export default function TokoPage() {
 
   return (
     <div className="relative w-full h-full min-h-full flex flex-col items-center justify-between select-none overflow-hidden bg-[#F7E7B4]">
-      {/* ── BACKGROUND IMAGE (Market Stall Scene) ── */}
+      {/* ── BACKGROUND IMAGE (Clean Market Stall Scene without baked pills / navbar) ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <Image
           src="/screens_assets/shop_clean_background.jpg"
@@ -256,10 +256,10 @@ export default function TokoPage() {
       </div>
 
       {/* ── CENTRAL INTERACTIVE CONTENT LAYER ── */}
-      <div className="relative z-10 w-full max-w-[390px] h-full flex flex-col justify-between pt-3 pb-28 px-3.5">
+      <div className="relative z-10 w-full max-w-[390px] h-full flex flex-col justify-between pt-2.5 pb-24 px-3.5">
         
         {/* ── 1. SINGLE LIVE TOP STAT BAR (Streak / XP / Koin) ── */}
-        <div className="flex items-center justify-between w-full px-1 mb-1.5 flex-shrink-0 z-20">
+        <div className="flex items-center justify-between w-full px-1 flex-shrink-0 z-20">
           {/* Streak Pill */}
           <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
             <Image
@@ -305,13 +305,13 @@ export default function TokoPage() {
 
         {/* NOTIFICATION TOAST */}
         {purchaseNotice && (
-          <div className="p-1.5 mb-1 bg-emerald-100 border-[2px] border-[#15803D] rounded-xl font-fredoka font-bold text-[11px] text-[#15803D] text-center shadow-md animate-in zoom-in duration-200">
+          <div className="p-1.5 mt-1 bg-emerald-100 border-[2px] border-[#15803D] rounded-xl font-fredoka font-bold text-[11px] text-[#15803D] text-center shadow-md animate-in zoom-in duration-200 z-30">
             {purchaseNotice}
           </div>
         )}
 
-        {/* ── 2. GRID OF 6 ITEM CARDS (2 rows x 3 columns) ── */}
-        <div className="grid grid-cols-3 gap-2 my-auto flex-shrink-0">
+        {/* ── 2. GRID OF 6 ITEM CARDS (Positioned lower below the Toko header sign) ── */}
+        <div className="grid grid-cols-3 gap-2.5 mt-24 sm:mt-28 mb-2 flex-shrink-0 z-10">
           {currentItems.map((item) => {
             const isOwned = ownedFrames.includes(item.id);
             const isEquipped = selectedFrame === item.id;
@@ -319,12 +319,12 @@ export default function TokoPage() {
             return (
               <div
                 key={item.id}
-                className={`flex flex-col items-center bg-white border-[2px] border-[#E8DCC2] rounded-2xl p-1.5 shadow-[0_3px_8px_rgba(150,110,30,0.1)] relative transition-transform ${
+                className={`flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-2xl p-1.5 shadow-[0_3.5px_0_#382C22] relative transition-transform ${
                   isEquipped ? "ring-2 ring-[#4CAF50]" : ""
                 }`}
               >
                 {isEquipped && (
-                  <span className="absolute -top-1.5 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[7.5px] px-1.5 py-0.2 rounded-full shadow-xs">
+                  <span className="absolute -top-2 right-1 bg-[#4CAF50] text-white font-fredoka font-bold text-[7.5px] px-1.5 py-0.2 rounded-full shadow-xs border border-[#2E7D32]">
                     Terpasang
                   </span>
                 )}
@@ -371,16 +371,16 @@ export default function TokoPage() {
                 <button
                   type="button"
                   onClick={() => handleBuyOrEquip(item)}
-                  className={`w-full py-1 px-1 rounded-full font-fredoka font-extrabold text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#D4981C] shadow-[0_2px_0_#C2870F] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+                  className={`w-full py-1 px-1 rounded-full font-fredoka font-extrabold text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#382C22] shadow-[0_2px_0_#382C22] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
                     isEquipped
-                      ? "bg-[#4CAF50] border-[#388E3C] shadow-[0_2px_0_#2E7D32] text-white"
+                      ? "bg-[#4CAF50] text-white"
                       : isOwned
-                      ? "bg-[#1CB0F6] border-[#0284C7] shadow-[0_2px_0_#0369A1] text-white"
-                      : "bg-gradient-to-b from-[#FED54A] to-[#F5B82E] text-[#633E04]"
+                      ? "bg-[#1CB0F6] text-white"
+                      : "bg-gradient-to-b from-[#FED54A] to-[#F5B82E] text-[#382C22]"
                   }`}
                 >
                   {isEquipped ? (
-                    <span>✓ Digunakan</span>
+                    <span>✓ Terpasang</span>
                   ) : isOwned ? (
                     <span>Pasang</span>
                   ) : (
@@ -401,18 +401,18 @@ export default function TokoPage() {
           })}
         </div>
 
-        {/* ── 3. PAGINATION CONTROLS PILL (< 1 / 3 >) ELEVATED CLEAR OF BOTTOM DOCK ── */}
-        <div className="flex items-center justify-center gap-2 mb-1 flex-shrink-0 z-20">
+        {/* ── 3. PAGINATION CONTROLS PILL (< 1 / 3 >) ELEVATED CLEANLY ABOVE BOTTOM DOCK ── */}
+        <div className="flex items-center justify-center gap-2 mb-2 flex-shrink-0 z-20">
           <button
             type="button"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="w-8 h-8 rounded-full bg-white border-[2px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2.5px_0_#C2870F] disabled:opacity-35 active:translate-y-0.5 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white border-[2.5px] border-[#382C22] flex items-center justify-center font-fredoka font-black text-sm text-[#382C22] shadow-[0_2.5px_0_#382C22] disabled:opacity-35 active:translate-y-0.5 cursor-pointer"
           >
             ‹
           </button>
 
-          <div className="bg-white border-[2px] border-[#D4981C] rounded-full px-5 py-1 font-fredoka font-black text-xs text-[#633E04] shadow-[0_2.5px_0_#C2870F]">
+          <div className="bg-white border-[2.5px] border-[#382C22] rounded-full px-5 py-1 font-fredoka font-black text-xs text-[#382C22] shadow-[0_2.5px_0_#382C22]">
             {currentPage} / {TOTAL_PAGES}
           </div>
 
@@ -420,7 +420,7 @@ export default function TokoPage() {
             type="button"
             onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
             disabled={currentPage === TOTAL_PAGES}
-            className="w-8 h-8 rounded-full bg-white border-[2px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2.5px_0_#C2870F] disabled:opacity-35 active:translate-y-0.5 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white border-[2.5px] border-[#382C22] flex items-center justify-center font-fredoka font-black text-sm text-[#382C22] shadow-[0_2.5px_0_#382C22] disabled:opacity-35 active:translate-y-0.5 cursor-pointer"
           >
             ›
           </button>
