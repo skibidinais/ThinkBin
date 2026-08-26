@@ -27,13 +27,6 @@ interface MapBagian {
   levels: Record<number, MapLevel>;
 }
 
-const MAP_POSITIONS = [
-  { slotNum: 1, x: 32.66, y: 43.63, icon: "flag" as const },
-  { slotNum: 2, x: 46.39, y: 57.69, icon: "dumbbell" as const },
-  { slotNum: 3, x: 64.57, y: 68.33, icon: "plus" as const },
-  { slotNum: 4, x: 58.46, y: 82.42, icon: "trophy" as const },
-];
-
 const MAP_BAGIANS: Record<number, MapBagian> = {
   1: {
     id: 1,
@@ -148,21 +141,21 @@ export default function BelajarPage() {
   return (
     <div className="relative w-full h-full min-h-full flex flex-col select-none overflow-hidden bg-[#4da325]">
       
-      {/* ── 1. FLOATING OVERLAYS (Stat Bar + Bagian Info Bar sitting on top of the sky without separate colored background blocks) ── */}
-      <div className="absolute top-0 left-0 right-0 z-30 pointer-events-none px-3.5 pt-3 flex flex-col gap-2">
+      {/* ── 1. FLOATING OVERLAYS (Z-INDEX 50: ALWAYS ABOVE PATH & MASCOT) ── */}
+      <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none px-3.5 pt-3.5 flex flex-col gap-2.5">
         
-        {/* Floating Top Stat Bar */}
+        {/* Floating Top Stat Bar (Enhanced comfortable legible size) */}
         <div className="w-full flex items-center justify-between pointer-events-auto">
           {/* Streak Pill */}
-          <div className="flex items-center gap-1.5 bg-white/95 border-[2px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+          <div className="flex items-center gap-2 bg-white border-[2.5px] border-[#382C22] rounded-full px-3.5 py-1.5 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
             <Image
               src="/assets_game/streak_icon.png"
               alt="Streak"
-              width={16}
-              height={16}
+              width={18}
+              height={18}
               className="object-contain"
             />
-            <span className="font-fredoka font-bold text-xs text-[#382C22]">
+            <span className="font-fredoka font-bold text-sm text-[#382C22]">
               {user?.streak ?? 1} Hari
             </span>
           </div>
@@ -170,47 +163,47 @@ export default function BelajarPage() {
           {/* XP & Coin Pills */}
           <div className="flex items-center gap-2">
             {/* XP Pill */}
-            <div className="flex items-center gap-1.5 bg-white/95 border-[2px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+            <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3.5 py-1.5 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
               <Image
                 src="/assets_game/exp_progress.png"
                 alt="XP"
-                width={14}
-                height={14}
+                width={16}
+                height={16}
                 className="object-contain"
               />
-              <span className="font-fredoka font-bold text-xs text-[#0284c7]">
+              <span className="font-fredoka font-bold text-sm text-[#0284c7]">
                 {user?.xp ?? 0} XP
               </span>
             </div>
 
             {/* Coin Pill */}
-            <div className="flex items-center gap-1.5 bg-white/95 border-[2px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+            <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3.5 py-1.5 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
               <Image
                 src="/screens_assets/coin.png"
                 alt="Coin"
-                width={16}
-                height={16}
+                width={18}
+                height={18}
                 className="object-contain"
               />
-              <span className="font-fredoka font-bold text-xs text-[#d97706]">
+              <span className="font-fredoka font-bold text-sm text-[#d97706]">
                 {user?.coins ?? 0}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Floating Bagian Info Bar */}
+        {/* Floating Bagian Info Bar (Comfortable, large legible size) */}
         <div className="relative w-full pointer-events-auto">
-          <div className="w-full bg-white/95 border-[2.5px] border-[#382C22] rounded-[22px] p-2 px-3 flex items-center shadow-[0_4px_0_#382C22] backdrop-blur-xs">
-            <div className="w-9 h-9 bg-[#7c4e18] border border-[#382C22] rounded-xl flex items-center justify-center shadow-xs flex-shrink-0 text-white font-fredoka font-extrabold text-sm">
+          <div className="w-full bg-white border-[3px] border-[#382C22] rounded-[24px] p-2.5 px-3.5 flex items-center shadow-[0_4.5px_0_#382C22] backdrop-blur-xs">
+            <div className="w-11 h-11 bg-[#7c4e18] border-[2px] border-[#382C22] rounded-2xl flex items-center justify-center shadow-xs flex-shrink-0 text-white font-fredoka font-extrabold text-lg">
               🗺️
             </div>
 
-            <div className="ml-2.5 flex flex-col">
-              <span className="text-[10px] font-fredoka font-bold text-[#0284c7] uppercase tracking-wider">
+            <div className="ml-3 flex flex-col">
+              <span className="text-[11px] font-fredoka font-bold text-[#0284c7] uppercase tracking-wider">
                 {activeBagian.unitSubtitle}
               </span>
-              <span className="text-[13px] font-fredoka font-extrabold text-[#2b2b2b] leading-tight">
+              <span className="text-[15px] font-fredoka font-black text-[#2b2b2b] leading-tight mt-0.5">
                 {activeBagian.unitTitle}
               </span>
             </div>
@@ -219,18 +212,18 @@ export default function BelajarPage() {
             <button
               type="button"
               onClick={() => setShowDropdown(!showDropdown)}
-              className="ml-auto w-8 h-8 rounded-xl bg-[#e8f7fe] hover:bg-[#bae6fd] active:scale-95 flex flex-col items-center justify-center gap-1 cursor-pointer transition-transform border border-[#7dd3fc]"
+              className="ml-auto w-9 h-9 rounded-2xl bg-[#e8f7fe] hover:bg-[#bae6fd] active:scale-95 flex flex-col items-center justify-center gap-1 cursor-pointer transition-transform border-[2px] border-[#7dd3fc]"
               aria-label="Pilih Bagian"
             >
-              <span className="w-3.5 h-0.5 bg-[#0284c7] rounded-full" />
-              <span className="w-3.5 h-0.5 bg-[#0284c7] rounded-full" />
-              <span className="w-3.5 h-0.5 bg-[#0284c7] rounded-full" />
+              <span className="w-4 h-0.5 bg-[#0284c7] rounded-full" />
+              <span className="w-4 h-0.5 bg-[#0284c7] rounded-full" />
+              <span className="w-4 h-0.5 bg-[#0284c7] rounded-full" />
             </button>
           </div>
 
-          {/* Dropdown Menu */}
+          {/* Dropdown Menu (Z-INDEX 60: STRICTLY COVERS MASCOT AND ALL MAP ELEMENTS) */}
           {showDropdown && (
-            <div className="absolute top-14 right-0 w-64 bg-white border-[2.5px] border-[#382C22] rounded-2xl p-2 flex flex-col gap-1.5 shadow-2xl z-50 animate-in zoom-in-95 duration-150">
+            <div className="absolute top-16 right-0 w-full max-w-[340px] bg-white border-[3px] border-[#382C22] rounded-[22px] p-2.5 flex flex-col gap-2 shadow-[0_12px_28px_rgba(0,0,0,0.25)] z-[60] animate-in zoom-in-95 duration-150">
               {[1, 2, 3, 4].map((bNum) => (
                 <button
                   key={bNum}
@@ -239,9 +232,9 @@ export default function BelajarPage() {
                     setCurrentBagian(bNum);
                     setShowDropdown(false);
                   }}
-                  className={`p-2.5 rounded-xl font-fredoka font-bold text-xs text-left transition-all ${
+                  className={`p-3 rounded-xl font-fredoka font-bold text-xs text-left transition-all ${
                     currentBagian === bNum
-                      ? "bg-[#0284c7] text-white"
+                      ? "bg-[#0284c7] text-white shadow-xs"
                       : "bg-[#f8fafc] text-[#334155] hover:bg-[#e0f2fe]"
                   }`}
                 >
@@ -254,7 +247,7 @@ export default function BelajarPage() {
       </div>
 
       {/* ── 2. FULL SCENE MAP BACKGROUND (Starts from the very top, edge-to-edge) ── */}
-      <main className="relative flex-1 w-full overflow-y-auto overflow-x-hidden no-scrollbar pb-24">
+      <main className="relative flex-1 w-full overflow-y-auto overflow-x-hidden no-scrollbar pb-24 z-0">
         <div className="relative w-full max-w-[440px] mx-auto">
           <div className="relative w-full">
             <Image
@@ -295,7 +288,7 @@ export default function BelajarPage() {
                   type="button"
                   onClick={() => handleNodeClick(lvl)}
                   style={{ left: `${lvl.x}%`, top: `${lvl.y}%` }}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 w-[15%] max-w-[66px] min-w-[48px] aspect-square rounded-full flex items-center justify-center cursor-pointer transition-all z-20 active:scale-90 ${
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 w-[15%] max-w-[66px] min-w-[48px] aspect-square rounded-full flex items-center justify-center cursor-pointer transition-all z-10 active:scale-90 ${
                     isCompleted
                       ? "bg-gradient-to-b from-[#85e000] to-[#6ab800] border-[3.5px] border-white shadow-[0_6px_0_#4a8500,0_6px_14px_rgba(0,0,0,0.2)]"
                       : isCurrent
@@ -326,14 +319,14 @@ export default function BelajarPage() {
               );
             })}
 
-            {/* MASCOT STANDING ABOVE CURRENT NODE */}
+            {/* MASCOT STANDING ABOVE CURRENT NODE (Z-INDEX 15: UNDER THE Z-50 DROPDOWN MENU) */}
             {levels[activeMascotSlot] && (
               <div
                 style={{
                   left: `${levels[activeMascotSlot].x}%`,
                   top: `${levels[activeMascotSlot].y - 8}%`,
                 }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 pointer-events-none z-30 animate-bounce"
+                className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 pointer-events-none z-15 animate-bounce"
                 style-prop={{ animationDuration: "2.5s" }}
               >
                 <Image
