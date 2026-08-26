@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { UserProfile } from "@/types";
-import { supabase, signInWithGoogleOAuth, fetchUserProfile } from "@/lib/supabase";
+import { supabase, signInWithGoogleOAuth, fetchUserProfile, saveUserProfile } from "@/lib/supabase";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -38,10 +38,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
+    let initialUser: UserProfile | null = null;
     try {
       const savedUser = localStorage.getItem("tb_active_user");
       if (savedUser) {
-        setUser(JSON.parse(savedUser));
+        initialUser = JSON.parse(savedUser);
+        setUser(initialUser);
       } else {
         setUser(null);
       }
@@ -51,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(false);
     }
 
-    // Listen to Supabase Auth state changes if Supabase is active
+    // Listen to Supabase Auth state changes
     if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       const { data: authListener } = supabase.auth.onAuthStateChange(
         async (event, session) => {
@@ -59,34 +61,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const googleId = session.user.id;
             const email = session.user.email || "";
 
-            // Query existing profile from user_profiles table
-            const { data: profile } = await supabase
-              .from("user_profiles")
-              .select("*")
-              .eq("google_id", googleId)
-              .maybeSingle();
+            try {
+              // Query existing profile from user_profiles table
+              const { data: profile } = await supabase
+                .from("user_profiles")
+                .select("*")
+                .eq("google_id", googleId)
+                .maybeSingle();
 
-            if (profile) {
-              setUser(profile as UserProfile);
-              localStorage.setItem("tb_active_user", JSON.stringify(profile));
-            } else {
-              // New user before setup-profile
-              setUser((prev) => {
-                const newUser: UserProfile = {
-                  id: "usr_" + googleId.substring(0, 8),
-                  google_id: googleId,
-                  email: email,
-                  display_name: session.user.user_metadata?.full_name || "",
-                  class_name: "",
-                  student_number: 0,
-                  coins: 0,
-                  xp: 0,
-                  streak: 1,
-                  onboarding_completed: false,
+              if (profile) {
+                const merged: UserProfile = {
+                  ...(profile as UserProfile),
+                  onboarding_completed: profile.onboarding_completed ?? true,
                 };
-                localStorage.setItem("tb_active_user", JSON.stringify(newUser));
-                return newUser;
-              });
+                setUser(merged);
+                localStorage.setItem("tb_active_user", JSON.stringify(merged));
+              } else {
+                // If profile not yet in Supabase table
+                setUser((prev) => {
+                  // If local session already completed onboarding, preserve it & sync
+                  if (prev && (prev.onboarding_completed || prev.class_name)) {
+                    const preserved: UserProfile = {
+                      ...prev,
+                      google_id: googleId,
+                      email: email || prev.email,
+                      onboarding_completed: true,
+                    };
+                    localStorage.setItem("tb_active_user", JSON.stringify(preserved));
+                    saveUserProfile(preserved).catch(() => {});
+                    return preserved;
+                  }
+
+                  // Brand new user before profile setup
+                  const newUser: UserProfile = {
+                    id: "usr_" + googleId.substring(0, 8),
+                    google_id: googleId,
+                    email: email,
+                    display_name: session.user.user_metadata?.full_name || "",
+                    class_name: "",
+                    student_number: 0,
+                    coins: 0,
+                    xp: 0,
+                    streak: 1,
+                    onboarding_completed: false,
+                  };
+                  localStorage.setItem("tb_active_user", JSON.stringify(newUser));
+                  return newUser;
+                });
+              }
+            } catch (err) {
+              console.warn("Supabase onAuthStateChange error, retaining local state:", err);
             }
           }
         }
@@ -107,6 +131,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!prev) return null;
       const updated = { ...prev, ...data };
       localStorage.setItem("tb_active_user", JSON.stringify(updated));
+      
+      // Auto-sync updates to Supabase
+      if (updated.id && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        supabase
+          .from("user_profiles")
+          .upsert([
+            {
+              id: updated.id,
+              google_id: updated.google_id,
+              email: updated.email,
+              display_name: updated.display_name,
+              class_name: updated.class_name,
+              student_number: updated.student_number,
+              coins: updated.coins,
+              xp: updated.xp,
+              streak: updated.streak,
+              selected_frame: updated.selected_frame,
+              onboarding_completed: updated.onboarding_completed,
+            },
+          ], { onConflict: "id" })
+          .then(() => {}, (err) => console.warn("Supabase background sync error:", err));
+      }
+
       return updated;
     });
   };

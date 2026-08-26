@@ -113,7 +113,7 @@ export async function checkDuplicateUser(params: {
 export async function saveUserProfile(profile: UserProfile): Promise<boolean> {
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
-      const { error } = await supabase.from("user_profiles").insert([
+      const { error } = await supabase.from("user_profiles").upsert([
         {
           id: profile.id,
           google_id: profile.google_id,
@@ -126,9 +126,9 @@ export async function saveUserProfile(profile: UserProfile): Promise<boolean> {
           xp: profile.xp || 0,
           streak: profile.streak || 1,
           selected_frame: profile.selected_frame || "frame_teal_tech",
-          onboarding_completed: profile.onboarding_completed ?? false,
+          onboarding_completed: profile.onboarding_completed ?? true,
         },
-      ]);
+      ], { onConflict: "id" });
       if (error) throw error;
     } catch (err) {
       console.warn("Could not save to Supabase directly, caching locally:", err);
