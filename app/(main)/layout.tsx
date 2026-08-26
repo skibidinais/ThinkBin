@@ -14,13 +14,16 @@ export default function MainLayout({
   const { user } = useAuth();
   const pathname = usePathname();
 
-  // Hide top StatusBar on Beranda and Mission page since they have their own custom header
+  // Hide top StatusBar on Beranda, Mission, and Leaderboard since they have their own custom header & sky
   const isDashboard = pathname === "/dashboard";
-  const hideStatusBar = pathname === "/dashboard" || pathname === "/mission";
+  const hideStatusBar =
+    pathname === "/dashboard" ||
+    pathname === "/mission" ||
+    pathname === "/leaderboard";
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden bg-[#FFFBEA]">
-      {/* Top Status Bar — hidden on Beranda and Mission page */}
+      {/* Top Status Bar — hidden on Beranda, Mission, and Leaderboard */}
       {!hideStatusBar && (
         <StatusBar
           streak={user?.streak ?? 1}

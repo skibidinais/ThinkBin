@@ -442,7 +442,6 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
       let query = supabase
         .from("user_profiles")
         .select("*")
-        .eq("onboarding_completed", true)
         .order("xp", { ascending: false });
 
       if (className && className !== "ALL") {
@@ -467,6 +466,67 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
         ? users.filter((u) => u.class_name === className)
         : users;
       return filtered.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+    }
+  }
+
+  return [];
+}
+
+export interface ClassLeaderboardItem {
+  class_name: string;
+  total_xp: number;
+  student_count: number;
+}
+
+/**
+ * Fetch Class Aggregated Leaderboard (Sum of XP per class)
+ */
+export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[]> {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    try {
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .select("class_name, xp");
+
+      if (!error && data && data.length > 0) {
+        const classMap: Record<string, { total_xp: number; student_count: number }> = {};
+        for (const row of data) {
+          if (!row.class_name) continue;
+          if (!classMap[row.class_name]) {
+            classMap[row.class_name] = { total_xp: 0, student_count: 0 };
+          }
+          classMap[row.class_name].total_xp += (row.xp || 0);
+          classMap[row.class_name].student_count += 1;
+        }
+
+        const classes = Object.keys(classMap).map((className) => ({
+          class_name: className,
+          total_xp: classMap[className].total_xp,
+          student_count: classMap[className].student_count,
+        }));
+
+        return classes.sort((a, b) => b.total_xp - a.total_xp);
+      }
+    } catch (err) {
+      console.warn("Could not fetch class leaderboard from Supabase:", err);
+    }
+  }
+
+  // Local Storage fallback
+  if (typeof window !== "undefined") {
+    const raw = localStorage.getItem("tb_registered_users");
+    if (raw) {
+      const users: UserProfile[] = JSON.parse(raw);
+      const classMap: Record<string, { total_xp: number; student_count: number }> = {};
+      for (const u of users) {
+        if (!u.class_name) continue;
+        if (!classMap[u.class_name]) classMap[u.class_name] = { total_xp: 0, student_count: 0 };
+        classMap[u.class_name].total_xp += (u.xp || 0);
+        classMap[u.class_name].student_count += 1;
+      }
+      return Object.keys(classMap)
+        .map((cn) => ({ class_name: cn, total_xp: classMap[cn].total_xp, student_count: classMap[cn].student_count }))
+        .sort((a, b) => b.total_xp - a.total_xp);
     }
   }
 
