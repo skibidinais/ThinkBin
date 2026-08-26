@@ -33,14 +33,14 @@ const FULL_CATALOG: ShopItem[] = [
     id: "eco_green",
     name: "Eco Green Border",
     price: 30,
-    imageSrc: "/assets_game/border1.png",
+    imageSrc: "/screens_assets/border1.png",
     description: "Border daun hijau klasik pejuang alam.",
   },
   {
     id: "autumn_forest",
     name: "Autumn Forest Border",
     price: 40,
-    imageSrc: "/assets_game/border1.png",
+    imageSrc: "/screens_assets/border1.png",
     filter: "hue-rotate(30deg) saturate(1.2) brightness(0.95)",
     description: "Nuansa hangat hutan musim gugur.",
   },
@@ -48,7 +48,7 @@ const FULL_CATALOG: ShopItem[] = [
     id: "sakura_pink",
     name: "Sakura Pink Border",
     price: 50,
-    imageSrc: "/assets_game/border1.png",
+    imageSrc: "/screens_assets/border1.png",
     filter: "hue-rotate(240deg) saturate(1.4)",
     description: "Pesona bunga sakura mekar nan cantik.",
   },
@@ -56,7 +56,7 @@ const FULL_CATALOG: ShopItem[] = [
     id: "ocean_guardian",
     name: "Ocean Guardian Border",
     price: 60,
-    imageSrc: "/assets_game/border2.png",
+    imageSrc: "/screens_assets/border2.png",
     filter: "hue-rotate(180deg) saturate(1.1)",
     description: "Kekuatan ombak samudra biru pelindung bumi.",
   },
@@ -64,7 +64,7 @@ const FULL_CATALOG: ShopItem[] = [
     id: "forest_guardian",
     name: "Forest Guardian Border",
     price: 70,
-    imageSrc: "/assets_game/border2.png",
+    imageSrc: "/screens_assets/border2.png",
     description: "Penjaga rimba hijau yang kokoh.",
   },
 
@@ -73,7 +73,7 @@ const FULL_CATALOG: ShopItem[] = [
     id: "twilight_guardian",
     name: "Twilight Guardian Border",
     price: 85,
-    imageSrc: "/assets_game/border2.png",
+    imageSrc: "/screens_assets/border2.png",
     filter: "hue-rotate(90deg) saturate(1.2)",
     description: "Magis senja ungu penjaga lingkungan.",
   },
@@ -81,14 +81,14 @@ const FULL_CATALOG: ShopItem[] = [
     id: "crystal_ice",
     name: "Crystal Ice Border",
     price: 100,
-    imageSrc: "/assets_game/border3.png",
+    imageSrc: "/screens_assets/border3.png",
     description: "Kristal es dingin berkilau mewah.",
   },
   {
     id: "crystal_amethyst",
     name: "Crystal Amethyst Border",
     price: 115,
-    imageSrc: "/assets_game/border3.png",
+    imageSrc: "/screens_assets/border3.png",
     filter: "hue-rotate(70deg) saturate(1.2)",
     description: "Permata ametis ungu memancarkan wibawa.",
   },
@@ -96,24 +96,24 @@ const FULL_CATALOG: ShopItem[] = [
     id: "crystal_ruby",
     name: "Crystal Ruby Border",
     price: 130,
-    imageSrc: "/assets_game/border3.png",
+    imageSrc: "/screens_assets/border3.png",
     filter: "hue-rotate(220deg) saturate(1.3)",
-    description: "Kilau rubi merah menyala penuh semangat.",
+    description: "Permata rubi merah menyala berani.",
   },
   {
     id: "emerald_royal",
     name: "Emerald Royal Border",
     price: 150,
-    imageSrc: "/assets_game/border4.png",
+    imageSrc: "/screens_assets/border4.png",
     description: "Mahkota zamrud kerajaan hijau sejati.",
   },
   {
     id: "sapphire_royal",
     name: "Sapphire Royal Border",
-    price: 170,
-    imageSrc: "/assets_game/border4.png",
+    price: 175,
+    imageSrc: "/screens_assets/border4.png",
     filter: "hue-rotate(140deg) saturate(1.2)",
-    description: "Safir biru bangsawan pelindung bumi.",
+    description: "Mahkota safir biru kemegahan samudera.",
   },
 
   // --- PAGE 3: Deluxe Special ---
@@ -121,21 +121,21 @@ const FULL_CATALOG: ShopItem[] = [
     id: "golden_monarch",
     name: "Golden Monarch Border",
     price: 200,
-    imageSrc: "/assets_game/border4.png",
+    imageSrc: "/screens_assets/border4.png",
     filter: "hue-rotate(320deg) brightness(1.1) saturate(1.4)",
-    description: "Aksen emas raja untuk sang juara sejati.",
+    description: "Takhta emas tertinggi pelindung bumi semesta.",
   },
   {
     id: "frame_teal_tech",
-    name: "Teal Tech Deluxe",
-    price: 220,
+    name: "Teal Tech Border",
+    price: 65,
     imageSrc: "/assets_game/frame_teal_tech.png",
-    description: "Border futuristik teknologi canggih!",
+    description: "Gaya futuristik teknologi ramah lingkungan.",
   },
   {
     id: "frame_blue_crystal",
-    name: "Blue Crystal Deluxe",
-    price: 250,
+    name: "Blue Crystal Border",
+    price: 90,
     imageSrc: "/assets_game/frame_blue_crystal.png",
     description: "Kristal es biru berkilau edisi terbatas!",
   },
@@ -206,7 +206,7 @@ export default function TokoPage() {
     } else {
       const currentCoins = user?.coins ?? 0;
       if (currentCoins < item.price) {
-        setPurchaseNotice(`⚠️ Koin tidak cukup! Perlu ${item.price} koin.`);
+        setPurchaseNotice(`⚠️ Koin kamu tidak cukup untuk membeli "${item.name}"!`);
         setTimeout(() => setPurchaseNotice(null), 3000);
         return;
       }
@@ -243,7 +243,7 @@ export default function TokoPage() {
 
   return (
     <div className="relative w-full h-full min-h-full flex flex-col items-center justify-between select-none overflow-hidden bg-[#F7E7B4]">
-      {/* ── BACKGROUND IMAGE (Maintains Aspect Ratio with object-fit: contain without cropping or stretching) ── */}
+      {/* ── BACKGROUND IMAGE (Market Stall Scene) ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <Image
           src="/screens_assets/shop_clean_background.jpg"
@@ -255,24 +255,51 @@ export default function TokoPage() {
         />
       </div>
 
-      {/* ── CENTRAL INTERACTIVE CONTENT LAYER (Positioned precisely over the open cream wall area) ── */}
-      <div className="relative z-10 w-full max-w-[390px] h-full flex flex-col justify-between pt-[76px] pb-[84px] px-3.5">
+      {/* ── CENTRAL INTERACTIVE CONTENT LAYER ── */}
+      <div className="relative z-10 w-full max-w-[390px] h-full flex flex-col justify-between pt-3 pb-28 px-3.5">
         
-        {/* 1. WELCOME MESSAGE BUBBLE WITH MASCOT */}
-        <div className="flex items-center gap-2 bg-white/95 border-[2px] border-[#D19932] rounded-2xl p-2 shadow-[0_3px_8px_rgba(180,120,30,0.12)] backdrop-blur-xs flex-shrink-0 mb-1.5">
-          <div className="relative w-10 h-10 flex-shrink-0">
+        {/* ── 1. SINGLE LIVE TOP STAT BAR (Streak / XP / Koin) ── */}
+        <div className="flex items-center justify-between w-full px-1 mb-1.5 flex-shrink-0 z-20">
+          {/* Streak Pill */}
+          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
             <Image
-              src="/assets/mascot_leonardo.png"
-              alt="Mascot"
-              width={40}
-              height={40}
+              src="/screens_assets/streak_icon.png"
+              alt="Streak"
+              width={18}
+              height={18}
               className="object-contain"
             />
+            <span className="font-fredoka font-black text-xs text-[#382C22]">
+              {user?.streak ?? 1} Hari
+            </span>
           </div>
-          <div className="flex-1">
-            <p className="font-fredoka font-bold text-[11px] text-[#382C22] leading-snug">
-              Halo! Yuk hias profilmu dengan Border Profil ThinkBin yang unik!
-            </p>
+
+          {/* XP Pill */}
+          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
+            <Image
+              src="/screens_assets/xp_icon.png"
+              alt="XP"
+              width={16}
+              height={16}
+              className="object-contain"
+            />
+            <span className="font-fredoka font-black text-xs text-[#382C22]">
+              {user?.xp ?? 0} XP
+            </span>
+          </div>
+
+          {/* Coin Pill */}
+          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
+            <Image
+              src="/screens_assets/coin.png"
+              alt="Coin"
+              width={18}
+              height={18}
+              className="object-contain"
+            />
+            <span className="font-fredoka font-black text-xs text-[#382C22]">
+              {user?.coins ?? 0}
+            </span>
           </div>
         </div>
 
@@ -283,7 +310,7 @@ export default function TokoPage() {
           </div>
         )}
 
-        {/* 2. GRID OF 6 ITEM CARDS (2 rows x 3 columns) */}
+        {/* ── 2. GRID OF 6 ITEM CARDS (2 rows x 3 columns) ── */}
         <div className="grid grid-cols-3 gap-2 my-auto flex-shrink-0">
           {currentItems.map((item) => {
             const isOwned = ownedFrames.includes(item.id);
@@ -307,7 +334,7 @@ export default function TokoPage() {
                   {!item.isMysteryBox ? (
                     <>
                       <Image
-                        src="/assets/mascot_leonardo.png"
+                        src="/screens_assets/mascot_thumbsup_transparent.png"
                         alt="Avatar"
                         width={34}
                         height={34}
@@ -374,18 +401,18 @@ export default function TokoPage() {
           })}
         </div>
 
-        {/* 3. PAGINATION CONTROLS PILL (< 1 / 3 >) */}
-        <div className="flex items-center justify-center gap-2 mt-1 flex-shrink-0">
+        {/* ── 3. PAGINATION CONTROLS PILL (< 1 / 3 >) ELEVATED CLEAR OF BOTTOM DOCK ── */}
+        <div className="flex items-center justify-center gap-2 mb-1 flex-shrink-0 z-20">
           <button
             type="button"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="w-7 h-7 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-xs text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white border-[2px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2.5px_0_#C2870F] disabled:opacity-35 active:translate-y-0.5 cursor-pointer"
           >
             ‹
           </button>
 
-          <div className="bg-white border-[1.5px] border-[#D4981C] rounded-full px-4 py-0.5 font-fredoka font-black text-[11px] text-[#633E04] shadow-[0_2px_0_#C2870F]">
+          <div className="bg-white border-[2px] border-[#D4981C] rounded-full px-5 py-1 font-fredoka font-black text-xs text-[#633E04] shadow-[0_2.5px_0_#C2870F]">
             {currentPage} / {TOTAL_PAGES}
           </div>
 
@@ -393,11 +420,12 @@ export default function TokoPage() {
             type="button"
             onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
             disabled={currentPage === TOTAL_PAGES}
-            className="w-7 h-7 rounded-full bg-white border-[1.5px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-xs text-[#633E04] shadow-[0_2px_0_#C2870F] disabled:opacity-30 active:translate-y-0.5 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white border-[2px] border-[#D4981C] flex items-center justify-center font-fredoka font-black text-sm text-[#633E04] shadow-[0_2.5px_0_#C2870F] disabled:opacity-35 active:translate-y-0.5 cursor-pointer"
           >
             ›
           </button>
         </div>
+
       </div>
     </div>
   );

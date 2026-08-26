@@ -21,11 +21,12 @@ export default function MainLayout({
     pathname === "/mission" ||
     pathname === "/leaderboard" ||
     pathname === "/belajar" ||
-    pathname === "/profil";
+    pathname === "/profil" ||
+    pathname === "/toko";
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden bg-[#FFFBEA]">
-      {/* Top Status Bar — hidden on Dashboard, Mission, Leaderboard, Belajar, and Profil */}
+      {/* Top Status Bar — hidden on Dashboard, Mission, Leaderboard, Belajar, Profil, and Toko */}
       {!hideStatusBar && (
         <StatusBar
           streak={user?.streak ?? 1}
