@@ -53,19 +53,7 @@ export default function LeaderboardPage() {
       ? (individualData.length > 0
           ? individualData
           : user
-          ? [
-              {
-                id: user.id,
-                nisn: user.nisn || "",
-                display_name: user.display_name || "Kamu",
-                class_name: user.class_name || "8A",
-                xp: user.xp || 0,
-                coins: user.coins || 0,
-                streak: user.streak || 1,
-                selected_frame: user.selected_frame || "eco_green",
-                onboarding_completed: true,
-              },
-            ]
+          ? [user]
           : []
         ).map((u, index) => ({
           id: u.id,
