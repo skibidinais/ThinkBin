@@ -66,23 +66,23 @@ export default function BacaanPage() {
 
   return (
     <div
-      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none bg-[#1e120b]"
+      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none bg-[#ba6c26]"
       style={{
         WebkitOverflowScrolling: "touch",
         scrollBehavior: "smooth",
       }}
     >
-      {/* ── 1. HARDWARE-ACCELERATED FIXED WOOD BACKGROUND (Smooth 60/120 FPS scrolling) ── */}
+      {/* ── 1. HARDWARE-ACCELERATED WARM LIGHT-BROWN WOOD BACKGROUND ── */}
       <div
-        className="fixed inset-0 pointer-events-none -z-10 bg-[#1e120b]"
+        className="fixed inset-0 pointer-events-none -z-10 bg-[#ba6c26]"
         style={{
           backgroundImage:
-            "radial-gradient(ellipse at 50% 30%, rgba(255, 185, 95, 0.18) 0%, rgba(0, 0, 0, 0.35) 100%), repeating-linear-gradient(90deg, #bb6e2a 0px, #bb6e2a 40px, #b36420 40px, #b36420 42px, #c47833 42px, #c47833 90px, #ae5f1d 90px, #ae5f1d 92px, #be712b 92px, #be712b 150px)",
+            "radial-gradient(ellipse at 50% 30%, rgba(255, 215, 145, 0.25) 0%, rgba(140, 75, 25, 0.15) 100%), repeating-linear-gradient(90deg, #c87a32 0px, #c87a32 40px, #b86a24 40px, #b86a24 42px, #d2863c 42px, #d2863c 90px, #ba6c26 90px, #ba6c26 92px, #cb7d35 92px, #cb7d35 150px)",
           transform: "translateZ(0)",
         }}
       />
 
-      <div className="relative w-full max-w-[420px] flex flex-col justify-between py-4 px-3 min-h-full">
+      <div className="relative w-full max-w-[420px] flex flex-col justify-between py-4 px-4 min-h-full">
         
         {/* ── 2. DECORATIVE STATIONERY PROPS (Ruler, Crayon, Pencil, Sticky Notes) ── */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -103,7 +103,7 @@ export default function BacaanPage() {
           />
 
           {/* Ruler on Top Right */}
-          <div className="absolute top-12 -right-6 w-16 h-36 bg-[#f3f7fa] border-l-2 border-[#5a94af] -rotate-18 opacity-95 rounded shadow-lg p-2 flex flex-col gap-2">
+          <div className="absolute top-12 -right-5 w-16 h-36 bg-[#f3f7fa] border-l-2 border-[#5a94af] -rotate-18 opacity-95 rounded shadow-lg p-2 flex flex-col gap-2">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div
                 key={i}
@@ -151,7 +151,7 @@ export default function BacaanPage() {
             </svg>
           </button>
 
-          {/* ThinkBin Logo Badge Card (Clean, perfectly contained, no overflow glitch) */}
+          {/* ThinkBin Logo Badge Card */}
           <div className="w-24 h-14 bg-white rounded-[22px] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] flex items-center justify-center p-1.5 overflow-hidden">
             <Image
               src="/screens_assets/logo.png"
@@ -163,12 +163,12 @@ export default function BacaanPage() {
           </div>
         </header>
 
-        {/* ── 4. MAIN WHITE READING CARD CONTAINER WITH FLOATING PILL ── */}
-        <div className="relative z-10 w-full bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.45)] px-4 pt-10 pb-6 flex flex-col gap-4 mb-4">
+        {/* ── 4. NARROWER WHITE READING CARD CONTAINER (Shows generous wood margin on both sides) ── */}
+        <div className="relative z-10 w-[90%] max-w-[365px] mx-auto bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.35)] px-4 pt-10 pb-6 flex flex-col gap-4 mb-4">
           
           {/* Floating Pill Badge: Node X / 16 • Bagian Y */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] px-6 py-2 rounded-full z-20 whitespace-nowrap">
-            <span className="font-fredoka font-black text-base text-[#3b1d03] tracking-wide">
+            <span className="font-fredoka font-black text-sm text-[#3b1d03] tracking-wide">
               Node {node.id} / 16 • Bagian {node.bagianId}
             </span>
           </div>
@@ -187,14 +187,14 @@ export default function BacaanPage() {
           </button>
 
           {/* Reading Title (Heading) */}
-          <h1 className="font-fredoka font-black text-[19px] text-[#241a10] text-center leading-snug px-2">
+          <h1 className="font-fredoka font-black text-[18px] text-[#241a10] text-center leading-snug px-2">
             {node.title}
           </h1>
 
           <div className="w-full h-[1px] bg-[#E7DED4] my-0.5" />
 
           {/* Konsep Inti Box (Light Cream/Beige) */}
-          <div className="w-full bg-[#FFFDF5] border-[1.5px] border-[#EADFC9] rounded-2xl p-4 text-justify font-nunito font-semibold text-[14px] leading-relaxed text-[#291e13] shadow-inner">
+          <div className="w-full bg-[#FFFDF5] border-[1.5px] border-[#EADFC9] rounded-2xl p-3.5 text-justify font-nunito font-semibold text-[13.5px] leading-relaxed text-[#291e13] shadow-inner">
             {node.konsepInti}
           </div>
 
@@ -204,7 +204,7 @@ export default function BacaanPage() {
               <span>💡</span>
               <span>Contoh Nyata:</span>
             </div>
-            <p className="font-nunito font-bold text-[13.5px] text-[#166534] leading-relaxed">
+            <p className="font-nunito font-bold text-[13px] text-[#166534] leading-relaxed">
               {node.contoh}
             </p>
           </div>
@@ -214,7 +214,7 @@ export default function BacaanPage() {
             <button
               type="button"
               onClick={handleNext}
-              className="w-full max-w-[240px] py-3.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-base text-[#3b1d03] tracking-wider uppercase transition-transform cursor-pointer text-center"
+              className="w-full max-w-[220px] py-3 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-base text-[#3b1d03] tracking-wider uppercase transition-transform cursor-pointer text-center"
             >
               LANJUT
             </button>

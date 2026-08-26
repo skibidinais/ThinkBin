@@ -69,23 +69,23 @@ export default function QuizPage() {
 
   return (
     <div
-      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none bg-[#1e120b]"
+      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none bg-[#ba6c26]"
       style={{
         WebkitOverflowScrolling: "touch",
         scrollBehavior: "smooth",
       }}
     >
-      {/* ── 1. HARDWARE-ACCELERATED FIXED WOOD BACKGROUND ── */}
+      {/* ── 1. HARDWARE-ACCELERATED WARM LIGHT-BROWN WOOD BACKGROUND ── */}
       <div
-        className="fixed inset-0 pointer-events-none -z-10 bg-[#1e120b]"
+        className="fixed inset-0 pointer-events-none -z-10 bg-[#ba6c26]"
         style={{
           backgroundImage:
-            "radial-gradient(ellipse at 50% 30%, rgba(255, 185, 95, 0.18) 0%, rgba(0, 0, 0, 0.35) 100%), repeating-linear-gradient(90deg, #bb6e2a 0px, #bb6e2a 40px, #b36420 40px, #b36420 42px, #c47833 42px, #c47833 90px, #ae5f1d 90px, #ae5f1d 92px, #be712b 92px, #be712b 150px)",
+            "radial-gradient(ellipse at 50% 30%, rgba(255, 215, 145, 0.25) 0%, rgba(140, 75, 25, 0.15) 100%), repeating-linear-gradient(90deg, #c87a32 0px, #c87a32 40px, #b86a24 40px, #b86a24 42px, #d2863c 42px, #d2863c 90px, #ba6c26 90px, #ba6c26 92px, #cb7d35 92px, #cb7d35 150px)",
           transform: "translateZ(0)",
         }}
       />
 
-      <div className="relative w-full max-w-[420px] flex flex-col justify-between py-4 px-3 min-h-full">
+      <div className="relative w-full max-w-[420px] flex flex-col justify-between py-4 px-4 min-h-full">
         
         {/* ── 2. DECORATIVE STATIONERY PROPS ── */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -106,7 +106,7 @@ export default function QuizPage() {
           />
 
           {/* Ruler on Top Right */}
-          <div className="absolute top-12 -right-6 w-16 h-36 bg-[#f3f7fa] border-l-2 border-[#5a94af] -rotate-18 opacity-95 rounded shadow-lg p-2 flex flex-col gap-2">
+          <div className="absolute top-12 -right-5 w-16 h-36 bg-[#f3f7fa] border-l-2 border-[#5a94af] -rotate-18 opacity-95 rounded shadow-lg p-2 flex flex-col gap-2">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div
                 key={i}
@@ -166,12 +166,12 @@ export default function QuizPage() {
           </div>
         </header>
 
-        {/* ── 4. MAIN WHITE QUIZ CARD CONTAINER WITH FLOATING PILL ── */}
-        <div className="relative z-10 w-full bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.45)] px-4 pt-10 pb-12 flex flex-col gap-3.5 mb-14">
+        {/* ── 4. NARROWER WHITE QUIZ CARD CONTAINER (Shows generous wood margin on both sides) ── */}
+        <div className="relative z-10 w-[90%] max-w-[365px] mx-auto bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.35)] px-4 pt-10 pb-7 flex flex-col gap-3.5 mb-6">
           
           {/* Floating Pill Badge: Soal Pemahaman • Node X */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] px-6 py-2 rounded-full z-20 whitespace-nowrap">
-            <span className="font-fredoka font-black text-base text-[#3b1d03] tracking-wide">
+            <span className="font-fredoka font-black text-sm text-[#3b1d03] tracking-wide">
               Soal Pemahaman • Node {node.id}
             </span>
           </div>
@@ -189,10 +189,10 @@ export default function QuizPage() {
 
               {/* Question Header: Number Circle (1) + Question Text */}
               <div className="flex items-start gap-3 pb-3 border-b-[1.5px] border-[#e7ded4]">
-                <div className="w-9 h-9 min-w-9 rounded-full border-[2.8px] border-[#291e13] flex items-center justify-center font-fredoka font-black text-base text-[#291e13] flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 min-w-8 rounded-full border-[2.5px] border-[#291e13] flex items-center justify-center font-fredoka font-black text-sm text-[#291e13] flex-shrink-0 mt-0.5">
                   1
                 </div>
-                <h2 className="font-fredoka font-extrabold text-[15px] text-[#241a10] leading-snug">
+                <h2 className="font-fredoka font-extrabold text-[14.5px] text-[#241a10] leading-snug">
                   {question.question}
                 </h2>
               </div>
@@ -206,7 +206,7 @@ export default function QuizPage() {
                     <div
                       key={opt.value}
                       onClick={() => setSelectedOption(opt.value)}
-                      className={`flex items-center gap-3.5 py-3 px-2 border-b-[1.5px] transition-all cursor-pointer rounded-xl ${
+                      className={`flex items-center gap-3 py-2.5 px-2 border-b-[1.5px] transition-all cursor-pointer rounded-xl ${
                         isSelected
                           ? "bg-[#fff6e4] border-b-[#e5a72d]"
                           : "hover:bg-[#fbf7f1] border-b-[#ece4da]"
@@ -214,7 +214,7 @@ export default function QuizPage() {
                     >
                       {/* Letter Circle (A, B, C, D) */}
                       <div
-                        className={`w-8 h-8 min-w-8 rounded-full border-[2.5px] flex items-center justify-center font-fredoka font-black text-sm transition-all flex-shrink-0 ${
+                        className={`w-7 h-7 min-w-7 rounded-full border-[2px] flex items-center justify-center font-fredoka font-black text-xs transition-all flex-shrink-0 ${
                           isSelected
                             ? "bg-[#f6c039] border-[#5c2d03] text-[#3b1d03] scale-105 shadow-xs"
                             : "border-[#291e13] text-[#291e13]"
@@ -225,7 +225,7 @@ export default function QuizPage() {
 
                       {/* Option Text */}
                       <span
-                        className={`font-fredoka text-[14px] leading-snug transition-colors ${
+                        className={`font-fredoka text-[13.5px] leading-snug transition-colors ${
                           isSelected
                             ? "text-[#8c4200] font-extrabold"
                             : "text-[#291e13] font-bold"
@@ -238,13 +238,13 @@ export default function QuizPage() {
                 })}
               </div>
 
-              {/* JAWAB Button */}
+              {/* JAWAB Button (Unobstructed & Clean) */}
               <div className="w-full flex justify-center pt-2">
                 <button
                   type="button"
                   onClick={handleSubmit}
                   disabled={!selectedOption}
-                  className={`w-full max-w-[200px] py-3 rounded-2xl font-fredoka font-black text-base tracking-wider uppercase transition-transform text-center ${
+                  className={`w-full max-w-[190px] py-3 rounded-2xl font-fredoka font-black text-base tracking-wider uppercase transition-transform text-center ${
                     selectedOption
                       ? "bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none text-[#3b1d03] cursor-pointer"
                       : "bg-[#e2d5c3] border-[3px] border-[#a8937b] text-[#8c7862] shadow-[0_3px_0_#8c7862] cursor-not-allowed opacity-75"
@@ -255,24 +255,24 @@ export default function QuizPage() {
               </div>
             </>
           ) : (
-            /* Result Feedback Card (Consistent Wood Theme, No Unrelated Emojis) */
+            /* Result Feedback Card */
             <div className="flex flex-col items-center text-center py-2 gap-3 animate-in zoom-in-95 duration-200">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-1">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-0.5">
                 <Image
                   src="/screens_assets/logo.png"
                   alt="ThinkBin"
-                  width={64}
-                  height={64}
+                  width={56}
+                  height={56}
                   className="object-contain"
                 />
               </div>
 
-              <h2 className="font-fredoka font-black text-xl text-[#291e13]">
+              <h2 className="font-fredoka font-black text-lg text-[#291e13]">
                 {isCorrect ? "Jawaban Benar!" : "Jawaban Kurang Tepat"}
               </h2>
 
               <div
-                className={`px-5 py-2 rounded-2xl font-fredoka font-black text-base border-[2.5px] ${
+                className={`px-4 py-1.5 rounded-2xl font-fredoka font-black text-sm border-[2.5px] ${
                   isCorrect
                     ? "bg-[#ebf9e5] border-[#3fa427] text-[#2c7a1c]"
                     : "bg-[#fef2f2] border-[#ef4444] text-[#b91c1c]"
@@ -292,7 +292,7 @@ export default function QuizPage() {
                   <button
                     type="button"
                     onClick={handleRestart}
-                    className="flex-1 max-w-[140px] py-3 bg-white border-[3px] border-[#6b3506] shadow-[0_3px_0_#542803] rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase cursor-pointer"
+                    className="flex-1 max-w-[130px] py-2.5 bg-white border-[3px] border-[#6b3506] shadow-[0_3px_0_#542803] rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase cursor-pointer"
                   >
                     MAIN LAGI
                   </button>
@@ -301,7 +301,7 @@ export default function QuizPage() {
                 <button
                   type="button"
                   onClick={handleContinue}
-                  className="flex-1 max-w-[160px] py-3 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase tracking-wider cursor-pointer"
+                  className="flex-1 max-w-[150px] py-2.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-xs text-[#3b1d03] uppercase tracking-wider cursor-pointer"
                 >
                   LANJUT
                 </button>
@@ -310,19 +310,7 @@ export default function QuizPage() {
           )}
         </div>
 
-        {/* ── 5. CARTOON HANDS OVERLAY AT BOTTOM ── */}
-        <div className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-[122%] pointer-events-none z-20">
-          <Image
-            src="/screens_assets/hands.png"
-            alt="Hands holding paper"
-            width={520}
-            height={190}
-            className="w-full h-auto object-contain block drop-shadow-[0_-4px_10px_rgba(0,0,0,0.2)]"
-            priority
-          />
-        </div>
-
-        {/* ── 6. HINT MODAL POPUP ── */}
+        {/* ── 5. HINT MODAL POPUP ── */}
         {showHintModal && (
           <div className="fixed inset-0 bg-black/65 backdrop-blur-xs z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl border-[4px] border-[#6b3506] shadow-2xl p-5 max-w-[320px] w-full text-center flex flex-col gap-3 animate-in zoom-in-95 duration-150">
