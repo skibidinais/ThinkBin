@@ -40,26 +40,26 @@ export function getRankTier(xp: number) {
 }
 
 export const MODUL_DATA: ModulNode[] = [
-  // BAGIAN 1 — MENGENAL SAMPAH
+  // ===== BAGIAN 1 — MENGENAL SAMPAH =====
   {
     id: 1,
     bagianId: 1,
     bagianTitle: 'Mengenal Sampah',
-    title: 'Apa itu Sampah & Klasifikasi UU',
+    title: 'Apa itu Sampah & Jenis-Jenisnya',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Sampah adalah sisa kegiatan manusia atau proses alam yang berbentuk padat (UU No. 18/2008). Nilai sampah itu relatif; bagi satu orang tidak berguna, bagi bank sampah itu bahan baku berharga. UU No. 18/2008 membagi sampah menjadi: sampah rumah tangga, sampah sejenis rumah tangga (kantor, kantin, dll), dan sampah spesifik (berbahaya).',
-    contoh: 'Sisa kuah bakso di rumah adalah sampah rumah tangga. Botol plastik bekas dari kantin sekolah termasuk kategori sampah sejenis rumah tangga. Baterai bekas yang mengandung zat kimia berbahaya dikelompokkan sebagai sampah spesifik.',
+    konsepInti: 'Sampah adalah barang atau sisa makanan yang sudah tidak kita pakai lagi. Menurut aturan, sampah dibagi menjadi 3 jenis: sampah dari rumah, sampah dari tempat umum (seperti sekolah atau pasar), dan sampah khusus (seperti baterai bekas yang butuh penanganan khusus).',
+    contoh: 'Sisa makanan di rumah = sampah rumah tangga. Bungkus jajanan di kantin sekolah = sampah sejenis rumah tangga. Baterai bekas = sampah khusus.',
     question: {
-      question: 'Sampah dari kantin sekolah kita masuk ke dalam kategori sampah apa menurut UU No. 18/2008?',
+      question: 'Sampah sisa makanan dan bungkus jajanan dari kantin sekolah termasuk jenis sampah apa?',
       options: [
-        { value: 'A', text: 'Sampah rumah tangga' },
-        { value: 'B', text: 'Sampah sejenis rumah tangga' },
-        { value: 'C', text: 'Sampah spesifik' },
-        { value: 'D', text: 'Sampah B3' }
+        { value: 'A', text: 'Sampah sejenis rumah tangga' },
+        { value: 'B', text: 'Sampah luar angkasa' },
+        { value: 'C', text: 'Sampah pabrik kimia' },
+        { value: 'D', text: 'Sampah tanaman hutan' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Sampah sejenis rumah tangga adalah sampah rumah tangga yang berasal dari kawasan komersial, industri, sosial, dan fasilitas umum lainnya, termasuk kantin sekolah.'
+      correctAnswer: 'A',
+      explanation: 'Sampah dari fasilitas umum seperti kantin sekolah dikategorikan sebagai sampah sejenis rumah tangga.'
     },
     xpReward: 12,
     coinReward: 15
@@ -68,21 +68,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 2,
     bagianId: 1,
     bagianTitle: 'Mengenal Sampah',
-    title: 'Sampah Organik: Pengertian, Basah & Kering',
+    title: 'Sampah Organik (Mudah Membusuk)',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Sampah organik berasal dari makhluk hidup dan bisa diuraikan oleh bakteri secara alami. Terbagi dua: Organik Basah (kadar air tinggi, cepat membusuk, berbau, e.g. sisa sayur, buah, nasi) dan Organik Kering (kadar air rendah, lambat membusuk, e.g. daun kering, ranting, sabut kelapa).',
-    contoh: 'Sisa sayuran kantin adalah organik basah yang harus segera diolah agar tidak menimbulkan bau lindi. Daun-daun kering yang berguguran di halaman sekolah adalah organik kering yang cocok dijadikan kompos pelan.',
+    konsepInti: 'Sampah organik adalah sampah alami yang berasal dari sisa tumbuhan atau hewan, sehingga bisa membusuk dan hancur sendiri menjadi tanah atau pupuk kompos. Ada dua macam: organik basah (berair dan cepat busuk seperti sisa nasi, sayur, dan buah) serta organik kering (kering dan lebih lama membusuk seperti daun gugur dan ranting pohon).',
+    contoh: 'Sisa sayuran dan kulit pisang = organik basah. Daun kering di halaman = organik kering.',
     question: {
-      question: 'Tulang ayam sisa makan siangmu termasuk kategori sampah organik basah atau kering?',
+      question: 'Sisa sayuran, potongan buah, dan sisa makanan yang berair termasuk jenis sampah apa?',
       options: [
-        { value: 'A', text: 'Basah (karena berasal dari sisa makanan dan memiliki kadar air yang cepat membusuk)' },
-        { value: 'B', text: 'Kering (karena teksturnya keras seperti kayu)' },
-        { value: 'C', text: 'Anorganik (karena bukan tumbuhan)' },
-        { value: 'D', text: 'Residu (tidak bisa diolah)' }
+        { value: 'A', text: 'Sampah organik basah' },
+        { value: 'B', text: 'Sampah organik kering' },
+        { value: 'C', text: 'Sampah plastik buatan' },
+        { value: 'D', text: 'Sampah botol kaca' }
       ],
       correctAnswer: 'A',
-      explanation: 'Tulang ayam mengandung sisa sumsum, daging basah, dan air yang cepat membusuk dan mengundang lalat, sehingga digolongkan sebagai sampah organik basah.'
+      explanation: 'Sisa sayuran dan buah berkadar air tinggi sehingga digolongkan sebagai sampah organik basah.'
     },
     xpReward: 12,
     coinReward: 15
@@ -91,21 +91,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 3,
     bagianId: 1,
     bagianTitle: 'Mengenal Sampah',
-    title: 'Sampah Anorganik: Jenis & Bahaya Kimia',
+    title: 'Sampah Anorganik (Sulit Membusuk)',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Sampah anorganik berasal dari bahan non-hayati atau sintetis (buatan pabrik/minyak bumi) yang sangat sulit terurai bakteri alami. 5 jenis utama: plastik, kaca, logam, styrofoam, dan limbah elektronik. Beberapa bahan anorganik mengandung zat kimia berbahaya seperti BPA pada plastik polikarbonat, styrene pada styrofoam, serta merkuri/timbal pada baterai bekas.',
-    contoh: 'Styrofoam yang dipakai mewadahi kuah bakso panas berisiko melepas zat kimia styrene ke makanan, yang berbahaya bagi kesehatan jika menumpuk di tubuh.',
+    konsepInti: 'Sampah anorganik adalah sampah buatan pabrik dari bahan non-alami yang sangat sulit membusuk di tanah. Contoh utamanya: botol plastik, kaca, kaleng logam, dan styrofoam. Ingat ya, wadah styrofoam tidak boleh dipakai untuk makanan yang masih sangat panas karena zat kimianya bisa larut ke makanan.',
+    contoh: 'Botol minum plastik, kaleng minuman, dan wadah styrofoam.',
     question: {
-      question: 'Zat kimia apa yang perlu diwaspadai pada wadah styrofoam karena berisiko berpindah ke makanan saat terkena panas?',
+      question: 'Mengapa kita tidak boleh menaruh makanan yang masih sangat panas ke dalam wadah styrofoam?',
       options: [
-        { value: 'A', text: 'BPA' },
-        { value: 'B', text: 'Mercury' },
-        { value: 'C', text: 'Styrene' },
-        { value: 'D', text: 'Chlorofluorocarbon (CFC)' }
+        { value: 'A', text: 'Zat kimia styrofoam bisa larut dan berpindah ke makanan' },
+        { value: 'B', text: 'Makanan akan langsung berubah menjadi dingin' },
+        { value: 'C', text: 'Makanan akan bertambah banyak sendiri' },
+        { value: 'D', text: 'Styrofoam akan berubah menjadi batu keras' }
       ],
-      correctAnswer: 'C',
-      explanation: 'Styrofoam dibuat dari polistirena. Saat terkena suhu panas atau lemak dari makanan, monomer styrene yang bersifat karsinogenik dapat lepas dan larut ke makanan.'
+      correctAnswer: 'A',
+      explanation: 'Suhu panas dapat melarutkan monomer styrene berbahaya dari wadah styrofoam ke dalam makanan.'
     },
     xpReward: 12,
     coinReward: 15
@@ -114,35 +114,46 @@ export const MODUL_DATA: ModulNode[] = [
     id: 4,
     bagianId: 1,
     bagianTitle: 'Mengenal Sampah',
-    title: '🎮 Kuis Tantangan: Pilah Organik vs Anorganik',
+    title: 'Kuis Tantangan: Pilah Organik vs Anorganik',
     type: 'kuis',
     pilar: 'Kemampuan',
     konsepInti: 'Uji kecepatanmu memisahkan sampah! Tarik atau klik item sampah ke tong sampah yang benar (Organik vs Anorganik) sebelum waktu habis!',
     contoh: 'Botol plastik masuk Anorganik. Kulit pisang masuk Organik.',
+    question: {
+      question: 'Manakah kelompok sampah di bawah ini yang seluruhnya termasuk sampah organik?',
+      options: [
+        { value: 'A', text: 'Kulit jeruk, sisa apel, dan daun kering' },
+        { value: 'B', text: 'Botol plastik, kantong kresek, dan kaleng' },
+        { value: 'C', text: 'Baterai bekas, styrofoam, dan kaca' },
+        { value: 'D', text: 'Sedotan plastik, kertas timah, dan paku' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Kulit jeruk, sisa apel, dan daun kering berasal dari tumbuhan alami sehingga termasuk sampah organik.'
+    },
     xpReward: 12,
     coinReward: 15
   },
 
-  // BAGIAN 2 — DAMPAK LINGKUNGAN
+  // ===== BAGIAN 2 — DAMPAK LINGKUNGAN =====
   {
     id: 5,
     bagianId: 2,
     bagianTitle: 'Dampak Lingkungan',
-    title: 'Dampak Sampah: Tanah, Air, Udara & Kesehatan',
+    title: 'Dampak Sampah Dibuang Sembarangan',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Sampah tidak terkelola berdampak buruk di berbagai media: Tanah tercemar cairan lindi (leachate - cairan kotor berbau dari tumpukan sampah); Air tersumbat hingga banjir dan melukai hewan air; Udara tercemar gas metana (pemicu pemanasan global 28x lebih kuat dari CO2); Kesehatan terancam karena tumpukan sampah menjadi sarang vektor penyakit (lalat, nyamuk DBD, tikus).',
-    contoh: 'Kaleng bekas yang tergenang air hujan di sudut halaman sekolah menjadi sarang nyamuk Aedes aegypti penyebar demam berdarah dengue (DBD).',
+    konsepInti: 'Jika kita membuang sampah sembarangan, lingkungan kita akan tercemar. Air kotor yang merembes dari tumpukan sampah basah (disebut air lindi) bisa meracuni tanah dan air sumur. Selain itu, sampah yang menumpuk bisa menyumbat selokan hingga banjir dan menjadi sarang nyamuk demam berdarah.',
+    contoh: 'Genangan air di kaleng atau plastik bekas menjadi tempat nyamuk DBD bertelur.',
     question: {
-      question: 'Cairan kotor dan berbau yang keluar merembes dari tumpukan sampah dan merusak kualitas air tanah disebut...',
+      question: 'Cairan kotor dan bau yang merembes dari tumpukan sampah basah disebut apa?',
       options: [
-        { value: 'A', text: 'Cairan biogas' },
-        { value: 'B', text: 'Lindi (leachate)' },
-        { value: 'C', text: 'Pupuk cair alami' },
-        { value: 'D', text: 'Residu lindi' }
+        { value: 'A', text: 'Air lindi (leachate)' },
+        { value: 'B', text: 'Air mineral pegunungan' },
+        { value: 'C', text: 'Air hujan bersih' },
+        { value: 'D', text: 'Air embun pagi' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Lindi adalah cairan kotor yang terbentuk akibat air hujan yang merembes melewati tumpukan sampah, melarutkan zat kimia dan bakteri merugikan langsung ke tanah.'
+      correctAnswer: 'A',
+      explanation: 'Air lindi adalah cairan kotor beracun yang keluar merembes dari tumpukan sampah basah.'
     },
     xpReward: 12,
     coinReward: 15
@@ -151,11 +162,22 @@ export const MODUL_DATA: ModulNode[] = [
     id: 6,
     bagianId: 2,
     bagianTitle: 'Dampak Lingkungan',
-    title: '🎮 Kuis Tantangan: Dampak Sampah',
+    title: 'Kuis Tantangan: Dampak Sampah',
     type: 'kuis',
     pilar: 'Kemampuan',
     konsepInti: 'Uji pemahamanmu tentang bahaya lingkungan! Cocokkan dampak negatif dengan media lingkungan yang dicemarinya secara cepat!',
     contoh: 'Lindi merusak Tanah. Gas Metana mencemari Udara.',
+    question: {
+      question: 'Apa bahaya yang ditimbulkan jika kaleng dan botol bekas tergenang air hujan di halaman sekolah?',
+      options: [
+        { value: 'A', text: 'Menjadi tempat bersarang dan bertelurnya nyamuk DBD' },
+        { value: 'B', text: 'Menghasilkan mata air baru yang jernih' },
+        { value: 'C', text: 'Membuat udara di sekitar menjadi sangat dingin' },
+        { value: 'D', text: 'Membuat tanaman di sekitar tumbuh lebih cepat' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Genangan air bersih di sampah anorganik merupakan habitat ideal nyamuk Aedes aegypti berkembang biak.'
+    },
     xpReward: 12,
     coinReward: 15
   },
@@ -163,21 +185,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 7,
     bagianId: 2,
     bagianTitle: 'Dampak Lingkungan',
-    title: 'Mikroplastik: Asal & Rantai Makanan',
+    title: 'Bahaya Mikroplastik di Sekitar Kita',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Mikroplastik adalah partikel plastik super kecil berukuran kurang dari 5 milimeter. Terbentuk dari sampah plastik besar yang retak dan hancur akibat paparan sinar matahari, panas, air laut, dan gesekan fisik bertahun-tahun. Mikroplastik terapung di air, termakan oleh plankton atau ikan kecil, lalu naik ke rantai makanan hingga termakan oleh manusia.',
-    contoh: 'Ikan tongkol di laut tidak sengaja menelan serpihan mikroplastik karena mengiranya makanan. Ketika ikan itu ditangkap dan dimakan manusia, mikroplastik ikut masuk ke tubuh manusia.',
+    konsepInti: 'Plastik yang terbuang ke laut tidak akan hilang, melainkan hancur menjadi serpihan-serpihan super kecil (kurang dari 5 milimeter) yang disebut mikroplastik. Ikan di laut mengira serpihan kecil itu adalah makanan lalu memakannya. Jika ikan tersebut kita makan, serpihan plastik itu bisa masuk ke dalam tubuh kita!',
+    contoh: 'Ikan di laut menelan serpihan mikroplastik, lalu ikan itu ditangkap dan dimasak untuk manusia.',
     question: {
-      question: 'Bagaimana serpihan partikel mikroplastik (ukuran kurang dari 5 mm) bisa terbentuk di lingkungan?',
+      question: 'Bagaimana pecahan plastik super kecil (mikroplastik) di laut bisa masuk ke tubuh manusia?',
       options: [
-        { value: 'A', text: 'Sengaja dipotong kecil oleh pabrik sedotan' },
-        { value: 'B', text: 'Sampah plastik besar pecah bertahap akibat matahari, panas, dan gesekan fisik' },
-        { value: 'C', text: 'Hasil pembakaran sampah anorganik di sekolah' },
-        { value: 'D', text: 'Bakteri mengunyah plastik menjadi butiran kecil' }
+        { value: 'A', text: 'Melalui ikan laut yang memakan mikroplastik lalu kita santap' },
+        { value: 'B', text: 'Lewat sinar matahari yang terik di siang hari' },
+        { value: 'C', text: 'Melalui hembusan angin sejuk di pantai' },
+        { value: 'D', text: 'Lewat suara ombak di pinggir laut' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Plastik tidak hancur secara biologis, melainkan pecah secara mekanis (degradasi fisik) akibat panas matahari (sinar UV) dan gesekan air/angin menjadi serpihan renik.'
+      correctAnswer: 'A',
+      explanation: 'Mikroplastik termakan oleh ikan laut dan berpindah ke tubuh manusia melalui rantai makanan.'
     },
     xpReward: 12,
     coinReward: 15
@@ -186,46 +208,46 @@ export const MODUL_DATA: ModulNode[] = [
     id: 8,
     bagianId: 2,
     bagianTitle: 'Dampak Lingkungan',
-    title: 'Waste-to-Energy: Sampah Jadi Energi',
+    title: 'Mengubah Sampah Menjadi Energi',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Sampah organik basah bisa diolah menjadi biogas sebagai energi alternatif ramah lingkungan melalui proses pencernaan tanpa oksigen (digesti anaerob) oleh bakteri. Gas metana yang dihasilkan ditangkap untuk bahan bakar kompor atau generator listrik, sehingga tidak lepas bebas mencemari atmosfer.',
-    contoh: 'Instalasi biogas mini di kantin SMPN 20 Malang memanfaatkan sisa makanan kuah dan nasi basi untuk menghasilkan gas masak gratis bagi ibu kantin.',
+    konsepInti: 'Sampah tidak selalu jadi musuh! Sampah sisa makanan dan kotoran bisa disimpan di tabung khusus tanpa udara untuk menghasilkan gas alami yang disebut biogas. Biogas ini bisa dipakai untuk menyalakan kompor memasak atau menghasilkan listrik yang ramah lingkungan.',
+    contoh: 'Sisa makanan dari dapur diolah jadi biogas untuk memasak tanpa perlu membeli gas elpiji.',
     question: {
-      question: 'Proses biologis tanpa oksigen yang mengubah tumpukan sampah organik basah menjadi bahan bakar biogas disebut...',
+      question: 'Sampah sisa makanan dan organik dapat diolah menjadi gas alami yang disebut apa?',
       options: [
-        { value: 'A', text: 'Dehidrasi termal' },
-        { value: 'B', text: 'Komposting aerob' },
-        { value: 'C', text: 'Digesti anaerob' },
-        { value: 'D', text: 'Insenerasi kimia' }
+        { value: 'A', text: 'Biogas' },
+        { value: 'B', text: 'Oksigen murni' },
+        { value: 'C', text: 'Batu bara cair' },
+        { value: 'D', text: 'Minyak goreng' }
       ],
-      correctAnswer: 'C',
-      explanation: 'Digesti anaerob adalah penguraian bahan organik oleh mikroorganisme dalam kondisi tanpa oksigen bebas, menghasilkan gas metana (CH4) dan karbon dioksida (CO2).'
+      correctAnswer: 'A',
+      explanation: 'Biogas dihasilkan dari proses fermentasi sampah organik tanpa udara yang kaya akan gas metana ramah lingkungan.'
     },
     xpReward: 12,
     coinReward: 15
   },
 
-  // BAGIAN 3 — SOLUSI & AKSI
+  // ===== BAGIAN 3 — SOLUSI & AKSI =====
   {
     id: 9,
     bagianId: 3,
     bagianTitle: 'Solusi & Aksi',
-    title: '3R: Reduce, Reuse, Recycle',
+    title: 'Mengenal Gerakan 3R (Reduce, Reuse, Recycle)',
     type: 'bacaan',
     pilar: 'Kemampuan',
-    konsepInti: 'Prinsip utama pengelolaan sampah berkelanjutan: Reduce (mengurangi konsumsi barang sekali pakai sebelum menjadi sampah); Reuse (menggunakan kembali barang layak pakai secara langsung tanpa proses industri); Recycle (mengolah kembali sampah melalui daur ulang industri menjadi produk baru yang berbeda).',
-    contoh: 'Reduce: membawa tumbler minum sendiri ke sekolah. Reuse: menggunakan toples sosis bekas untuk wadah pensil di meja. Recycle: menyetorkan botol plastik kotor ke pabrik untuk dihancurkan menjadi serat dacron/baju.',
+    konsepInti: '3R adalah langkah hebat untuk menyelamatkan bumi: 1. Reduce (Kurangi): Mengurangi sampah sejak awal, misalnya membawa botol minum sendiri. 2. Reuse (Gunakan Ulang): Memakai kembali barang yang masih bagus, misalnya kaleng bekas jadi tempat pensil. 3. Recycle (Daur Ulang): Mengolah sampah bekas di pabrik menjadi barang atau bahan baru.',
+    contoh: 'Bawa tas belanja kain = Reduce. Botol bekas jadi pot tanaman = Reuse. Botol plastik dilebur jadi serat pakaian = Recycle.',
     question: {
-      question: 'Manakah contoh perilaku nyata yang mencerminkan tindakan REUSE di lingkungan sekolah?',
+      question: 'Apa yang membedakan Reuse dengan Recycle?',
       options: [
-        { value: 'A', text: 'Mengumpulkan kertas bekas ujian untuk dilebur kembali di pabrik kertas' },
-        { value: 'B', text: 'Membeli air minum kemasan gelas plastik setiap hari karena harganya murah' },
-        { value: 'C', text: 'Menggunakan botol plastik bekas air mineral menjadi pot tanaman hias kelas' },
-        { value: 'D', text: 'Menolak kantong kresek saat belanja di koperasi sekolah' }
+        { value: 'A', text: 'Reuse memakai kembali barang apa adanya, Recycle mengolahnya di pabrik jadi barang baru' },
+        { value: 'B', text: 'Reuse harus membakar sampah, Recycle membuang sampah ke sungai' },
+        { value: 'C', text: 'Reuse hanya untuk sisa nasi, Recycle hanya untuk daun kering' },
+        { value: 'D', text: 'Keduanya sama persis dan tidak ada bedanya sama sekali' }
       ],
-      correctAnswer: 'C',
-      explanation: 'Mengubah botol plastik langsung menjadi pot tanpa mengubah struktur fisik bahannya melalui proses peleburan pabrik adalah tindakan memakai kembali (Reuse).'
+      correctAnswer: 'A',
+      explanation: 'Reuse menggunakan barang kembali secara langsung, sedangkan Recycle melibatkan pemrosesan ulang/peleburan bahan di pabrik.'
     },
     xpReward: 12,
     coinReward: 15
@@ -234,11 +256,22 @@ export const MODUL_DATA: ModulNode[] = [
     id: 10,
     bagianId: 3,
     bagianTitle: 'Solusi & Aksi',
-    title: '🎮 Kuis Tantangan: Praktik 3R',
+    title: 'Kuis Tantangan: Praktik 3R',
     type: 'kuis',
     pilar: 'Kemampuan',
     konsepInti: 'Uji kemampuan memorimu! Klasifikasikan berbagai aksi ramah lingkungan sekolah ke dalam kategori Reduce, Reuse, atau Recycle secara tepat dan cepat!',
     contoh: 'Menolak sedotan = Reduce. Memakai tas kain berulang = Reuse.',
+    question: {
+      question: 'Tindakan membawa kotak bekal dan botol minum tumbler sendiri dari rumah ke sekolah termasuk contoh dari...',
+      options: [
+        { value: 'A', text: 'Reduce (mengurangi timbulan sampah plastik sekali pakai)' },
+        { value: 'B', text: 'Recycle (melebur sampah plastik di pabrik)' },
+        { value: 'C', text: 'Residu (membuang sampah ke tempat akhir)' },
+        { value: 'D', text: 'Reboisasi (menanam kembali pohon di hutan)' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Membawa wadah makan dan minum sendiri mencegah terciptanya sampah plastik sekali pakai (Reduce).'
+    },
     xpReward: 12,
     coinReward: 15
   },
@@ -246,21 +279,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 11,
     bagianId: 3,
     bagianTitle: 'Solusi & Aksi',
-    title: 'Pemilahan Sampah di Sumber: Kategori & Alasannya',
+    title: 'Memilah Sampah dari Rumah dan Sekolah',
     type: 'bacaan',
     pilar: 'Kemampuan',
-    konsepInti: 'Pemilahan sampah paling sukses wajib dilakukan langsung sejak dari sumbernya (di ruang kelas/rumah oleh dirimu sendiri) sebelum masuk ke tempat pembuangan. Jika sampah terlanjur bercampur dan basah terkena sisa kuah makanan, kualitas material anorganik (seperti kertas/plastik) akan hancur dan tercemar, sehingga harganya jatuh atau ditolak oleh industri daur ulang.',
-    contoh: 'Membuang sisa sedotan kering langsung ke tong anorganik, dan membuang kuah bakso terlebih dahulu ke wastafel sebelum meletakkan mangkuk kertas di tempat sampah residu.',
+    konsepInti: 'Memilah sampah paling bagus dilakukan langsung saat kita membuangnya di rumah atau di sekolah. Kalau sampah sudah bercampur di Tempat Pembuangan Akhir (TPA), sampahnya akan kotor, bau, dan sangat sulit untuk didaur ulang kembali.',
+    contoh: 'Memisahkan botol plastik bersih ke tempat terpisah dari sisa makanan basah.',
     question: {
-      question: 'Kenapa pemilahan sampah di sumber (seperti di kelas oleh murid langsung) jauh lebih baik daripada memilah sampah di TPA?',
+      question: 'Mengapa kita harus memilah sampah langsung dari sumbernya (rumah atau sekolah)?',
       options: [
-        { value: 'A', text: 'Karena di TPA tidak ada petugas kebersihan yang mau memilah' },
-        { value: 'B', text: 'Karena sampah belum tercampur kotoran/lindi sehingga kualitas material daur ulangnya sangat tinggi' },
-        { value: 'C', text: 'Karena aturan sekolah mewajibkan guru saja yang memilah' },
-        { value: 'D', text: 'Karena memilah di TPA bisa memicu ledakan gas metana' }
+        { value: 'A', text: 'Agar sampah belum kotor/tercampur sehingga mudah didaur ulang' },
+        { value: 'B', text: 'Agar sampah menjadi lebih cepat berbau busuk' },
+        { value: 'C', text: 'Agar tempat sampah di rumah cepat penuh' },
+        { value: 'D', text: 'Agar sampah bisa langsung dihanyutkan ke selokan' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Pemilahan di sumber mencegah kontaminasi silang. Plastik atau kertas yang bersih dari sisa makanan basah memiliki nilai sirkular dan daur ulang yang jauh lebih tinggi.'
+      correctAnswer: 'A',
+      explanation: 'Memilah di sumber menjaga kebersihan material sehingga nilai daur ulangnya tinggi dan mudah diproses.'
     },
     xpReward: 12,
     coinReward: 15
@@ -269,35 +302,46 @@ export const MODUL_DATA: ModulNode[] = [
     id: 12,
     bagianId: 3,
     bagianTitle: 'Solusi & Aksi',
-    title: '🎮 Kuis Tantangan: Pemilahan Sumber',
+    title: 'Kuis Tantangan: Pemilahan Sumber',
     type: 'kuis',
     pilar: 'Kemampuan',
     konsepInti: 'Latihan memilah sampah dengan benar! Salurkan sampah harian sekolah ke 3 tong khusus: Organik Basah, Organik Kering, atau Anorganik!',
     contoh: 'Daun gugur = Organik Kering. Sisa nasi = Organik Basah. Gelas plastik = Anorganik.',
+    question: {
+      question: 'Apa langkah yang benar sebelum membuang botol atau gelas plastik bekas minuman manis ke tong anorganik?',
+      options: [
+        { value: 'A', text: 'Mengosongkan sisa air minumannya terlebih dahulu agar bersih dan kering' },
+        { value: 'B', text: 'Membiarkan air manisnya tetap penuh di dalam botol' },
+        { value: 'C', text: 'Mencampurnya dengan sisa kuah bakso dan sambal' },
+        { value: 'D', text: 'Membakar botol plastiknya di halaman kelas' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Mengosongkan cairan dari wadah plastik mencegah kebusukan dan mempermudah proses daur ulang.'
+    },
     xpReward: 12,
     coinReward: 15
   },
 
-  // BAGIAN 4 — GAYA HIDUP HIJAU
+  // ===== BAGIAN 4 — GAYA HIDUP HIJAU =====
   {
     id: 13,
     bagianId: 4,
     bagianTitle: 'Gaya Hidup Hijau',
-    title: 'Bank Sampah: Cara Kerja & Siklus Reward ThinkBin',
+    title: 'Menabung di Bank Sampah & Reward ThinkBin',
     type: 'bacaan',
     pilar: 'Kemampuan',
-    konsepInti: 'Bank Sampah sekolah adalah ekosistem menabung sampah terpilah. Alurnya: Siswa memilah sampah di kelas -> ditimbang berkala -> dicatat beratnya (tonase) -> dijual ke pengepul/BSM (Bank Sampah Malang) -> uang hasil penjualan disalurkan kembali sebagai pendanaan program reward digital (XP/Coin) ThinkBin Anda. Data digital (jumlah scan) dan fisik (berat timbangan) dicocokkan untuk mendeteksi kecurangan siswa.',
-    contoh: 'Siswa kelas 9C rutin mengumpulkan botol PET bersih. Setiap minggu terkumpul 5 kg botol. Saat disetor ke Bank Sampah sekolah, tabungan kas kelas bertambah, sekaligus memicu rilis Coin bagi siswa teraktif.',
+    konsepInti: 'Bank Sampah adalah tempat di mana kita bisa menyetor sampah anorganik (seperti kardus, kertas, dan botol plastik). Sampah yang kita kumpulkan akan ditimbang dan dicatat. Hasil penjualannya digunakan untuk membiayai koin dan hadiah reward seru untuk siswa di ThinkBin!',
+    contoh: 'Menabung botol plastik bekas kelas ke Bank Sampah sekolah untuk ditukar koin reward mingguan.',
     question: {
-      question: 'Sistem web ThinkBin mencocokkan data scan digital dengan berat fisik timbangan sampah harian. Tujuannya adalah...',
+      question: 'Dari mana asal dana dan hadiah reward yang diperoleh siswa di ThinkBin?',
       options: [
-        { value: 'A', text: 'Agar server database web tidak kelebihan beban penyimpanan data' },
-        { value: 'B', text: 'Mendeteksi kecurangan siswa yang melakukan scan QR tanpa membuang sampah fisik' },
-        { value: 'C', text: 'Menghitung sisa kuota internet gratis dari sekolah' },
-        { value: 'D', text: 'Membagikan koin secara acak tanpa melihat kebenaran pemilahan' }
+        { value: 'A', text: 'Dari hasil penjualan sampah yang dikumpulkan di Bank Sampah' },
+        { value: 'B', text: 'Dari membeli kupon undian berbayar' },
+        { value: 'C', text: 'Dari meminjam uang di bank keliling' },
+        { value: 'D', text: 'Dari menebang pohon di taman kota' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Mekanisme pencocokan silang data scan dengan tonase timbangan fisik memastikan integritas data penelitian. Jika scan tinggi tapi timbangan nol, terindikasi adanya manipulasi data.'
+      correctAnswer: 'A',
+      explanation: 'Hasil penjualan sampah terpilah di Bank Sampah menjadi sumber sirkular pendanaan reward siswa.'
     },
     xpReward: 12,
     coinReward: 15
@@ -306,21 +350,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 14,
     bagianId: 4,
     bagianTitle: 'Gaya Hidup Hijau',
-    title: 'Literasi Ekonomi: Nilai Jual Sampah Anorganik',
+    title: 'Nilai Jual Sampah yang Dipilah',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Ekonomi Sirkular mengajarkan bahwa sampah adalah aset. Nilai jual sampah berbeda tergantung kebersihannya. Bahkan satu botol plastik memiliki 4 bagian dengan jenis resin berbeda: tutup (PP/HDPE), ring segel, label, dan badan botol (PET). Memilah komponen ini menaikkan harga jualnya! Data riil BSM (Bank Sampah Malang) menunjukkan: Botol PET bening bersih lepas label & tutup dihargai Rp4.500-Rp5.000/kg, sedangkan botol PET kotor bercampur dihargai jatuh hanya Rp1.500-Rp2.000/kg. Tutup botol murni dihargai Rp3.000/kg.',
-    contoh: 'Radit memilah 2 kg botol PET di kelas: melepaskan labelnya, memisahkan tutupnya ke wadah khusus, lalu melipat badan botolnya agar ringkas. Tindakan memisahkan komponen ini meningkatkan nilai jual sampah kelas di mata Bank Sampah.',
+    konsepInti: 'Tahukah kamu? Sampah yang sudah dipilah dan dibersihkan harganya jauh lebih mahal! Misalnya botol plastik bening yang bersih dan sudah dilepas tutup serta labelnya dihargai lebih tinggi di Bank Sampah dibanding botol yang kotor dan masih bercampur.',
+    contoh: 'Botol plastik bersih tanpa label dihargai Rp5.000/kg, sedangkan botol kotor yang masih ada labelnya hanya Rp1.500/kg.',
     question: {
-      question: 'Kenapa botol plastik PET bening yang sudah bersih dan dipisahkan dari label serta tutupnya dihargai jauh lebih mahal dibanding botol yang masih kotor?',
+      question: 'Mengapa botol plastik yang bersih dan dilepas labelnya dihargai lebih mahal di Bank Sampah?',
       options: [
-        { value: 'A', text: 'Karena botol bersih memiliki ukuran fisik yang lebih besar saat ditimbang' },
-        { value: 'B', text: 'Karena setiap komponen dibuat dari jenis resin plastik yang berbeda, sehingga pemisahan di awal memangkas biaya pilah ulang pabrik' },
-        { value: 'C', text: 'Karena botol bersih tidak lagi mengandung mikroplastik berbahaya' },
-        { value: 'D', text: 'Karena tutup botol bersifat korosif dan merusak lingkungan daur ulang' }
+        { value: 'A', text: 'Karena jenis plastiknya murni dan mudah langsung didaur ulang pabrik' },
+        { value: 'B', text: 'Karena botol bersih terasa jauh lebih berat daripada botol kotor' },
+        { value: 'C', text: 'Karena warnanya bisa menyala sendiri dalam gelap' },
+        { value: 'D', text: 'Karena botol bersih bisa langsung diminum airnya tanpa dicuci' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Badan botol adalah plastik PET, sedangkan tutupnya adalah plastik PP/HDPE yang memiliki rantai polimer berbeda. Jika bercampur, pabrik harus mendanai proses sortir ulang secara manual.'
+      correctAnswer: 'A',
+      explanation: 'Botol bersih tanpa label memiliki kemurnian bahan PET tinggi sehingga langsung siap dicacah oleh pabrik.'
     },
     xpReward: 12,
     coinReward: 15
@@ -329,21 +373,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 15,
     bagianId: 4,
     bagianTitle: 'Gaya Hidup Hijau',
-    title: 'Kebiasaan Hijau & Dari Tahu → Mau → Mampu',
+    title: 'Tiga Langkah Kebiasaan Hijau',
     type: 'bacaan',
     pilar: 'Kemauan',
-    konsepInti: 'Transformasi perilaku berkelanjutan membutuhkan 3 pilar utama: 1) Pengetahuan (tahu cara memilah dan dampaknya), 2) Kemauan (memiliki motivasi internal untuk bertindak), dan 3) Kemampuan (mampu berpraktik secara konsisten didukung sarana tong sampah). Perubahan perilaku permanen membutuhkan konsistensi intervensi selama minimal 3 bulan.',
-    contoh: 'Setelah memahami teori dampak (Tahu) dan terdorong menjaga kebersihan kelas (Mau), Asyraf selalu konsisten menyortir sampahnya sendiri ke tong kelas yang sesuai tanpa perlu diperingatkan guru lagi (Mampu).',
+    konsepInti: 'Agar bumi tetap bersih dan sehat, kita perlu 3 langkah kebiasaan: 1. Tahu: Memahami jenis sampah dan cara memilahnya dengan benar. 2. Mau: Memiliki niat dan semangat tulus menjaga kebersihan. 3. Mampu: Membiasakan diri melakukannya setiap hari secara rutin.',
+    contoh: 'Selalu membawa botol minum sendiri dan membuang sampah sesuai tongnya setiap hari.',
     question: {
-      question: 'Urutan transformasi perilaku yang paling direkomendasikan para praktisi untuk menumbuhkan kebiasaan hijau permanen adalah...',
+      question: 'Tiga kunci kebiasaan baik dalam menjaga lingkungan di ThinkBin adalah...',
       options: [
-        { value: 'A', text: 'Pemberian uang -> Pembelian tong -> Pembacaan buku teori' },
-        { value: 'B', text: 'Pengetahuan (sebagai pondasi dasar) -> Pelaksanaan Aksi Nyata -> Penumbuhan Motivasi Jangka Panjang' },
-        { value: 'C', text: 'Penggunaan handphone -> Pembuatan aplikasi -> Pembagian hadiah gratis' },
-        { value: 'D', text: 'Pemberian hukuman keras -> Pengawasan ketat -> Penguncian tong sampah' }
+        { value: 'A', text: 'Tahu caranya, Mau melakukannya, dan Mampu membiasakannya' },
+        { value: 'B', text: 'Malas memilah, Membakar sampah, dan Mengotori sungai' },
+        { value: 'C', text: 'Membeli banyak plastik sekali pakai dan membuang sembarangan' },
+        { value: 'D', text: 'Menunggu disuruh orang lain dan tidak peduli lingkungan' }
       ],
-      correctAnswer: 'B',
-      explanation: 'Pengetahuan adalah pondasi dasar utama. Pengetahuan memandu aksi yang benar secara logis, dan kepuasan dari aksi nyata tersebut memicu motivasi ekologis jangka panjang.'
+      correctAnswer: 'A',
+      explanation: 'Tahu, Mau, dan Mampu adalah 3 pilar transformasi perilaku peduli lingkungan permanen.'
     },
     xpReward: 12,
     coinReward: 15
@@ -352,11 +396,22 @@ export const MODUL_DATA: ModulNode[] = [
     id: 16,
     bagianId: 4,
     bagianTitle: 'Gaya Hidup Hijau',
-    title: 'Komitmen Hijau: Rencana Aksi Pribadi',
+    title: 'Komitmen Aksi Nyata untuk Bumi',
     type: 'komitmen',
     pilar: 'Kemauan',
-    konsepInti: 'Selamat! Kamu telah menyelesaikan seluruh 16 Node Peta Belajar ThinkBin! Sebagai penutup petualangan belajarmu, tuliskan satu komitmen aksi hijau nyata yang akan kamu laksanakan secara konsisten di sekolah maupun di rumah!',
+    konsepInti: 'Hebat sekali! Kamu sudah mempelajari semua cara menjaga bumi dan memilah sampah. Sekarang, mari tuliskan satu janji aksi nyata yang akan kamu lakukan mulai hari ini!',
     contoh: '"Saya berkomitmen membawa kotak makan sendiri untuk jajan di kantin sekolah guna memangkas sampah wadah plastik."',
+    question: {
+      question: 'Setelah mempelajari seluruh materi ThinkBin, apa langkah terpenting yang harus kita lakukan setiap hari?',
+      options: [
+        { value: 'A', text: 'Mempraktikkan kebiasaan memilah sampah secara konsisten di sekolah dan rumah' },
+        { value: 'B', text: 'Melupakan semua materi yang sudah dipelajari' },
+        { value: 'C', text: 'Membuang sampah di sembarang tempat jika tidak ada yang melihat' },
+        { value: 'D', text: 'Menggunakan plastik sekali pakai sebanyak-banyaknya' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Praktik konsisten setiap hari adalah wujud nyata komitmen seorang Guardian Lingkungan ThinkBin!'
+    },
     xpReward: 12,
     coinReward: 15
   }
