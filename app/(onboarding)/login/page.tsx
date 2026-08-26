@@ -23,7 +23,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="relative w-full h-[100dvh] min-h-[100dvh] flex flex-col justify-between items-center px-6 py-5 select-none overflow-hidden"
+      className="relative w-full h-[100dvh] min-h-[100dvh] flex flex-col justify-between items-center px-6 py-6 select-none overflow-hidden"
       style={{
         background: "linear-gradient(180deg, #85dd16 0%, #68c309 100%)",
       }}
@@ -41,45 +41,45 @@ export default function LoginPage() {
       `}</style>
 
       {/* ── CENTERED SINGLE-VIEWPORT CONTENT GROUP ── */}
-      <div className="w-full flex-1 flex flex-col items-center justify-center my-auto max-w-[340px]">
+      <div className="w-full flex-1 flex flex-col items-center justify-center my-auto max-w-[360px]">
         
-        {/* 1. MASCOT HERO ILLUSTRATION (Proportionate, fits 100% on 375x812) */}
-        <div className="relative w-full flex items-center justify-center mb-3">
+        {/* 1. MASCOT HERO ILLUSTRATION */}
+        <div className="relative w-full flex items-center justify-center mb-4">
           {/* Subtle waving motion arcs on top-right */}
-          <div className="absolute top-2 right-4 text-[#4a8500] font-black text-xl opacity-60 pointer-events-none select-none">
+          <div className="absolute top-2 right-4 text-[#4a8500] font-black text-2xl opacity-60 pointer-events-none select-none">
             ))
           </div>
 
-          <div className="mascot-hero relative w-52 h-52 sm:w-56 sm:h-56 max-h-[34vh] aspect-square flex items-center justify-center">
+          <div className="mascot-hero relative w-60 h-60 sm:w-64 sm:h-64 max-h-[38vh] aspect-square flex items-center justify-center">
             <Image
               src="/screens_assets/mascot_main.png"
               alt="ThinkBin Mascot Hero"
-              width={240}
-              height={240}
-              className="w-full h-full object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.22)] pointer-events-none"
+              width={260}
+              height={260}
+              className="w-full h-full object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)] pointer-events-none"
               priority
             />
           </div>
         </div>
 
         {/* 2. WELCOME TEXT (Heading & Subtext) */}
-        <div className="text-center px-1 mb-5">
-          <h1 className="font-fredoka font-black text-[25px] sm:text-[27px] text-[#0b1a2d] leading-tight mb-2 tracking-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)]">
+        <div className="text-center px-1 mb-6">
+          <h1 className="font-fredoka font-black text-[27px] sm:text-[30px] text-[#0b1a2d] leading-tight mb-2 tracking-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)]">
             Selamat Datang di ThinkBin!
           </h1>
-          <p className="font-nunito font-extrabold text-[13.5px] sm:text-[14px] text-[#1e3a1e] leading-relaxed">
+          <p className="font-nunito font-extrabold text-[14px] sm:text-[14.5px] text-[#1e3a1e] leading-relaxed max-w-[310px] mx-auto">
             Belajar memilah sampah cerdas, kumpulkan poin, dan raih rank tertinggi bersama teman sekelasmu!
           </p>
         </div>
 
-        {/* 3. GOOGLE SIGN-IN BUTTON */}
+        {/* 3. PROMINENT BOLD GOOGLE SIGN-IN BUTTON */}
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full h-13 sm:h-14 bg-white border-[2.5px] border-[#2b2b2b] rounded-[22px] shadow-[0_4.5px_0_#2b2b2b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#2b2b2b] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-[#f8fafc]"
+          className="w-full max-w-[290px] h-[54px] sm:h-[58px] bg-white border-[3px] border-[#1e293b] rounded-[24px] shadow-[0_5px_0_#1e293b] active:translate-y-[3px] active:shadow-[0_2px_0_#1e293b] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-[#f8fafc]"
         >
           {/* Google Official SVG Icon */}
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -97,7 +97,7 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          <span className="font-fredoka font-black text-base text-[#1e293b] tracking-wide">
+          <span className="font-fredoka font-black text-[18px] text-[#0f172a] tracking-wide">
             Google
           </span>
         </button>
