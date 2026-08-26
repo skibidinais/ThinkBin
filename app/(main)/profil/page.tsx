@@ -233,7 +233,7 @@ export default function ProfilPage() {
 
           {/* User Display Name */}
           <h2 className="font-fredoka font-black text-[22px] text-[#1F2937] text-center leading-tight mb-2 drop-shadow-sm">
-            {user?.display_name || "Hendra Wijaya"}
+            {user?.display_name || user?.email?.split("@")[0] || ""}
           </h2>
 
           {/* Level XP Progress Bar Container */}
