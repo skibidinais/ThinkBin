@@ -151,6 +151,7 @@ export default function TokoPage() {
   const [selectedFrame, setSelectedFrame] = useState<string>("frame_teal_tech");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [purchaseNotice, setPurchaseNotice] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   useEffect(() => {
     async function loadShopData() {
@@ -179,61 +180,68 @@ export default function TokoPage() {
   const currentItems = FULL_CATALOG.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleBuyOrEquip = async (item: ShopItem) => {
-    // ── 1. Mystery Box Purchase ──
-    if (item.isMysteryBox) {
-      const result = await openMysteryBoxTransaction(user?.id || "usr_guest");
-      if (result.success) {
-        setPurchaseNotice(result.message || `Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
-      } else {
-        setPurchaseNotice(result.message || "Koin tidak cukup untuk Mystery Box.");
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    try {
+      // ── 1. Mystery Box Purchase ──
+      if (item.isMysteryBox) {
+        const result = await openMysteryBoxTransaction(user?.id || "usr_guest");
+        if (result.success) {
+          setPurchaseNotice(result.message || `Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
+        } else {
+          setPurchaseNotice(result.message || "Koin tidak cukup untuk Mystery Box.");
+        }
+        // Always refresh profile from database to sync coins/xp
+        if (user?.id) {
+          await refreshProfile(user.id);
+        }
+        setTimeout(() => setPurchaseNotice(null), 3500);
+        return;
       }
-      // Always refresh profile from database to sync coins/xp
-      if (user?.id) {
-        await refreshProfile(user.id);
-      }
-      setTimeout(() => setPurchaseNotice(null), 3500);
-      return;
-    }
 
-    // ── 2. Border Equip (already owned) ──
-    const isOwned = ownedFrames.includes(item.id) || item.id === "frame_teal_tech";
+      // ── 2. Border Equip (already owned) ──
+      const isOwned = ownedFrames.includes(item.id) || item.id === "frame_teal_tech";
 
-    if (isOwned) {
-      if (user?.id) {
-        await equipFrameInDatabase(user.id, item.id);
-        await refreshProfile(user.id);
-      }
-      setSelectedFrame(item.id);
-      setPurchaseNotice(`Border "${item.name}" berhasil dipasang.`);
-      setTimeout(() => setPurchaseNotice(null), 3000);
-      return;
-    }
-
-    // ── 3. Border Purchase (not owned) ──
-    const result = await purchaseFrameTransaction({
-      userId: user?.id || "usr_guest",
-      frameId: item.id,
-      frameName: item.name,
-      priceCoins: item.price,
-    });
-
-    if (result.success) {
-      setPurchaseNotice(result.message || `Border "${item.name}" berhasil dibeli dan terpasang.`);
-      // Refresh profile and owned frames from database AFTER successful purchase
-      if (user?.id) {
-        await refreshProfile(user.id);
-        const freshOwned = await fetchUserOwnedFrames(user.id);
-        setOwnedFrames(freshOwned);
+      if (isOwned) {
+        if (user?.id) {
+          await equipFrameInDatabase(user.id, item.id);
+          await refreshProfile(user.id);
+        }
         setSelectedFrame(item.id);
+        setPurchaseNotice(`Border "${item.name}" berhasil dipasang.`);
+        setTimeout(() => setPurchaseNotice(null), 3000);
+        return;
       }
-    } else {
-      setPurchaseNotice(result.message || "Gagal memproses transaksi.");
-      // Still refresh to ensure coins display is accurate
-      if (user?.id) {
-        await refreshProfile(user.id);
+
+      // ── 3. Border Purchase (not owned) ──
+      const result = await purchaseFrameTransaction({
+        userId: user?.id || "usr_guest",
+        frameId: item.id,
+        frameName: item.name,
+        priceCoins: item.price,
+      });
+
+      if (result.success) {
+        setPurchaseNotice(result.message || `Border "${item.name}" berhasil dibeli dan terpasang.`);
+        // Refresh profile and owned frames from database AFTER successful purchase
+        if (user?.id) {
+          await refreshProfile(user.id);
+          const freshOwned = await fetchUserOwnedFrames(user.id);
+          setOwnedFrames(freshOwned);
+          setSelectedFrame(item.id);
+        }
+      } else {
+        setPurchaseNotice(result.message || "Gagal memproses transaksi.");
+        // Still refresh to ensure coins display is accurate
+        if (user?.id) {
+          await refreshProfile(user.id);
+        }
       }
+      setTimeout(() => setPurchaseNotice(null), 3000);
+    } finally {
+      setIsProcessing(false);
     }
-    setTimeout(() => setPurchaseNotice(null), 3000);
   };
 
   return (
@@ -365,6 +373,7 @@ export default function TokoPage() {
                 {/* Yellow Pill Buy/Equip Button */}
                 <button
                   type="button"
+                  disabled={isProcessing}
                   onClick={() => handleBuyOrEquip(item)}
                   className={`w-full py-1 px-1 rounded-full font-fredoka font-extrabold text-[10px] flex items-center justify-center gap-1 border-[1.5px] border-[#382C22] shadow-[0_2px_0_#382C22] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
                     isEquipped
