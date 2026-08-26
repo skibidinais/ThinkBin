@@ -315,12 +315,22 @@ export async function recordNodeCompletion(payload: {
 }): Promise<NodeCompletionResult> {
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("complete_node", {
+      let { data, error } = await supabase.rpc("complete_node", {
         p_node_id: payload.nodeId,
         p_quiz_answer: payload.quizAnswer || null,
         p_is_correct: payload.isCorrect ?? true,
         p_user_id: payload.userId,
       });
+
+      if (error && error.message?.includes("schema cache")) {
+        const retry = await supabase.rpc("complete_node", {
+          p_node_id: payload.nodeId,
+          p_quiz_answer: payload.quizAnswer || null,
+          p_is_correct: payload.isCorrect ?? true,
+        });
+        data = retry.data;
+        error = retry.error;
+      }
 
       if (error) {
         console.error("complete_node RPC error:", error);
@@ -417,10 +427,20 @@ export async function purchaseFrameTransaction(payload: {
 }): Promise<PurchaseResult> {
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("purchase_shop_item", {
+      // 1. Try with p_item_id and p_user_id
+      let { data, error } = await supabase.rpc("purchase_shop_item", {
         p_item_id: payload.frameId,
         p_user_id: payload.userId,
       });
+
+      // 2. If signature mismatch in schema cache, fallback to p_item_id only (uses auth.uid())
+      if (error && error.message?.includes("schema cache")) {
+        const retry = await supabase.rpc("purchase_shop_item", {
+          p_item_id: payload.frameId,
+        });
+        data = retry.data;
+        error = retry.error;
+      }
 
       if (error) {
         console.error("purchase_shop_item RPC error:", error);
@@ -462,10 +482,19 @@ export async function purchaseFrameTransaction(payload: {
 export async function equipFrameInDatabase(userId: string, frameId: string): Promise<boolean> {
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("equip_shop_item", {
+      let { data, error } = await supabase.rpc("equip_shop_item", {
         p_item_id: frameId,
         p_user_id: userId,
       });
+
+      if (error && error.message?.includes("schema cache")) {
+        const retry = await supabase.rpc("equip_shop_item", {
+          p_item_id: frameId,
+        });
+        data = retry.data;
+        error = retry.error;
+      }
+
       if (error) {
         console.error("equip_shop_item RPC error:", error);
       }
@@ -495,9 +524,15 @@ export interface MysteryBoxResult {
 export async function openMysteryBoxTransaction(userId: string): Promise<MysteryBoxResult> {
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("open_mystery_box", {
+      let { data, error } = await supabase.rpc("open_mystery_box", {
         p_user_id: userId,
       });
+
+      if (error && error.message?.includes("schema cache")) {
+        const retry = await supabase.rpc("open_mystery_box");
+        data = retry.data;
+        error = retry.error;
+      }
 
       if (error) {
         console.error("open_mystery_box RPC error:", error);

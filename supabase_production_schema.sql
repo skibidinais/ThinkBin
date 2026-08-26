@@ -680,6 +680,37 @@ BEGIN
 END $$;
 
 -- =========================================================================
+-- 16. SINGLE-PARAM OVERLOADS & SCHEMA CACHE RELOAD
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.purchase_shop_item(p_item_id TEXT)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+    RETURN public.purchase_shop_item(p_item_id, NULL);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.equip_shop_item(p_item_id TEXT)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+    RETURN public.equip_shop_item(p_item_id, NULL);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.open_mystery_box()
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+    RETURN public.open_mystery_box(NULL);
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.purchase_shop_item(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.equip_shop_item(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.open_mystery_box() TO anon, authenticated, service_role;
+
+-- Force PostgREST to instantly refresh its schema cache
+NOTIFY pgrst, 'reload schema';
+
+-- =========================================================================
 -- 16. SEED DATA MASTER ROSTER (192 Siswa SMPN 20 Malang)
 -- =========================================================================
 INSERT INTO public.class_roster (class_name, student_number, student_name) VALUES
