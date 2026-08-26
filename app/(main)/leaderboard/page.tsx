@@ -92,22 +92,17 @@ export default function LeaderboardPage() {
 
   return (
     <div
-      className="relative flex flex-col min-h-full pb-28 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
+      className="relative flex flex-col min-h-full pb-32 select-none bg-cover bg-top bg-no-repeat overflow-y-auto no-scrollbar"
       style={{
         backgroundColor: "#bfe8ff",
         backgroundImage: "url('/screens_assets/background_scenery.png')",
       }}
     >
-      {/* ── CSS FOR FLOATING CLOUDS AND HEARTS ANIMATION ── */}
+      {/* ── CSS FOR FLOATING CLOUDS ANIMATION ── */}
       <style jsx>{`
         @keyframes cloudDriftRight {
           0% { transform: translateX(-150px); }
           100% { transform: translateX(450px); }
-        }
-        @keyframes floatHeart {
-          0% { transform: translateY(14px) scale(0.7); opacity: 0; }
-          50% { opacity: 1; transform: translateY(-6px) scale(1.2); }
-          100% { transform: translateY(-26px) scale(0.9); opacity: 0; }
         }
         .cloud-drift-1 {
           animation: cloudDriftRight 26s linear infinite;
@@ -124,38 +119,35 @@ export default function LeaderboardPage() {
           animation: cloudDriftRight 32s linear infinite;
           animation-delay: -7s;
         }
-        .h1 { animation: floatHeart 2.5s ease-in-out infinite; animation-delay: 0s; }
-        .h2 { animation: floatHeart 2.5s ease-in-out infinite; animation-delay: 0.8s; }
-        .h3 { animation: floatHeart 2.5s ease-in-out infinite; animation-delay: 1.5s; }
       `}</style>
 
       {/* ── 1. AUTHENTIC ANIMATED CLOUDS SKY LAYER ── */}
       <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none overflow-hidden z-0">
         {/* Cloud 1 */}
-        <div className="cloud-drift-1 absolute top-4 w-[90px] h-[28px] bg-white rounded-full opacity-92 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+        <div className="cloud-drift-1 absolute top-6 w-[90px] h-[28px] bg-white rounded-full opacity-92 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
           <div className="absolute -top-[18px] left-[16px] w-[38px] h-[38px] bg-white rounded-full" />
           <div className="absolute -top-[10px] left-[45px] w-[26px] h-[26px] bg-white rounded-full" />
         </div>
         {/* Cloud 2 */}
-        <div className="cloud-drift-2 absolute top-12 w-[120px] h-[36px] bg-white rounded-full opacity-88 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+        <div className="cloud-drift-2 absolute top-14 w-[120px] h-[36px] bg-white rounded-full opacity-88 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
           <div className="absolute -top-[24px] left-[24px] w-[52px] h-[52px] bg-white rounded-full" />
           <div className="absolute -top-[14px] left-[64px] w-[36px] h-[36px] bg-white rounded-full" />
         </div>
         {/* Cloud 3 */}
-        <div className="cloud-drift-3 absolute top-24 w-[60px] h-[20px] bg-white rounded-full opacity-75 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+        <div className="cloud-drift-3 absolute top-28 w-[60px] h-[20px] bg-white rounded-full opacity-75 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
           <div className="absolute -top-[12px] left-[10px] w-[26px] h-[26px] bg-white rounded-full" />
           <div className="absolute -top-[8px] left-[30px] w-[18px] h-[18px] bg-white rounded-full" />
         </div>
         {/* Cloud 4 */}
-        <div className="cloud-drift-4 absolute top-36 w-[105px] h-[32px] bg-white rounded-full opacity-70 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
+        <div className="cloud-drift-4 absolute top-40 w-[105px] h-[32px] bg-white rounded-full opacity-70 filter drop-shadow-[0_4px_6px_rgba(0,80,160,0.08)]">
           <div className="absolute -top-[20px] left-[18px] w-[44px] h-[44px] bg-white rounded-full" />
           <div className="absolute -top-[12px] left-[54px] w-[30px] h-[30px] bg-white rounded-full" />
         </div>
       </div>
 
-      <div className="relative z-10 px-4 pt-3">
-        {/* ── 2. HEADER SECTION (Title & Stat Pills) ── */}
-        <header className="flex items-center justify-between mb-3">
+      <div className="relative z-10 px-4 pt-6">
+        {/* ── 2. HEADER SECTION (Adjusted spacing downwards for clear visibility) ── */}
+        <header className="flex items-center justify-between mb-4">
           <h1 className="font-fredoka font-black text-[26px] text-[#0f172a] tracking-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
             Leaderboard
           </h1>
@@ -192,7 +184,7 @@ export default function LeaderboardPage() {
         </header>
 
         {/* ── 3. VIEW TOGGLE (2 PILIHAN: INDIVIDU vs KELAS) ── */}
-        <div className="w-full max-w-[280px] mx-auto bg-white/85 p-1 rounded-full border-2 border-[#7dd3fc] shadow-sm flex items-center justify-between mb-8 backdrop-blur-xs">
+        <div className="w-full max-w-[280px] mx-auto bg-white/85 p-1 rounded-full border-2 border-[#7dd3fc] shadow-sm flex items-center justify-between mb-6 backdrop-blur-xs">
           <button
             type="button"
             onClick={() => setActiveTab("individu")}
@@ -217,7 +209,7 @@ export default function LeaderboardPage() {
           </button>
         </div>
 
-        {/* ── 4. 3 TREE STUMP PODIUM STAGE ── */}
+        {/* ── 4. 3 TREE STUMP PODIUM STAGE (NO EMOJIS) ── */}
         <div className="relative flex items-end justify-center gap-2 mb-0">
           {/* RANK 2: LEFT STUMP (LEONARDO) */}
           <div className="flex-1 flex flex-col items-center">
@@ -261,11 +253,18 @@ export default function LeaderboardPage() {
 
           {/* RANK 1: CENTER TALLEST STUMP (MAX) */}
           <div className="flex-1 flex flex-col items-center z-30">
-            {/* Mascot Rank 1 + Crown */}
+            {/* Mascot Rank 1 */}
             <div className="relative w-24 h-24 -mb-3.5 z-20 flex items-center justify-center">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-2xl filter drop-shadow animate-bounce" style={{ animationDuration: "3s" }}>
-                👑
-              </span>
+              {/* Clean SVG Golden Crown (No emoji) */}
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 drop-shadow-md animate-bounce" style={{ animationDuration: "3s" }}>
+                <svg width="26" height="22" viewBox="0 0 24 24" fill="#FBBF24" stroke="#B45309" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z" />
+                  <circle cx="12" cy="18" r="1" fill="#FFFFFF" />
+                  <circle cx="5" cy="4" r="1.2" fill="#FEF08A" />
+                  <circle cx="12" cy="3" r="1.2" fill="#FEF08A" />
+                  <circle cx="19" cy="4" r="1.2" fill="#FEF08A" />
+                </svg>
+              </div>
               <Image
                 src="/screens_assets/mascot_max.png"
                 alt="Max Mascot"
@@ -299,13 +298,8 @@ export default function LeaderboardPage() {
 
           {/* RANK 3: RIGHT STUMP (SUSAN) */}
           <div className="flex-1 flex flex-col items-center">
-            {/* Mascot Rank 3 + Floating Hearts */}
+            {/* Mascot Rank 3 */}
             <div className="relative w-20 h-20 -mb-3 z-20 flex items-center justify-center">
-              <div className="absolute -top-3 right-0 flex flex-col gap-1 pointer-events-none z-30">
-                <span className="h1 text-sm">❤️</span>
-                <span className="h2 text-xs -ml-2">❤️</span>
-                <span className="h3 text-xs -mr-1">💖</span>
-              </div>
               <Image
                 src="/screens_assets/mascot_susan.png"
                 alt="Susan Mascot"
@@ -353,13 +347,13 @@ export default function LeaderboardPage() {
           </svg>
         </div>
 
-        {/* ── 6. RANKED LIST CARD (#4 ONWARD) ── */}
-        <div className="relative z-20 w-[calc(100%+32px)] -ml-4 bg-white rounded-b-[28px] px-4 pt-2 pb-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)] flex flex-col gap-1">
+        {/* ── 6. SCROLLABLE RANKED LIST CARD (#4 ONWARD) IN WHITE AREA ── */}
+        <div className="relative z-20 w-[calc(100%+32px)] -ml-4 bg-white rounded-b-[28px] px-4 pt-2 pb-6 shadow-[0_10px_25px_rgba(15,23,42,0.05)] flex flex-col gap-1 max-h-[300px] overflow-y-auto no-scrollbar">
           {restEntries.length > 0 ? (
             restEntries.map((item) => (
               <div
                 key={item.id}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all ${
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all flex-shrink-0 ${
                   item.isCurrentUser
                     ? "bg-[#e0f2fe] shadow-[0_2px_8px_rgba(2,132,199,0.08)]"
                     : "hover:bg-[#f8fafc]"
@@ -393,10 +387,9 @@ export default function LeaderboardPage() {
             ))
           ) : (
             <div className="py-6 px-3 text-center flex flex-col items-center">
-              <span className="text-2xl mb-1">🌿</span>
               <p className="font-fredoka font-bold text-xs text-[#64748b] max-w-[240px]">
                 {activeTab === "individu"
-                  ? "Belum ada siswa lain di peringkat 4 ke bawah. Selesaikan misi & raih posisi teratas!"
+                  ? "Belum ada siswa lain di peringkat 4 ke bawah. Selesaikan misi dan raih posisi teratas!"
                   : "Belum ada data kelas lain. Ajak teman sekelasmu belajar bersama!"}
               </p>
             </div>
