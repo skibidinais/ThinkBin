@@ -60,23 +60,23 @@ const MAP_BAGIANS: Record<number, MapBagian> = {
   3: {
     id: 3,
     unitSubtitle: "Bagian 3 • Node 9 - 12",
-    unitTitle: "Solusi & Praktik Pengelolaan",
+    unitTitle: "Prinsip 3R (Reduce, Reuse, Recycle)",
     levels: {
-      1: { slotNum: 1, nodeId: 9, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 9: Prinsip 3R: Reduce, Reuse, Recycle", shortTitle: "Prinsip 3R Terpadu", desc: "Hierarki pengelolaan sampah berkelanjutan.", xpReward: 12, coinReward: 15 },
-      2: { slotNum: 2, nodeId: 10, x: 46.39, y: 57.69, icon: "dumbbell", type: "kuis", title: "Node 10: Kuis Tantangan: Klasifikasi Praktik 3R", shortTitle: "Kuis Tantangan Praktik 3R", desc: "Kelompokkan aksi nyata ke dalam Reduce, Reuse, Recycle.", xpReward: 20, coinReward: 25 },
-      3: { slotNum: 3, nodeId: 11, x: 64.57, y: 68.33, icon: "plus", type: "bacaan", title: "Node 11: Sistem Bank Sampah Sekolah", shortTitle: "Sistem Bank Sampah Sekolah", desc: "Cara menabung sampah terpilah menjadi tabungan bernilai.", xpReward: 12, coinReward: 15 },
-      4: { slotNum: 4, nodeId: 12, x: 58.46, y: 82.42, icon: "trophy", type: "kuis", title: "Node 12: Kuis Tantangan: Pilah dari Sumbernya", shortTitle: "Kuis Pilah dari Sumber", desc: "Pisahkan sampah basah kantin vs ranting kering vs botol.", xpReward: 20, coinReward: 25 },
+      1: { slotNum: 1, nodeId: 9, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 9: Reduce: Kurangi Timbulan Sampah", shortTitle: "Reduce: Kurangi Sampah", desc: "Kebiasaan praktis harian mencegah timbulan sampah dari sumbernya.", xpReward: 15, coinReward: 20 },
+      2: { slotNum: 2, nodeId: 10, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 10: Reuse: Guna Ulang Barang", shortTitle: "Reuse: Guna Ulang Barang", desc: "Memaksimalkan masa pakai wadah dan kemasan ramah lingkungan.", xpReward: 15, coinReward: 20 },
+      3: { slotNum: 3, nodeId: 11, x: 64.57, y: 68.33, icon: "plus", type: "kuis", title: "Node 11: Kuis Tantangan: Skenario 3R", shortTitle: "Kuis Tantangan Skenario 3R", desc: "Tentukan aksi 3R yang paling tepat pada berbagai skenario.", xpReward: 20, coinReward: 25 },
+      4: { slotNum: 4, nodeId: 12, x: 58.46, y: 82.42, icon: "trophy", type: "bacaan", title: "Node 12: Recycle: Daur Ulang & Upcycling", shortTitle: "Recycle: Daur Ulang", desc: "Mengubah sampah menjadi produk baru bernilai guna tinggi.", xpReward: 15, coinReward: 20 },
     },
   },
   4: {
     id: 4,
     unitSubtitle: "Bagian 4 • Node 13 - 16",
-    unitTitle: "Gaya Hidup Hijau & Komitmen",
+    unitTitle: "Pengelolaan Sampah Mandiri & Sekolah",
     levels: {
-      1: { slotNum: 1, nodeId: 13, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 13: Zero Waste Lifestyle di Sekolah", shortTitle: "Zero Waste di Sekolah", desc: "Membawa tumbler, tepak makan, dan tas belanja kain.", xpReward: 12, coinReward: 15 },
-      2: { slotNum: 2, nodeId: 14, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 14: Pembuatan Pupuk Kompos Organik", shortTitle: "Pembuatan Pupuk Kompos", desc: "Mengolah daun kering dan sisa buah menjadi pupuk subur.", xpReward: 12, coinReward: 15 },
-      3: { slotNum: 3, nodeId: 15, x: 64.57, y: 68.33, icon: "plus", type: "bacaan", title: "Node 15: ThinkBin Tri-Action Framework", shortTitle: "Tri-Action Framework", desc: "Membangun Pengetahuan, Kemauan, dan Kemampuan konsisten.", xpReward: 12, coinReward: 15 },
-      4: { slotNum: 4, nodeId: 16, x: 58.46, y: 82.42, icon: "leaf", type: "komitmen", title: "Node 16: Ikrar & Komitmen Hijau Siswa", shortTitle: "Ikrar & Komitmen Hijau", desc: "Tulis ikrar aksimu untuk lingkungan sekolah SMPN 20 Malang!", xpReward: 30, coinReward: 40 },
+      1: { slotNum: 1, nodeId: 13, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 13: Pembuatan Kompos Sederhana", shortTitle: "Pembuatan Kompos Sederhana", desc: "Langkah mudah mengolah sampah sisa makanan menjadi pupuk organik.", xpReward: 18, coinReward: 25 },
+      2: { slotNum: 2, nodeId: 14, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 14: Bank Sampah & Ekonomi Sirkular", shortTitle: "Bank Sampah & Sirkular", desc: "Menabung sampah terpilah untuk nilai ekonomi dan kelestarian.", xpReward: 18, coinReward: 25 },
+      3: { slotNum: 3, nodeId: 15, x: 64.57, y: 68.33, icon: "plus", type: "kuis", title: "Node 15: Kuis Tantangan: Master Pengelolaan", shortTitle: "Kuis Tantangan Master Sampah", desc: "Uji keahlian pengelolaan sampah mandiri dan sekolah.", xpReward: 25, coinReward: 30 },
+      4: { slotNum: 4, nodeId: 16, x: 58.46, y: 82.42, icon: "trophy", type: "komitmen", title: "Node 16: Komitmen Pahlawan Lingkungan", shortTitle: "Komitmen Pahlawan", desc: "Tulis aksi nyatamu dan raih gelar Guardian ThinkBin!", xpReward: 30, coinReward: 50 },
     },
   },
 };
@@ -84,15 +84,14 @@ const MAP_BAGIANS: Record<number, MapBagian> = {
 export default function BelajarPage() {
   const router = useRouter();
   const { user } = useAuth();
-
-  const [currentBagian, setCurrentBagian] = useState<number>(1);
   const [completedNodeIds, setCompletedNodeIds] = useState<number[]>([]);
+  const [currentBagian, setCurrentBagian] = useState<number>(1);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [selectedLevel, setSelectedLevel] = useState<MapLevel | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadNodes() {
+    async function loadProgress() {
       if (user?.id) {
         const completed = await fetchUserCompletedNodes(user.id);
         setCompletedNodeIds(completed);
@@ -101,11 +100,11 @@ export default function BelajarPage() {
           const raw = localStorage.getItem("thinkbin_completed_nodes");
           if (raw) setCompletedNodeIds(JSON.parse(raw));
         } catch {
-          // fallback
+          // Fallback
         }
       }
     }
-    loadNodes();
+    loadProgress();
   }, [user]);
 
   const maxCompleted = completedNodeIds.length > 0 ? Math.max(...completedNodeIds) : 0;
@@ -147,64 +146,116 @@ export default function BelajarPage() {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col select-none bg-[#4da325]">
-      {/* FIXED TOP LEVEL / UNIT INFO BAR */}
-      <header className="sticky top-0 left-0 right-0 z-40 px-4 pt-3 pb-2 bg-gradient-to-b from-[#50a5eb]/80 via-[#50a5eb]/40 to-transparent pointer-events-auto">
-        <div className="w-full bg-white border-[3.5px] border-[#e5e5e5] border-b-[6.5px] rounded-[22px] p-2.5 px-3.5 flex items-center shadow-[0_8px_16px_rgba(0,0,0,0.08)]">
-          <div className="w-10 h-10 bg-[#7c4e18] rounded-full flex items-center justify-center shadow-[0_3px_0_rgba(0,0,0,0.15)] flex-shrink-0 text-white font-fredoka font-extrabold text-sm">
-            🗺️
+    <div className="relative w-full h-full min-h-full flex flex-col select-none overflow-hidden bg-[#4da325]">
+      
+      {/* ── 1. FLOATING OVERLAYS (Stat Bar + Bagian Info Bar sitting on top of the sky without separate colored background blocks) ── */}
+      <div className="absolute top-0 left-0 right-0 z-30 pointer-events-none px-3.5 pt-3 flex flex-col gap-2">
+        
+        {/* Floating Top Stat Bar */}
+        <div className="w-full flex items-center justify-between pointer-events-auto">
+          {/* Streak Pill */}
+          <div className="flex items-center gap-1.5 bg-white/95 border-[2px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+            <Image
+              src="/assets_game/streak_icon.png"
+              alt="Streak"
+              width={16}
+              height={16}
+              className="object-contain"
+            />
+            <span className="font-fredoka font-bold text-xs text-[#382C22]">
+              {user?.streak ?? 1} Hari
+            </span>
           </div>
 
-          <div className="ml-3 flex flex-col">
-            <span className="text-[11px] font-fredoka font-bold text-[#1cb0f6] uppercase tracking-wider">
-              {activeBagian.unitSubtitle}
-            </span>
-            <span className="text-sm font-fredoka font-extrabold text-[#2b2b2b] leading-tight">
-              {activeBagian.unitTitle}
-            </span>
-          </div>
+          {/* XP & Coin Pills */}
+          <div className="flex items-center gap-2">
+            {/* XP Pill */}
+            <div className="flex items-center gap-1.5 bg-white/95 border-[2px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+              <Image
+                src="/assets_game/exp_progress.png"
+                alt="XP"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-bold text-xs text-[#0284c7]">
+                {user?.xp ?? 0} XP
+              </span>
+            </div>
 
-          {/* Unit Dropdown Trigger Button */}
-          <button
-            type="button"
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="ml-auto w-9 h-9 rounded-full bg-[#e8f7fe] hover:bg-[#bae6fd] active:scale-95 flex flex-col items-center justify-center gap-1 cursor-pointer transition-transform"
-            aria-label="Pilih Bagian"
-          >
-            <span className="w-4 h-0.5 bg-[#1cb0f6] rounded-full" />
-            <span className="w-4 h-0.5 bg-[#1cb0f6] rounded-full" />
-            <span className="w-4 h-0.5 bg-[#1cb0f6] rounded-full" />
-          </button>
+            {/* Coin Pill */}
+            <div className="flex items-center gap-1.5 bg-white/95 border-[2px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_3px_0_#382C22] backdrop-blur-xs">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={16}
+                height={16}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-bold text-xs text-[#d97706]">
+                {user?.coins ?? 0}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Dropdown Menu */}
-        {showDropdown && (
-          <div className="absolute top-18 right-4 w-64 bg-white border-[3px] border-[#e2e8f0] border-b-[6px] rounded-2xl p-2 flex flex-col gap-1.5 shadow-2xl z-50 animate-in zoom-in-95 duration-150">
-            {[1, 2, 3, 4].map((bNum) => (
-              <button
-                key={bNum}
-                type="button"
-                onClick={() => {
-                  setCurrentBagian(bNum);
-                  setShowDropdown(false);
-                }}
-                className={`p-2.5 rounded-xl font-fredoka font-bold text-xs text-left transition-all ${
-                  currentBagian === bNum
-                    ? "bg-[#0284c7] text-white"
-                    : "bg-[#f8fafc] text-[#334155] hover:bg-[#e0f2fe]"
-                }`}
-              >
-                {MAP_BAGIANS[bNum].unitSubtitle}: {MAP_BAGIANS[bNum].unitTitle}
-              </button>
-            ))}
-          </div>
-        )}
-      </header>
+        {/* Floating Bagian Info Bar */}
+        <div className="relative w-full pointer-events-auto">
+          <div className="w-full bg-white/95 border-[2.5px] border-[#382C22] rounded-[22px] p-2 px-3 flex items-center shadow-[0_4px_0_#382C22] backdrop-blur-xs">
+            <div className="w-9 h-9 bg-[#7c4e18] border border-[#382C22] rounded-xl flex items-center justify-center shadow-xs flex-shrink-0 text-white font-fredoka font-extrabold text-sm">
+              🗺️
+            </div>
 
-      {/* SCROLLABLE SCENE WITH ORIGINAL MAP BACKGROUND */}
-      <main className="relative flex-1 w-full overflow-y-auto overflow-x-hidden no-scrollbar">
-        <div className="relative w-full max-w-[440px] mx-auto line-none">
-          {/* EXACT SCENE MAP BACKGROUND (High-res 576x1024) */}
+            <div className="ml-2.5 flex flex-col">
+              <span className="text-[10px] font-fredoka font-bold text-[#0284c7] uppercase tracking-wider">
+                {activeBagian.unitSubtitle}
+              </span>
+              <span className="text-[13px] font-fredoka font-extrabold text-[#2b2b2b] leading-tight">
+                {activeBagian.unitTitle}
+              </span>
+            </div>
+
+            {/* Unit Dropdown Trigger Button */}
+            <button
+              type="button"
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="ml-auto w-8 h-8 rounded-xl bg-[#e8f7fe] hover:bg-[#bae6fd] active:scale-95 flex flex-col items-center justify-center gap-1 cursor-pointer transition-transform border border-[#7dd3fc]"
+              aria-label="Pilih Bagian"
+            >
+              <span className="w-3.5 h-0.5 bg-[#0284c7] rounded-full" />
+              <span className="w-3.5 h-0.5 bg-[#0284c7] rounded-full" />
+              <span className="w-3.5 h-0.5 bg-[#0284c7] rounded-full" />
+            </button>
+          </div>
+
+          {/* Dropdown Menu */}
+          {showDropdown && (
+            <div className="absolute top-14 right-0 w-64 bg-white border-[2.5px] border-[#382C22] rounded-2xl p-2 flex flex-col gap-1.5 shadow-2xl z-50 animate-in zoom-in-95 duration-150">
+              {[1, 2, 3, 4].map((bNum) => (
+                <button
+                  key={bNum}
+                  type="button"
+                  onClick={() => {
+                    setCurrentBagian(bNum);
+                    setShowDropdown(false);
+                  }}
+                  className={`p-2.5 rounded-xl font-fredoka font-bold text-xs text-left transition-all ${
+                    currentBagian === bNum
+                      ? "bg-[#0284c7] text-white"
+                      : "bg-[#f8fafc] text-[#334155] hover:bg-[#e0f2fe]"
+                  }`}
+                >
+                  {MAP_BAGIANS[bNum].unitSubtitle}: {MAP_BAGIANS[bNum].unitTitle}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── 2. FULL SCENE MAP BACKGROUND (Starts from the very top, edge-to-edge) ── */}
+      <main className="relative flex-1 w-full overflow-y-auto overflow-x-hidden no-scrollbar pb-24">
+        <div className="relative w-full max-w-[440px] mx-auto">
           <div className="relative w-full">
             <Image
               src="/screens_assets/map_bg_current.png"
@@ -217,12 +268,12 @@ export default function BelajarPage() {
 
             {/* ANIMATED FLOATING CLOUDS */}
             <div className="absolute top-0 left-0 w-full h-[36%] pointer-events-none overflow-hidden z-10">
-              <div className="absolute top-[8%] left-0 w-16 h-8 opacity-85 animate-pulse">
+              <div className="absolute top-[12%] left-2 w-16 h-8 opacity-85 animate-pulse">
                 <svg viewBox="0 0 64 36" fill="#ffffff">
                   <path d="M 12 28 A 10 10 0 0 1 20 14 A 14 14 0 0 1 42 12 A 12 12 0 0 1 54 22 A 8 8 0 0 1 52 28 Z" />
                 </svg>
               </div>
-              <div className="absolute top-[22%] right-6 w-20 h-10 opacity-80">
+              <div className="absolute top-[26%] right-6 w-20 h-10 opacity-80">
                 <svg viewBox="0 0 64 36" fill="#ffffff">
                   <path d="M 10 28 A 12 12 0 0 1 22 12 A 16 16 0 0 1 46 10 A 14 14 0 0 1 58 22 A 8 8 0 0 1 56 28 Z" />
                 </svg>
