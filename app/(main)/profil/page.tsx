@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -107,10 +107,22 @@ export default function ProfilPage() {
   const { user, updateUser } = useAuth();
   const [ownedFrames, setOwnedFrames] = useState<string[]>([]);
   const [selectedFrame, setSelectedFrame] = useState<string>("");
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [equipNotice, setEquipNotice] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function loadProfile() {
+      // Load custom photo if saved
+      try {
+        const savedPhoto = localStorage.getItem("thinkbin_user_photo");
+        if (savedPhoto) {
+          setUserPhoto(savedPhoto);
+        }
+      } catch {
+        // ignore
+      }
+
       if (user?.id) {
         const owned = await fetchUserOwnedFrames(user.id);
         setOwnedFrames(owned);
@@ -152,6 +164,27 @@ export default function ProfilPage() {
     setTimeout(() => setEquipNotice(null), 2500);
   };
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        if (dataUrl) {
+          setUserPhoto(dataUrl);
+          try {
+            localStorage.setItem("thinkbin_user_photo", dataUrl);
+          } catch {
+            // ignore
+          }
+          setEquipNotice("Foto profil berhasil diperbarui!");
+          setTimeout(() => setEquipNotice(null), 2500);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const equippedConfig = selectedFrame ? BORDERS_CATALOG[selectedFrame] : null;
 
   return (
@@ -176,35 +209,57 @@ export default function ProfilPage() {
         </h1>
       </header>
 
-      {/* ── 2. CARD 1: PROFILE HERO BANNER CARD (Cover Landscape, Mascot Avatar, Name, Level Bar) ── */}
-      <div className="relative bg-[#E8F5E9] border-[2.5px] border-[#382C22] rounded-[24px] overflow-hidden shadow-[0_4px_0_rgba(0,0,0,0.05)] mb-3">
-        {/* Landscape Cover */}
-        <div className="relative w-full h-32 sm:h-36 overflow-hidden">
+      {/* Hidden File Input for Avatar Photo */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        onChange={handlePhotoUpload}
+        className="hidden"
+      />
+
+      {/* ── 2. CARD 1: PROFILE HERO BANNER CARD (Full Landscape Background, Avatar, Name, Level Bar) ── */}
+      <div className="relative w-full min-h-[220px] bg-[#E8F5E9] border-[2.5px] border-[#382C22] rounded-[24px] overflow-hidden shadow-[0_4px_0_rgba(0,0,0,0.05)] mb-3 flex flex-col items-center justify-center">
+        
+        {/* Full Card Landscape Cover Background */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
           <Image
             src="/screens_assets/hero_bg.jpg"
-            alt="Hero Landscape"
+            alt="Profile Landscape Banner"
             fill
-            className="object-cover object-bottom"
             priority
+            className="object-cover object-bottom"
           />
         </div>
 
-        {/* Content Layer Over Landscape */}
-        <div className="relative flex flex-col items-center px-4 pb-4 -mt-16 z-10">
+        {/* Hero Card Content Layer */}
+        <div className="relative z-10 w-full py-6 px-4 flex flex-col items-center justify-center text-center">
           
           {/* Avatar Container with Frame Overlay & Camera Edit Button */}
           <div className="relative w-[94px] h-[94px] mb-2 flex items-center justify-center">
-            <div className="w-[68px] h-[68px] rounded-[16px] bg-white border-[2px] border-[#382C22] flex items-center justify-center overflow-hidden shadow-sm">
-              <Image
-                src="/screens_assets/mascot_thumbsup_transparent.png"
-                alt="User Avatar"
-                width={54}
-                height={54}
-                className="object-contain"
-              />
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="w-[68px] h-[68px] rounded-[16px] bg-white border-[2px] border-[#382C22] flex items-center justify-center overflow-hidden shadow-sm cursor-pointer"
+            >
+              {userPhoto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={userPhoto}
+                  alt="User Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Image
+                  src="/screens_assets/mascot_thumbsup_transparent.png"
+                  alt="User Avatar"
+                  width={54}
+                  height={54}
+                  className="object-contain"
+                />
+              )}
             </div>
 
-            {/* Equipped Border Overlay */}
+            {/* Equipped Avatar Border Frame Overlay */}
             {equippedConfig && (
               <div
                 className="absolute inset-0 pointer-events-none scale-105 flex items-center justify-center z-20"
@@ -220,23 +275,25 @@ export default function ProfilPage() {
             )}
 
             {/* Camera / Edit Icon Button */}
-            <div
-              className="absolute bottom-1 right-1 w-7 h-7 bg-[#4CAF50] border-[2px] border-[#382C22] rounded-[10px] shadow-[0_2px_0_#318B35] flex items-center justify-center cursor-pointer z-30"
-              title="Foto Profil"
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-1 right-1 w-7 h-7 bg-[#4CAF50] border-[2px] border-[#382C22] rounded-[10px] shadow-[0_2px_0_#318B35] flex items-center justify-center cursor-pointer z-30 active:translate-y-0.5"
+              title="Upload Foto"
             >
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
               </svg>
-            </div>
+            </button>
           </div>
 
           {/* User Display Name */}
-          <h2 className="font-fredoka font-black text-[22px] text-[#1F2937] text-center leading-tight mb-2 drop-shadow-sm">
+          <h2 className="font-fredoka font-black text-[22px] text-[#1F2937] text-center leading-tight mb-2.5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.9)]">
             {user?.display_name || user?.email?.split("@")[0] || ""}
           </h2>
 
-          {/* Level XP Progress Bar Container */}
+          {/* Centered Level Progress Bar Container */}
           <div className="w-full max-w-[280px] bg-white/95 backdrop-blur-xs border-[1.5px] border-[#382C22] rounded-[14px] px-3.5 py-1.5 shadow-[0_2px_0_#382C22] flex flex-col items-center gap-1">
             <div className="w-full h-3 bg-[#E5E7EB] border-[1.5px] border-[#382C22] rounded-[8px] overflow-hidden p-0.5">
               <div
@@ -358,13 +415,22 @@ export default function ProfilPage() {
                   : "bg-[#f8fafc] border-[2px] border-[#e2e8f0] group-hover:border-[#cbd5e1]"
               }`}
             >
-              <Image
-                src="/screens_assets/mascot_thumbsup_transparent.png"
-                alt="Polos"
-                width={38}
-                height={38}
-                className="object-contain"
-              />
+              {userPhoto ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={userPhoto}
+                  alt="Polos"
+                  className="w-9 h-9 object-cover rounded-[10px]"
+                />
+              ) : (
+                <Image
+                  src="/screens_assets/mascot_thumbsup_transparent.png"
+                  alt="Polos"
+                  width={38}
+                  height={38}
+                  className="object-contain"
+                />
+              )}
             </div>
             <span
               className={`font-fredoka text-[12px] ${
@@ -396,13 +462,22 @@ export default function ProfilPage() {
                         : "bg-[#f8fafc] border-[2px] border-[#e2e8f0] group-hover:border-[#cbd5e1]"
                     }`}
                   >
-                    <Image
-                      src="/screens_assets/mascot_thumbsup_transparent.png"
-                      alt={border.name}
-                      width={34}
-                      height={34}
-                      className="object-contain"
-                    />
+                    {userPhoto ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={userPhoto}
+                        alt={border.name}
+                        className="w-8 h-8 object-cover rounded-[8px]"
+                      />
+                    ) : (
+                      <Image
+                        src="/screens_assets/mascot_thumbsup_transparent.png"
+                        alt={border.name}
+                        width={34}
+                        height={34}
+                        className="object-contain"
+                      />
+                    )}
                     <div
                       className="absolute inset-0 pointer-events-none scale-105 flex items-center justify-center"
                       style={{ filter: border.filter || "none" }}
