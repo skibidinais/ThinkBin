@@ -129,7 +129,7 @@ export default function BelajarPage() {
   const handleNodeClick = (lvl: MapLevel) => {
     const isLocked = lvl.nodeId > unlockedNodeId;
     if (isLocked) {
-      setToastMessage("Selesaikan level sebelumnya terlebih dahulu 🔒");
+      setToastMessage("Selesaikan level sebelumnya terlebih dahulu.");
       setTimeout(() => setToastMessage(null), 2500);
       return;
     }
@@ -203,7 +203,11 @@ export default function BelajarPage() {
         <div className="relative w-full pointer-events-auto">
           <div className="w-full bg-white border-[3px] border-[#382C22] rounded-[24px] p-2.5 px-3.5 flex items-center shadow-[0_4.5px_0_#382C22] backdrop-blur-xs">
             <div className="w-11 h-11 bg-[#7c4e18] border-[2px] border-[#382C22] rounded-2xl flex items-center justify-center shadow-xs flex-shrink-0 text-white font-fredoka font-extrabold text-lg">
-              🗺️
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                <line x1="8" y1="2" x2="8" y2="18" />
+                <line x1="16" y1="6" x2="16" y2="22" />
+              </svg>
             </div>
 
             <div className="ml-3 flex flex-col">
@@ -376,7 +380,7 @@ export default function BelajarPage() {
             {completedNodeIds.includes(selectedLevel.nodeId) ? (
               <div className="flex items-center justify-center gap-2 bg-[#ecfccb] border-[2px] border-[#65a30d] rounded-xl p-2 mb-4">
                 <span className="font-fredoka font-black text-xs text-[#3f6212]">
-                  ✅ Sudah Selesai (Latihan Ulang: +0 XP, +0 Koin)
+                  Sudah Selesai (Latihan Ulang: +0 XP, +0 Koin)
                 </span>
               </div>
             ) : (
@@ -413,15 +417,15 @@ export default function BelajarPage() {
               >
                 {completedNodeIds.includes(selectedLevel.nodeId)
                   ? selectedLevel.type === "kuis"
-                    ? "🔄 Ulangi Kuis Tantangan"
+                    ? "Ulangi Kuis Tantangan"
                     : selectedLevel.type === "komitmen"
-                    ? "✍️ Baca Komitmen Hijau"
-                    : "📖 Baca Ulang Materi"
+                    ? "Baca Komitmen Hijau"
+                    : "Baca Ulang Materi"
                   : selectedLevel.type === "kuis"
-                  ? "🎮 Mulai Kuis Tantangan"
+                  ? "Mulai Kuis Tantangan"
                   : selectedLevel.type === "komitmen"
-                  ? "✍️ Tulis Komitmen Hijau"
-                  : "📖 Mulai Bacaan"}
+                  ? "Tulis Komitmen Hijau"
+                  : "Mulai Bacaan"}
               </button>
 
               <button

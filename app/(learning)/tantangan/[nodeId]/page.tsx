@@ -45,54 +45,54 @@ export default function TantanganPage() {
       // Pilah Organik vs Anorganik
       categories = ['Organik', 'Anorganik'];
       items = [
-        { id: '1', name: 'Kulit Pisang 🍌', category: 'Organik' },
-        { id: '2', name: 'Botol Aqua 🧴', category: 'Anorganik' },
-        { id: '3', name: 'Sisa Nasi 🍚', category: 'Organik' },
-        { id: '4', name: 'Kantong Plastik 🛍️', category: 'Anorganik' },
-        { id: '5', name: 'Daun Kering 🍂', category: 'Organik' },
-        { id: '6', name: 'Kaleng Soda 🥫', category: 'Anorganik' },
-        { id: '7', name: 'Sisa Apel 🍎', category: 'Organik' },
-        { id: '8', name: 'Sedotan Plastik 🥤', category: 'Anorganik' }
+        { id: '1', name: 'Kulit Pisang', category: 'Organik' },
+        { id: '2', name: 'Botol Plastik', category: 'Anorganik' },
+        { id: '3', name: 'Sisa Nasi', category: 'Organik' },
+        { id: '4', name: 'Kantong Plastik', category: 'Anorganik' },
+        { id: '5', name: 'Daun Kering', category: 'Organik' },
+        { id: '6', name: 'Kaleng Minuman', category: 'Anorganik' },
+        { id: '7', name: 'Sisa Apel', category: 'Organik' },
+        { id: '8', name: 'Sedotan Plastik', category: 'Anorganik' }
       ];
     } else if (nodeId === 6) {
       // Tantangan Dampak Sampah
       categories = ['Tanah & Air', 'Udara'];
       items = [
-        { id: '1', name: 'Air Lindi ☣️', category: 'Tanah & Air' },
-        { id: '2', name: 'Gas Metana 🔥', category: 'Udara' },
-        { id: '3', name: 'Pecahan Kaca 🪞', category: 'Tanah & Air' },
-        { id: '4', name: 'Asap Dioksin 🏭', category: 'Udara' },
-        { id: '5', name: 'Mikroplastik 🦐', category: 'Tanah & Air' },
-        { id: '6', name: 'Gas H2S Busuk 🤢', category: 'Udara' }
+        { id: '1', name: 'Air Lindi', category: 'Tanah & Air' },
+        { id: '2', name: 'Gas Metana', category: 'Udara' },
+        { id: '3', name: 'Pecahan Kaca', category: 'Tanah & Air' },
+        { id: '4', name: 'Asap Dioksin', category: 'Udara' },
+        { id: '5', name: 'Mikroplastik', category: 'Tanah & Air' },
+        { id: '6', name: 'Gas H2S Busuk', category: 'Udara' }
       ];
     } else if (nodeId === 10) {
       // Praktik 3R
       categories = ['Reduce', 'Reuse', 'Recycle'];
       items = [
-        { id: '1', name: 'Bawa Tumbler Sendiri 🍶', category: 'Reduce' },
-        { id: '2', name: 'Kaleng Jadi Pot Bunga 🪴', category: 'Reuse' },
-        { id: '3', name: 'Peleburan Botol di Pabrik 🏭', category: 'Recycle' },
-        { id: '4', name: 'Tolak Kantong Kresek 🚫', category: 'Reduce' },
-        { id: '5', name: 'Baju Bekas Jadi Kain Lap 👕', category: 'Reuse' },
-        { id: '6', name: 'Kardus Dicacah Jadi Kertas Baru 📦', category: 'Recycle' }
+        { id: '1', name: 'Bawa Tumbler Sendiri', category: 'Reduce' },
+        { id: '2', name: 'Kaleng Jadi Pot Bunga', category: 'Reuse' },
+        { id: '3', name: 'Peleburan Botol di Pabrik', category: 'Recycle' },
+        { id: '4', name: 'Tolak Kantong Kresek', category: 'Reduce' },
+        { id: '5', name: 'Baju Bekas Jadi Kain Lap', category: 'Reuse' },
+        { id: '6', name: 'Kardus Dicacah Jadi Kertas Baru', category: 'Recycle' }
       ];
     } else if (nodeId === 12) {
       // Pemilahan Sumber 3 Tong
       categories = ['Organik Basah', 'Organik Kering', 'Anorganik'];
       items = [
-        { id: '1', name: 'Sisa Kuah Sayur 🍲', category: 'Organik Basah' },
-        { id: '2', name: 'Ranting & Daun Kering 🍂', category: 'Organik Kering' },
-        { id: '3', name: 'Gelas Plastik Bersih 🥤', category: 'Anorganik' },
-        { id: '4', name: 'Kulit Semangka 🍉', category: 'Organik Basah' },
-        { id: '5', name: 'Kertas HVS Bekas 📄', category: 'Organik Kering' },
-        { id: '6', name: 'Kaleng Minuman 🥫', category: 'Anorganik' }
+        { id: '1', name: 'Sisa Kuah Sayur', category: 'Organik Basah' },
+        { id: '2', name: 'Ranting & Daun Kering', category: 'Organik Kering' },
+        { id: '3', name: 'Gelas Plastik Bersih', category: 'Anorganik' },
+        { id: '4', name: 'Kulit Semangka', category: 'Organik Basah' },
+        { id: '5', name: 'Kertas HVS Bekas', category: 'Organik Kering' },
+        { id: '6', name: 'Kaleng Minuman', category: 'Anorganik' }
       ];
     } else {
       // Fallback
       categories = ['Organik', 'Anorganik'];
       items = [
-        { id: '1', name: 'Apel Busuk 🍏', category: 'Organik' },
-        { id: '2', name: 'Kotak Susu 🥛', category: 'Anorganik' }
+        { id: '1', name: 'Apel Busuk', category: 'Organik' },
+        { id: '2', name: 'Kotak Susu', category: 'Anorganik' }
       ];
     }
 
@@ -199,7 +199,6 @@ export default function TantanganPage() {
       <div className="w-full max-w-md mx-auto flex-1 flex flex-col justify-center items-center my-4">
         {!gameStarted ? (
           <div className="bg-slate-800 rounded-2xl border-2 border-slate-700 p-6 text-center shadow-xl w-full">
-            <div className="text-5xl mb-4">🎮</div>
             <h1 className="text-xl font-black mb-2">{node?.title || 'Tantangan Interaktif'}</h1>
             <p className="text-xs text-slate-300 leading-relaxed mb-6">
               Pilah sampah yang muncul ke tempat pembuangan yang tepat sebelum waktu habis!
@@ -218,12 +217,11 @@ export default function TantanganPage() {
               onClick={handleStartGame}
               className="w-full bg-gradient-to-r from-amber-500 to-orange-600 border-b-4 border-orange-700 text-slate-900 font-black text-sm py-4 rounded-xl hover:brightness-105 active:border-b-0 active:translate-y-1 transition-all"
             >
-              Mulai Bermain! 🚀
+              Mulai Bermain!
             </button>
           </div>
         ) : gameOver ? (
           <div className="bg-slate-800 rounded-2xl border-2 border-slate-700 p-6 text-center shadow-xl w-full animate-scaleUp">
-            <div className="text-5xl mb-4">{isPassing ? '🏆' : '😢'}</div>
             <h2 className="text-lg font-black mb-2">
               {isPassing ? 'Tantangan Berhasil!' : 'Mencoba Sekali Lagi?'}
             </h2>
@@ -232,8 +230,8 @@ export default function TantanganPage() {
               {isPassing && (
                 <span className="text-emerald-400 font-extrabold mt-2 block">
                   {isRepeatAttempt
-                    ? "🎁 +0 XP / +0 Koin (Latihan Ulang / Sudah Diselesaikan)"
-                    : `🎁 +${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10} Koin (Termasuk bonus tantangan!)`}
+                    ? "+0 XP / +0 Koin (Latihan Ulang / Sudah Diselesaikan)"
+                    : `+${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10} Koin (Termasuk bonus tantangan!)`}
                 </span>
               )}
             </p>
@@ -244,7 +242,7 @@ export default function TantanganPage() {
                   onClick={() => router.push('/belajar')}
                   className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm py-3 px-4 rounded-xl active:translate-y-0.5 transition-all"
                 >
-                  Selesai & Lanjut Belajar 🎉
+                  Selesai & Lanjut Belajar
                 </button>
               ) : (
                 <>
@@ -252,7 +250,7 @@ export default function TantanganPage() {
                     onClick={handleStartGame}
                     className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm py-3 px-4 rounded-xl active:translate-y-0.5 transition-all"
                   >
-                    Main Lagi 🔁
+                    Main Lagi
                   </button>
                   <button
                     onClick={() => router.push('/belajar')}
@@ -298,7 +296,7 @@ export default function TantanganPage() {
                     onClick={() => handleChoice(bin)}
                     className={`p-4 rounded-xl border-2 border-b-8 font-black text-xs text-center transition-all active:border-b-2 active:translate-y-1.5 ${binColor}`}
                   >
-                    🗑️ {bin}
+                    {bin}
                   </button>
                 );
               })}

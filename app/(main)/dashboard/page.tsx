@@ -25,7 +25,7 @@ export default function DashboardPage() {
   const handleKuisionerClick = (e: React.MouseEvent) => {
     if (isLocked) {
       e.preventDefault();
-      setToastMessage("🔒 Terbuka mulai 28 Agustus 2026");
+      setToastMessage("Terbuka mulai 28 Agustus 2026");
       setTimeout(() => {
         setToastMessage(null);
       }, 3000);
@@ -99,7 +99,10 @@ export default function DashboardPage() {
             className="w-full h-[52px] bg-gradient-to-b from-[#E2E8F0] to-[#CBD5E1] border-[3px] border-[#94A3B8] rounded-[22px] px-4 flex items-center justify-center gap-3 shadow-[0_5px_0_#64748B,0_8px_16px_rgba(0,0,0,0.1)] active:translate-y-0.5 opacity-90 cursor-pointer flex-shrink-0 relative overflow-hidden"
           >
             <div className="w-8 h-8 bg-[#94A3B8] border-[2px] border-[#64748B] rounded-xl flex items-center justify-center shadow-[0_2px_0_#475569] flex-shrink-0">
-              <span className="text-sm">🔒</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
             </div>
             <div className="flex flex-col text-left">
               <span className="font-fredoka font-black text-[15px] text-[#475569] leading-tight flex items-center gap-1.5">

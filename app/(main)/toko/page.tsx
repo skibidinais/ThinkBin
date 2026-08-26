@@ -183,9 +183,9 @@ export default function TokoPage() {
     if (item.isMysteryBox) {
       const result = await openMysteryBoxTransaction(user?.id || "usr_guest");
       if (result.success) {
-        setPurchaseNotice(result.message || `🎁 Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
+        setPurchaseNotice(result.message || `Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
       } else {
-        setPurchaseNotice(`⚠️ ${result.message || "Koin tidak cukup untuk Mystery Box!"}`);
+        setPurchaseNotice(result.message || "Koin tidak cukup untuk Mystery Box.");
       }
       // Always refresh profile from database to sync coins/xp
       if (user?.id) {
@@ -204,7 +204,7 @@ export default function TokoPage() {
         await refreshProfile(user.id);
       }
       setSelectedFrame(item.id);
-      setPurchaseNotice(`✨ Border "${item.name}" berhasil dipasang!`);
+      setPurchaseNotice(`Border "${item.name}" berhasil dipasang.`);
       setTimeout(() => setPurchaseNotice(null), 3000);
       return;
     }
@@ -218,7 +218,7 @@ export default function TokoPage() {
     });
 
     if (result.success) {
-      setPurchaseNotice(result.message || `🎉 Border "${item.name}" berhasil dibeli dan terpasang!`);
+      setPurchaseNotice(result.message || `Border "${item.name}" berhasil dibeli dan terpasang.`);
       // Refresh profile and owned frames from database AFTER successful purchase
       if (user?.id) {
         await refreshProfile(user.id);
@@ -227,7 +227,7 @@ export default function TokoPage() {
         setSelectedFrame(item.id);
       }
     } else {
-      setPurchaseNotice(`⚠️ ${result.message || "Gagal memproses transaksi!"}`);
+      setPurchaseNotice(result.message || "Gagal memproses transaksi.");
       // Still refresh to ensure coins display is accurate
       if (user?.id) {
         await refreshProfile(user.id);
