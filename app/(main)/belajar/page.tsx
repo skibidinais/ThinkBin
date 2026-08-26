@@ -76,7 +76,7 @@ const MAP_BAGIANS: Record<number, MapBagian> = {
 
 export default function BelajarPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const [completedNodeIds, setCompletedNodeIds] = useState<number[]>([]);
   const [currentBagian, setCurrentBagian] = useState<number>(1);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -86,6 +86,7 @@ export default function BelajarPage() {
   useEffect(() => {
     async function loadProgress() {
       if (user?.id) {
+        refreshProfile(user.id).catch(() => {});
         const completed = await fetchUserCompletedNodes(user.id);
         setCompletedNodeIds(completed);
       } else {
@@ -98,10 +99,16 @@ export default function BelajarPage() {
       }
     }
     loadProgress();
-  }, [user]);
+  }, [user?.id]);
 
-  const maxCompleted = completedNodeIds.length > 0 ? Math.max(...completedNodeIds) : 0;
-  const unlockedNodeId = Math.min(maxCompleted + 1, 16);
+  // Sequential unlock logic: first uncompleted node from 1 to 16
+  let unlockedNodeId = 16;
+  for (let i = 1; i <= 16; i++) {
+    if (!completedNodeIds.includes(i)) {
+      unlockedNodeId = i;
+      break;
+    }
+  }
 
   const activeBagian = MAP_BAGIANS[currentBagian] || MAP_BAGIANS[1];
   const levels = activeBagian.levels;

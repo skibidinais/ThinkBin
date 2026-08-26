@@ -2,14 +2,14 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { UserProfile } from "@/types";
-import { supabase, signInWithGoogleOAuth, fetchUserProfile, saveUserProfile } from "@/lib/supabase";
+import { supabase, signInWithGoogleOAuth, fetchUserProfile, saveUserProfile, isUuid, generateUuid, isSupabaseConfigured } from "@/lib/supabase";
 
 interface AuthContextType {
   user: UserProfile | null;
   isLoading: boolean;
   loginWithGoogle: () => Promise<void>;
   updateUser: (data: Partial<UserProfile>) => void;
-  refreshProfile: () => Promise<void>;
+  refreshProfile: (targetId?: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -28,9 +28,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const refreshProfile = async () => {
-    if (!user?.id) return;
-    const latest = await fetchUserProfile(user.id);
+  const refreshProfile = async (targetId?: string) => {
+    const queryId = targetId || user?.id;
+    if (!queryId) return;
+
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .or(`id.eq.${queryId},google_id.eq.${queryId}`)
+          .maybeSingle();
+
+        if (!error && data) {
+          const fresh = data as UserProfile;
+          setUser(fresh);
+          localStorage.setItem("tb_active_user", JSON.stringify(fresh));
+          return;
+        }
+      } catch (err) {
+        console.warn("Could not refresh profile from Supabase:", err);
+      }
+    }
+
+    const latest = await fetchUserProfile(queryId);
     if (latest) {
       setUser(latest);
       localStorage.setItem("tb_active_user", JSON.stringify(latest));
@@ -53,8 +74,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(false);
     }
 
-    // Listen to Supabase Auth state changes
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    // Listen to Supabase Auth state changes & fetch fresh profile
+    if (isSupabaseConfigured()) {
       const { data: authListener } = supabase.auth.onAuthStateChange(
         async (event, session) => {
           if (session?.user) {
@@ -62,11 +83,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const email = session.user.email || "";
 
             try {
-              // Query existing profile from user_profiles table
+              // Query existing profile fresh from user_profiles table
               const { data: profile } = await supabase
                 .from("user_profiles")
                 .select("*")
-                .eq("google_id", googleId)
+                .or(`google_id.eq.${googleId},id.eq.${googleId}`)
                 .maybeSingle();
 
               if (profile) {
@@ -79,7 +100,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               } else {
                 // If profile not yet in Supabase table
                 setUser((prev) => {
-                  // If local session already completed onboarding, preserve it & sync
                   if (prev && (prev.onboarding_completed || prev.class_name)) {
                     const preserved: UserProfile = {
                       ...prev,
@@ -92,9 +112,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     return preserved;
                   }
 
-                  // Brand new user before profile setup
                   const newUser: UserProfile = {
-                    id: "usr_" + googleId.substring(0, 8),
+                    id: isUuid(googleId) ? googleId : generateUuid(),
                     google_id: googleId,
                     email: email,
                     display_name: session.user.user_metadata?.full_name || "",
@@ -126,41 +145,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await signInWithGoogleOAuth();
   };
 
+  /**
+   * Safe local state updater - does NOT overwrite server XP/Coins with stale snapshots.
+   * Economy & node mutations are handled authoritatively via Supabase RPCs.
+   */
   const updateUser = (data: Partial<UserProfile>) => {
     setUser((prev) => {
       if (!prev) return null;
       const updated = { ...prev, ...data };
       localStorage.setItem("tb_active_user", JSON.stringify(updated));
-      
-      // Auto-sync updates to Supabase
-      if (updated.id && process.env.NEXT_PUBLIC_SUPABASE_URL) {
-        supabase
-          .from("user_profiles")
-          .upsert([
-            {
-              id: updated.id,
-              google_id: updated.google_id,
-              email: updated.email,
-              display_name: updated.display_name,
-              class_name: updated.class_name,
-              student_number: updated.student_number,
-              coins: updated.coins,
-              xp: updated.xp,
-              streak: updated.streak,
-              selected_frame: updated.selected_frame,
-              onboarding_completed: updated.onboarding_completed,
-            },
-          ], { onConflict: "id" })
-          .then(() => {}, (err) => console.warn("Supabase background sync error:", err));
-      }
-
       return updated;
     });
   };
 
   const logout = async () => {
     try {
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      if (isSupabaseConfigured()) {
         await supabase.auth.signOut();
       }
     } catch (e) {

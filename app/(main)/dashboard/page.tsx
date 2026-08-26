@@ -4,18 +4,23 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { user, refreshProfile } = useAuth();
   const [isLocked, setIsLocked] = useState<boolean>(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    if (user?.id) {
+      refreshProfile(user.id).catch(() => {});
+    }
     // Unlock target date: August 28, 2026 (Month is 0-indexed: 7 is August)
     const unlockDate = new Date(2026, 7, 28, 0, 0, 0);
     const now = new Date();
     setIsLocked(now < unlockDate);
-  }, []);
+  }, [user?.id]);
 
   const handleKuisionerClick = (e: React.MouseEvent) => {
     if (isLocked) {

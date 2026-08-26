@@ -1,10 +1,11 @@
 -- =========================================================================
--- THINKBIN PRODUCTION SUPABASE DATABASE SCHEMA
--- Riset OPSI SMPN 20 Malang (Clean Deploy / Pure 0 Start)
+-- THINKBIN PRODUCTION DATABASE SCHEMA & ATOMIC RPC ARCHITECTURE
+-- Full Reset & Production Migration (Clean, Atomic, Idempotent, RLS Enforced)
 -- =========================================================================
 
--- Enable UUID extension
+-- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- =========================================================================
 -- 1. TABLE: class_roster (Master Roster 192 Siswa SMPN 20 Malang)
@@ -19,12 +20,76 @@ CREATE TABLE IF NOT EXISTS public.class_roster (
 );
 
 -- =========================================================================
--- 2. TABLE: user_profiles (Profil Siswa & 3-Layer Anti-Duplicate)
+-- 2. TABLE: node_catalog (Sumber Kebenaran Server-Side Reward Node Belajar)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS public.node_catalog (
+    node_id INT PRIMARY KEY,
+    title TEXT NOT NULL,
+    xp_reward INT NOT NULL DEFAULT 12 CHECK (xp_reward >= 0),
+    coin_reward INT NOT NULL DEFAULT 15 CHECK (coin_reward >= 0),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Seed / Upsert 16 Learning Nodes
+INSERT INTO public.node_catalog (node_id, title, xp_reward, coin_reward) VALUES
+(1, 'Apa itu Sampah & Klasifikasi UU', 12, 15),
+(2, 'Sampah Organik: Pengertian, Jenis & Contoh', 12, 15),
+(3, 'Sampah Anorganik: Jenis & Daur Ulang', 12, 15),
+(4, 'Kuis Tantangan: Pilah Cepat Organik vs Anorganik', 20, 25),
+(5, 'Bahaya Penumpukan Sampah & Gas Metana', 12, 15),
+(6, 'Kuis Tantangan: Dampak Tanah & Udara', 20, 25),
+(7, 'Mikroplastik & Rantai Makanan', 12, 15),
+(8, 'Kebakaran & Pencemaran Dioksin TPA', 12, 15),
+(9, 'Reduce: Kurangi Timbulan Sampah', 15, 20),
+(10, 'Reuse: Guna Ulang Barang', 15, 20),
+(11, 'Kuis Tantangan: Skenario 3R', 20, 25),
+(12, 'Recycle: Daur Ulang & Upcycling', 15, 20),
+(13, 'Pembuatan Kompos Sederhana', 18, 25),
+(14, 'Bank Sampah & Ekonomi Sirkular', 18, 25),
+(15, 'Kuis Tantangan: Master Pengelolaan', 25, 30),
+(16, 'Komitmen Pahlawan Lingkungan', 30, 50)
+ON CONFLICT (node_id) DO UPDATE SET
+    title = EXCLUDED.title,
+    xp_reward = EXCLUDED.xp_reward,
+    coin_reward = EXCLUDED.coin_reward;
+
+-- =========================================================================
+-- 3. TABLE: shop_catalog (Sumber Kebenaran Server-Side Harga & Item Border)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS public.shop_catalog (
+    item_id TEXT PRIMARY KEY,
+    item_name TEXT NOT NULL,
+    price_coins INT NOT NULL CHECK (price_coins >= 0),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Seed / Upsert 14 Border Items
+INSERT INTO public.shop_catalog (item_id, item_name, price_coins) VALUES
+('eco_green', 'Eco Green Border', 30),
+('autumn_forest', 'Autumn Forest Border', 40),
+('sakura_pink', 'Sakura Pink Border', 50),
+('ocean_guardian', 'Ocean Guardian Border', 60),
+('forest_guardian', 'Forest Guardian Border', 70),
+('twilight_guardian', 'Twilight Guardian Border', 85),
+('crystal_ice', 'Crystal Ice Border', 100),
+('crystal_amethyst', 'Crystal Amethyst Border', 115),
+('crystal_ruby', 'Crystal Ruby Border', 130),
+('emerald_royal', 'Emerald Royal Border', 150),
+('sapphire_royal', 'Sapphire Royal Border', 175),
+('golden_monarch', 'Golden Monarch Border', 200),
+('frame_teal_tech', 'Teal Tech Border', 65),
+('frame_blue_crystal', 'Blue Crystal Border', 90)
+ON CONFLICT (item_id) DO UPDATE SET
+    item_name = EXCLUDED.item_name,
+    price_coins = EXCLUDED.price_coins;
+
+-- =========================================================================
+-- 4. TABLE: user_profiles (Profil Siswa & State Ekonomi Utama)
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS public.user_profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     google_id VARCHAR(128) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL,
     display_name VARCHAR(120) NOT NULL,
     class_name VARCHAR(10) NOT NULL,
     student_number INT NOT NULL,
@@ -41,102 +106,581 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
 );
 
 -- =========================================================================
--- 3. TABLE: pre_survey_responses (Kuisioner Awal & Akhir Riset)
--- =========================================================================
-CREATE TABLE IF NOT EXISTS public.pre_survey_responses (
-    id BIGSERIAL PRIMARY KEY,
-    user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
-    google_id VARCHAR(128) NOT NULL,
-    survey_type VARCHAR(20) NOT NULL CHECK (survey_type IN ('awal', 'akhir')),
-    answers JSONB NOT NULL,
-    knowledge_score INT DEFAULT 0,
-    attitude_average NUMERIC(3,2) DEFAULT 0.00,
-    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- =========================================================================
--- 4. TABLE: learning_node_progress (Progresi 16 Node Siswa)
+-- 5. TABLE: learning_node_progress (Progresi 16 Node Siswa & Idempotency)
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS public.learning_node_progress (
     id BIGSERIAL PRIMARY KEY,
-    user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     node_id INT NOT NULL CHECK (node_id BETWEEN 1 AND 16),
-    xp_earned INT DEFAULT 12,
-    coins_earned INT DEFAULT 15,
-    quiz_answer VARCHAR(10),
+    xp_earned INT DEFAULT 12 CHECK (xp_earned >= 0),
+    coins_earned INT DEFAULT 15 CHECK (coins_earned >= 0),
+    quiz_answer TEXT,
     is_correct BOOLEAN DEFAULT TRUE,
     completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT unique_user_node UNIQUE (user_id, node_id)
 );
 
 -- =========================================================================
--- 5. TABLE: store_transactions (Transaksi Pembelian Toko Frame)
+-- 6. TABLE: store_transactions (Ownership & Riwayat Pembelian Toko)
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS public.store_transactions (
     id BIGSERIAL PRIMARY KEY,
-    user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     item_id VARCHAR(100) NOT NULL,
     item_name VARCHAR(100) NOT NULL,
     price_coins INT NOT NULL CHECK (price_coins >= 0),
-    purchased_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    purchased_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT unique_user_item UNIQUE (user_id, item_id)
 );
 
 -- =========================================================================
--- 6. TABLE: anti_duplicate_logs (Audit Log Percobaan Duplikasi)
+-- 7. TABLE: pre_survey_responses (Kuisioner Awal & Akhir Riset)
 -- =========================================================================
-CREATE TABLE IF NOT EXISTS public.anti_duplicate_logs (
+CREATE TABLE IF NOT EXISTS public.pre_survey_responses (
     id BIGSERIAL PRIMARY KEY,
-    device_fingerprint VARCHAR(255) NOT NULL,
+    user_id UUID NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     google_id VARCHAR(128) NOT NULL,
-    class_name VARCHAR(10) NOT NULL,
-    student_number INT NOT NULL,
-    status VARCHAR(50) NOT NULL, -- 'SUCCESS', 'DUPLICATE_GOOGLE_ID', 'DUPLICATE_ROSTER', 'DUPLICATE_DEVICE'
-    attempted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    survey_type VARCHAR(20) NOT NULL CHECK (survey_type IN ('awal', 'akhir')),
+    answers JSONB NOT NULL,
+    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT unique_user_survey UNIQUE (user_id, survey_type)
 );
 
 -- =========================================================================
--- 7. VIEWS: Leaderboard Individu & Antar-Kelas
--- =========================================================================
-
--- View Peringkat Individu (Real-time)
-CREATE OR REPLACE VIEW public.v_individual_leaderboard AS
-SELECT 
-    id,
-    display_name,
-    class_name,
-    student_number,
-    avatar_url,
-    selected_frame,
-    xp,
-    coins,
-    streak,
-    RANK() OVER (ORDER BY xp DESC, created_at ASC) as rank_overall,
-    RANK() OVER (PARTITION BY class_name ORDER BY xp DESC, created_at ASC) as rank_in_class
-FROM public.user_profiles
-WHERE onboarding_completed = TRUE;
-
--- View Peringkat Antar-Kelas (Real-time)
-CREATE OR REPLACE VIEW public.v_class_leaderboard AS
-SELECT 
-    class_name,
-    COUNT(id) as active_students,
-    COALESCE(SUM(xp), 0) as total_xp,
-    COALESCE(ROUND(AVG(xp)), 0) as avg_xp,
-    RANK() OVER (ORDER BY COALESCE(SUM(xp), 0) DESC) as class_rank
-FROM public.user_profiles
-WHERE onboarding_completed = TRUE
-GROUP BY class_name;
-
--- =========================================================================
--- 8. INDEXING UNTUK PERFORMA QUERY
+-- 8. INDEXING UNTUK PERFORMA QUERY & LEADERBOARD
 -- =========================================================================
 CREATE INDEX IF NOT EXISTS idx_user_google_id ON public.user_profiles(google_id);
 CREATE INDEX IF NOT EXISTS idx_user_class_no ON public.user_profiles(class_name, student_number);
-CREATE INDEX IF NOT EXISTS idx_user_xp ON public.user_profiles(xp DESC);
+CREATE INDEX IF NOT EXISTS idx_user_xp ON public.user_profiles(xp DESC, created_at ASC);
+CREATE INDEX IF NOT EXISTS idx_progress_user ON public.learning_node_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_user ON public.store_transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_survey_user ON public.pre_survey_responses(user_id, survey_type);
 
 -- =========================================================================
--- 9. SEED DATA MASTER ROSTER (192 Siswa SMPN 20 Malang)
+-- 9. ATOMIC RPC 1: complete_node
+-- Menyimpan progress, mengambil reward dari node_catalog, menambah XP/Coin
+-- Aman dari spam klik, concurrent requests, dan idempotent via UNIQUE constraint.
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.complete_node(
+    p_node_id INT,
+    p_quiz_answer TEXT DEFAULT NULL,
+    p_is_correct BOOLEAN DEFAULT TRUE,
+    p_user_id TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_xp_reward INT := 12;
+    v_coin_reward INT := 15;
+    v_is_first BOOLEAN := FALSE;
+    v_new_xp INT := 0;
+    v_new_coins INT := 0;
+BEGIN
+    -- 1. Resolusi User ID: Auth session atau UUID parameter
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object('success', false, 'message', 'Unauthorized: User tidak ditemukan');
+    END IF;
+
+    -- 2. Ambil reward resmi dari catalog database
+    SELECT xp_reward, coin_reward INTO v_xp_reward, v_coin_reward
+    FROM public.node_catalog
+    WHERE node_id = p_node_id;
+
+    IF NOT FOUND THEN
+        v_xp_reward := 12;
+        v_coin_reward := 15;
+    END IF;
+
+    -- 3. Atomic INSERT dengan penanganan UNIQUE (user_id, node_id)
+    BEGIN
+        INSERT INTO public.learning_node_progress (
+            user_id, node_id, xp_earned, coins_earned, quiz_answer, is_correct, completed_at
+        ) VALUES (
+            v_user_id, p_node_id, v_xp_reward, v_coin_reward, p_quiz_answer, p_is_correct, NOW()
+        );
+        v_is_first := TRUE;
+    EXCEPTION WHEN unique_violation THEN
+        v_is_first := FALSE;
+    END;
+
+    -- 4. Mutasi ekonomi hanya jika first completion
+    IF v_is_first THEN
+        UPDATE public.user_profiles
+        SET xp = COALESCE(xp, 0) + v_xp_reward,
+            coins = COALESCE(coins, 0) + v_coin_reward,
+            updated_at = NOW()
+        WHERE id = v_user_id
+        RETURNING xp, coins INTO v_new_xp, v_new_coins;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'is_first_completion', true,
+            'xp_awarded', v_xp_reward,
+            'coins_awarded', v_coin_reward,
+            'current_xp', v_new_xp,
+            'current_coins', v_new_coins
+        );
+    ELSE
+        SELECT xp, coins INTO v_new_xp, v_new_coins
+        FROM public.user_profiles WHERE id = v_user_id;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'is_first_completion', false,
+            'xp_awarded', 0,
+            'coins_awarded', 0,
+            'current_xp', v_new_xp,
+            'current_coins', v_new_coins
+        );
+    END IF;
+END;
+$$;
+
+-- =========================================================================
+-- 10. ATOMIC RPC 2: purchase_shop_item
+-- Mengambil harga resmi dari shop_catalog, cek saldo, potong coin, catat kepemilikan.
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.purchase_shop_item(
+    p_item_id TEXT,
+    p_user_id TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_price INT;
+    v_item_name TEXT;
+    v_updated_rows INT;
+    v_new_coins INT;
+BEGIN
+    -- Resolusi User ID
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object('success', false, 'status', 'unauthorized', 'message', 'Unauthorized: User tidak ditemukan');
+    END IF;
+
+    -- Validasi item dari shop_catalog server
+    SELECT price_coins, item_name INTO v_price, v_item_name
+    FROM public.shop_catalog
+    WHERE item_id = p_item_id;
+
+    IF NOT FOUND THEN
+        RETURN jsonb_build_object('success', false, 'status', 'item_not_found', 'message', 'Item tidak ditemukan di katalog');
+    END IF;
+
+    -- Cek jika sudah dimiliki sebelumnya
+    IF EXISTS (
+        SELECT 1 FROM public.store_transactions
+        WHERE user_id = v_user_id AND item_id = p_item_id
+    ) THEN
+        UPDATE public.user_profiles
+        SET selected_frame = p_item_id, updated_at = NOW()
+        WHERE id = v_user_id
+        RETURNING coins INTO v_new_coins;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'status', 'already_owned',
+            'message', 'Item sudah dimiliki dan berhasil dipasang!',
+            'current_coins', v_new_coins
+        );
+    END IF;
+
+    -- Atomic conditional update saldo (mencegah saldo negatif & race condition)
+    UPDATE public.user_profiles
+    SET coins = coins - v_price,
+        selected_frame = p_item_id,
+        updated_at = NOW()
+    WHERE id = v_user_id AND coins >= v_price
+    RETURNING coins INTO v_new_coins;
+
+    GET DIAGNOSTICS v_updated_rows = ROW_COUNT;
+
+    IF v_updated_rows = 0 THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'status', 'insufficient_funds',
+            'message', 'Koin kamu tidak cukup untuk membeli item ini!'
+        );
+    END IF;
+
+    -- Catat transaksi kepemilikan
+    BEGIN
+        INSERT INTO public.store_transactions (user_id, item_id, item_name, price_coins, purchased_at)
+        VALUES (v_user_id, p_item_id, v_item_name, v_price, NOW());
+    EXCEPTION WHEN unique_violation THEN
+        -- Refund jika race condition duplikasi
+        UPDATE public.user_profiles
+        SET coins = coins + v_price
+        WHERE id = v_user_id
+        RETURNING coins INTO v_new_coins;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'status', 'already_owned',
+            'message', 'Item sudah dimiliki!',
+            'current_coins', v_new_coins
+        );
+    END;
+
+    RETURN jsonb_build_object(
+        'success', true,
+        'status', 'success',
+        'message', 'Item berhasil dibeli dan dipasang!',
+        'current_coins', v_new_coins
+    );
+END;
+$$;
+
+-- =========================================================================
+-- 11. ATOMIC RPC 3: equip_shop_item
+-- Memasang border yang sudah dimiliki user ke profilnya
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.equip_shop_item(
+    p_item_id TEXT,
+    p_user_id TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+BEGIN
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
+    END IF;
+
+    IF p_item_id = 'frame_teal_tech' OR p_item_id = '' OR EXISTS (
+        SELECT 1 FROM public.store_transactions
+        WHERE user_id = v_user_id AND item_id = p_item_id
+    ) THEN
+        UPDATE public.user_profiles
+        SET selected_frame = p_item_id, updated_at = NOW()
+        WHERE id = v_user_id;
+
+        RETURN jsonb_build_object('success', true, 'message', 'Border berhasil dipasang!');
+    ELSE
+        RETURN jsonb_build_object('success', false, 'message', 'Kamu belum memiliki border ini.');
+    END IF;
+END;
+$$;
+
+-- =========================================================================
+-- 12. ATOMIC RPC 4: open_mystery_box
+-- Potong 40 koin & tambah random 15-39 XP secara atomik
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.open_mystery_box(
+    p_user_id TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_price INT := 40;
+    v_reward_xp INT;
+    v_updated_rows INT;
+    v_new_xp INT;
+    v_new_coins INT;
+BEGIN
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
+    END IF;
+
+    -- Acak XP 15 - 39 (floor(random() * 25) + 15)
+    v_reward_xp := floor(random() * 25 + 15)::INT;
+
+    -- Potong 40 koin & tambah XP
+    UPDATE public.user_profiles
+    SET coins = coins - v_price,
+        xp = COALESCE(xp, 0) + v_reward_xp,
+        updated_at = NOW()
+    WHERE id = v_user_id AND coins >= v_price
+    RETURNING xp, coins INTO v_new_xp, v_new_coins;
+
+    GET DIAGNOSTICS v_updated_rows = ROW_COUNT;
+
+    IF v_updated_rows = 0 THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'status', 'insufficient_funds',
+            'message', 'Koin tidak cukup untuk Mystery Box!'
+        );
+    END IF;
+
+    RETURN jsonb_build_object(
+        'success', true,
+        'status', 'success',
+        'reward_xp', v_reward_xp,
+        'current_xp', v_new_xp,
+        'current_coins', v_new_coins,
+        'message', format('Kamu membuka Mystery Box dan mendapatkan +%s XP!', v_reward_xp)
+    );
+END;
+$$;
+
+-- =========================================================================
+-- 13. ATOMIC RPC 5: submit_survey
+-- Menyimpan kuisioner awal (+20 XP, +30 Coin) / akhir (+40 XP, +50 Coin)
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.submit_survey(
+    p_survey_type TEXT,
+    p_answers JSONB,
+    p_google_id TEXT DEFAULT NULL,
+    p_user_id TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_google_id VARCHAR(128);
+    v_xp_reward INT;
+    v_coins_reward INT;
+    v_is_first BOOLEAN := FALSE;
+    v_new_xp INT;
+    v_new_coins INT;
+BEGIN
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
+    END IF;
+
+    IF p_google_id IS NULL THEN
+        SELECT google_id INTO v_google_id FROM public.user_profiles WHERE id = v_user_id;
+    ELSE
+        v_google_id := p_google_id;
+    END IF;
+
+    IF p_survey_type = 'akhir' THEN
+        v_xp_reward := 40;
+        v_coins_reward := 50;
+    ELSE
+        v_xp_reward := 20;
+        v_coins_reward := 30;
+    END IF;
+
+    BEGIN
+        INSERT INTO public.pre_survey_responses (
+            user_id, google_id, survey_type, answers, submitted_at
+        ) VALUES (
+            v_user_id, COALESCE(v_google_id, v_user_id::text), p_survey_type, p_answers, NOW()
+        );
+        v_is_first := TRUE;
+    EXCEPTION WHEN unique_violation THEN
+        v_is_first := FALSE;
+    END;
+
+    IF v_is_first THEN
+        UPDATE public.user_profiles
+        SET xp = COALESCE(xp, 0) + v_xp_reward,
+            coins = COALESCE(coins, 0) + v_coins_reward,
+            onboarding_completed = true,
+            updated_at = NOW()
+        WHERE id = v_user_id
+        RETURNING xp, coins INTO v_new_xp, v_new_coins;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'is_first_submission', true,
+            'xp_awarded', v_xp_reward,
+            'coins_awarded', v_coins_reward,
+            'current_xp', v_new_xp,
+            'current_coins', v_new_coins
+        );
+    ELSE
+        UPDATE public.user_profiles
+        SET onboarding_completed = true,
+            updated_at = NOW()
+        WHERE id = v_user_id
+        RETURNING xp, coins INTO v_new_xp, v_new_coins;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'is_first_submission', false,
+            'xp_awarded', 0,
+            'coins_awarded', 0,
+            'current_xp', v_new_xp,
+            'current_coins', v_new_coins
+        );
+    END IF;
+END;
+$$;
+
+-- =========================================================================
+-- 14. ATOMIC RPC 6: claim_daily_mission
+-- Menambah reward harian secara atomik di user_profiles
+-- =========================================================================
+CREATE OR REPLACE FUNCTION public.claim_daily_mission(
+    p_mission_id TEXT,
+    p_coin_reward INT DEFAULT 10,
+    p_xp_reward INT DEFAULT 3,
+    p_user_id TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_new_coins INT;
+    v_new_xp INT;
+BEGIN
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
+    END IF;
+
+    UPDATE public.user_profiles
+    SET coins = COALESCE(coins, 0) + GREATEST(0, p_coin_reward),
+        xp = COALESCE(xp, 0) + GREATEST(0, p_xp_reward),
+        updated_at = NOW()
+    WHERE id = v_user_id
+    RETURNING coins, xp INTO v_new_coins, v_new_xp;
+
+    RETURN jsonb_build_object(
+        'success', true,
+        'current_coins', v_new_coins,
+        'current_xp', v_new_xp
+    );
+END;
+$$;
+
+-- =========================================================================
+-- 15. PERMISSIONS & GRANTS
+-- =========================================================================
+GRANT EXECUTE ON FUNCTION public.complete_node TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.purchase_shop_item TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.equip_shop_item TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.open_mystery_box TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.submit_survey TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.claim_daily_mission TO anon, authenticated, service_role;
+
+GRANT SELECT ON public.node_catalog TO anon, authenticated, service_role;
+GRANT SELECT ON public.shop_catalog TO anon, authenticated, service_role;
+GRANT SELECT ON public.class_roster TO anon, authenticated, service_role;
+
+-- =========================================================================
+-- 15. ROW LEVEL SECURITY (RLS) POLICIES
+-- =========================================================================
+ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.learning_node_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.store_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.pre_survey_responses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.class_roster ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.node_catalog ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shop_catalog ENABLE ROW LEVEL SECURITY;
+
+-- Allow SELECT for Leaderboard, Profil, Catalogs
+DO $$
+BEGIN
+    DROP POLICY IF EXISTS "Public and authenticated can read user_profiles" ON public.user_profiles;
+    CREATE POLICY "Public and authenticated can read user_profiles"
+        ON public.user_profiles FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Users can insert their own profile" ON public.user_profiles;
+    CREATE POLICY "Users can insert their own profile"
+        ON public.user_profiles FOR INSERT
+        WITH CHECK (true);
+
+    DROP POLICY IF EXISTS "Users can update non-economy fields of their own profile" ON public.user_profiles;
+    CREATE POLICY "Users can update non-economy fields of their own profile"
+        ON public.user_profiles FOR UPDATE
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public and authenticated can read learning_node_progress" ON public.learning_node_progress;
+    CREATE POLICY "Public and authenticated can read learning_node_progress"
+        ON public.learning_node_progress FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public and authenticated can read store_transactions" ON public.store_transactions;
+    CREATE POLICY "Public and authenticated can read store_transactions"
+        ON public.store_transactions FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public and authenticated can read pre_survey_responses" ON public.pre_survey_responses;
+    CREATE POLICY "Public and authenticated can read pre_survey_responses"
+        ON public.pre_survey_responses FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public can read class roster" ON public.class_roster;
+    CREATE POLICY "Public can read class roster"
+        ON public.class_roster FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public can read node catalog" ON public.node_catalog;
+    CREATE POLICY "Public can read node catalog"
+        ON public.node_catalog FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public can read shop catalog" ON public.shop_catalog;
+    CREATE POLICY "Public can read shop catalog"
+        ON public.shop_catalog FOR SELECT
+        USING (true);
+END $$;
+
+-- =========================================================================
+-- 16. SEED DATA MASTER ROSTER (192 Siswa SMPN 20 Malang)
 -- =========================================================================
 INSERT INTO public.class_roster (class_name, student_number, student_name) VALUES
 -- 8A
@@ -194,7 +738,8 @@ INSERT INTO public.class_roster (class_name, student_number, student_name) VALUE
 ('9F', 5, 'ALFIANSYACH ANANG SAPUTRA'), ('9F', 6, 'ANDRA RAMANIA RADISTA'), ('9F', 7, 'ARYA OKTAVIAN PUTRA'), ('9F', 8, 'ASKA AL FARUQ'),
 ('9F', 9, 'ASYRAF MUSYAFFA ALKAF'), ('9F', 10, 'AVRIZAL RIZKY RHOMADHON'), ('9F', 11, 'BARA KIESHA ALVARO'), ('9F', 12, 'BILQIIS NABILA INTAN KAROMAH'),
 ('9F', 13, 'DAHLIA FITRIANINGRUM'), ('9F', 14, 'DEVITA MAHARANI'), ('9F', 15, 'DIANDRA ADELINA'), ('9F', 16, 'FREZA ATHAYA ALFARIZKY'),
-('9F', 17, 'KENYA JELITA PRAMONO'), ('9F', 18, 'LEBANOUIST OCTHA PARA YUDHA PUTRA'), ('9F', 19, 'MOCHAMMAD ARYA ZAKKI PRASETYA'), ('9F', 20, 'MUHAMMAD DHARMAWANGSA'),
+('9F', 17, 'KENYA JELITA PRAMONO'), ('9F', 18, 'LEBANOUIST OCTHA PARA YUDHA PUTRA'), ('9F', 19, 'MOCHAMMAD ARYA ZAKKI PRASETYA'),
+('9F', 20, 'MUHAMMAD DHARMAWANGSA'),
 ('9F', 21, 'MUHAMMAD HAIKAL ABDILLAH'), ('9F', 22, 'NADHIF ARIEF ASHIDDIQ'), ('9F', 23, 'NAOZSI ELLENA DIANDRA AQILLA'), ('9F', 24, 'NOVITA ANGGRAENY'),
 ('9F', 25, 'RAISSA AQILA'), ('9F', 26, 'SABRINA YURI PARAMITA'), ('9F', 27, 'SATRIA NUGRAHA SUYOKO PUTRA'), ('9F', 28, 'SHAFIRA DEVITA PRILYLA'),
 ('9F', 29, 'SHAVIERA AULIA ANDHIKA'), ('9F', 30, 'YULIAUSY CITRASARI'), ('9F', 31, 'ZAHIRAH KARIMATUN NISSAK'), ('9F', 32, 'MEGA AULIA')

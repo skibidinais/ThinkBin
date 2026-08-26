@@ -15,7 +15,7 @@ function KuisionerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const surveyType = (searchParams.get("type") as "awal" | "akhir") || "awal";
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, refreshProfile } = useAuth();
 
   const config = getSurveyConfig(surveyType);
   const questions: SurveyQuestion[] = config.questions;
@@ -79,8 +79,8 @@ function KuisionerContent() {
         stringAnswers[k] = answers[Number(k)];
       });
 
-      // Save to Supabase / Local storage
-      await saveSurveyAnswers({
+      // Save to Supabase via Atomic RPC / Local storage
+      const res = await saveSurveyAnswers({
         userId: user?.id || "usr_guest",
         googleId: user?.google_id || "google_guest",
         answers: stringAnswers,
@@ -88,14 +88,17 @@ function KuisionerContent() {
       });
 
       // Update user state in AuthContext
-      const newXp = (user?.xp || 0) + config.reward.xp;
-      const newCoins = (user?.coins || 0) + config.reward.coins;
-
-      updateUser({
-        xp: newXp,
-        coins: newCoins,
-        onboarding_completed: true,
-      });
+      if (user?.id) {
+        await refreshProfile(user.id);
+      } else {
+        const newXp = (user?.xp || 0) + (res.xpAwarded ?? config.reward.xp);
+        const newCoins = (user?.coins || 0) + (res.coinsAwarded ?? config.reward.coins);
+        updateUser({
+          xp: newXp,
+          coins: newCoins,
+          onboarding_completed: true,
+        });
+      }
 
       // Direct immediate celebration
       setShowRewardModal(true);

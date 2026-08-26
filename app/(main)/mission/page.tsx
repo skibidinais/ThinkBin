@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { fetchUserCompletedNodes } from "@/lib/supabase";
+import { fetchUserCompletedNodes, claimDailyMissionTransaction } from "@/lib/supabase";
 
 interface MissionState {
   m1Claimed: boolean; // Login
@@ -18,7 +18,7 @@ interface MissionState {
 }
 
 export default function MissionPage() {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, refreshProfile } = useAuth();
   const router = useRouter();
 
   // State for 5 missions
@@ -37,10 +37,11 @@ export default function MissionPage() {
   const [countdown, setCountdown] = useState<string>("00:00:00");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Load completed nodes from Supabase / localStorage
+  // Load completed nodes & fresh profile from Supabase / localStorage
   useEffect(() => {
     async function checkNodes() {
       if (user?.id) {
+        refreshProfile(user.id).catch(() => {});
         try {
           const completedNodes = await fetchUserCompletedNodes(user.id);
           setCompletedNodeCount(completedNodes.length);
@@ -122,10 +123,20 @@ export default function MissionPage() {
     setTimeout(() => setToastMsg(null), 3000);
   };
 
-  const handleClaim = (missionKey: keyof MissionState, coinReward: number, xpReward: number, title: string) => {
-    const newCoins = (user?.coins ?? 0) + coinReward;
-    const newXp = (user?.xp ?? 0) + xpReward;
-    updateUser({ coins: newCoins, xp: newXp });
+  const handleClaim = async (missionKey: keyof MissionState, coinReward: number, xpReward: number, title: string) => {
+    if (user?.id) {
+      await claimDailyMissionTransaction({
+        userId: user.id,
+        missionId: missionKey,
+        coinReward,
+        xpReward,
+      });
+      await refreshProfile(user.id);
+    } else {
+      const newCoins = (user?.coins ?? 0) + coinReward;
+      const newXp = (user?.xp ?? 0) + xpReward;
+      updateUser({ coins: newCoins, xp: newXp });
+    }
 
     const updated = { ...missionState, [missionKey]: true };
     saveState(updated);

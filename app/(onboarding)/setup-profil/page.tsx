@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { getStudentsByClass, Student } from "@/lib/roster";
 import { getDeviceFingerprint } from "@/lib/fingerprint";
-import { checkDuplicateUser, saveUserProfile } from "@/lib/supabase";
+import { checkDuplicateUser, saveUserProfile, isUuid, generateUuid } from "@/lib/supabase";
 
 const AVAILABLE_CLASSES = ["9C", "9E", "9F", "8A", "8C", "8E"];
 
@@ -70,9 +70,15 @@ export default function SetupProfilPage() {
         return;
       }
 
+      const safeId = (user?.id && isUuid(user.id))
+        ? user.id
+        : (user?.google_id && isUuid(user.google_id))
+          ? user.google_id
+          : generateUuid();
+
       // Save user profile
       const updatedProfile = {
-        id: user?.id || "usr_" + Date.now().toString(36),
+        id: safeId,
         google_id: googleId,
         email: user?.email || "siswa@smpn20malang.sch.id",
         display_name: selectedStudent.studentName,

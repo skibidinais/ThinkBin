@@ -7,6 +7,7 @@ import {
   fetchUserOwnedFrames,
   purchaseFrameTransaction,
   equipFrameInDatabase,
+  openMysteryBoxTransaction,
 } from "@/lib/supabase";
 
 interface ShopItem {
@@ -145,25 +146,26 @@ const ITEMS_PER_PAGE = 6;
 const TOTAL_PAGES = Math.ceil(FULL_CATALOG.length / ITEMS_PER_PAGE);
 
 export default function TokoPage() {
-  const { user, updateUser } = useAuth();
-  const [ownedFrames, setOwnedFrames] = useState<string[]>([]);
-  const [selectedFrame, setSelectedFrame] = useState<string>("");
+  const { user, updateUser, refreshProfile } = useAuth();
+  const [ownedFrames, setOwnedFrames] = useState<string[]>(["frame_teal_tech"]);
+  const [selectedFrame, setSelectedFrame] = useState<string>("frame_teal_tech");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [purchaseNotice, setPurchaseNotice] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadShopData() {
       if (user?.id) {
+        refreshProfile(user.id).catch(() => {});
         const owned = await fetchUserOwnedFrames(user.id);
         setOwnedFrames(owned);
-        setSelectedFrame(user.selected_frame || "");
+        setSelectedFrame(user.selected_frame || "frame_teal_tech");
       } else {
         try {
           const savedOwned = localStorage.getItem("thinkbin_owned_frames");
           if (savedOwned) {
             setOwnedFrames(JSON.parse(savedOwned));
           }
-          const savedSelected = localStorage.getItem("thinkbin_selected_frame") || "";
+          const savedSelected = localStorage.getItem("thinkbin_selected_frame") || "frame_teal_tech";
           setSelectedFrame(savedSelected);
         } catch {
           // Fallback
@@ -171,74 +173,67 @@ export default function TokoPage() {
       }
     }
     loadShopData();
-  }, [user]);
+  }, [user?.id]);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentItems = FULL_CATALOG.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleBuyOrEquip = async (item: ShopItem) => {
+    // ── 1. Mystery Box Purchase ──
     if (item.isMysteryBox) {
-      const currentCoins = user?.coins ?? 0;
-      if (currentCoins < item.price) {
-        setPurchaseNotice(`⚠️ Koin tidak cukup untuk Mystery Box!`);
-        setTimeout(() => setPurchaseNotice(null), 3000);
-        return;
+      const result = await openMysteryBoxTransaction(user?.id || "usr_guest");
+      if (result.success) {
+        setPurchaseNotice(result.message || `🎁 Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
+      } else {
+        setPurchaseNotice(`⚠️ ${result.message || "Koin tidak cukup untuk Mystery Box!"}`);
       }
-      const rewardXp = Math.floor(Math.random() * 25) + 15;
-      const newCoins = currentCoins - item.price;
-      const newXp = (user?.xp ?? 0) + rewardXp;
-      updateUser({ coins: newCoins, xp: newXp });
-      setPurchaseNotice(`🎁 Kamu membuka Mystery Box dan mendapatkan +${rewardXp} XP!`);
-      setTimeout(() => setPurchaseNotice(null), 4000);
+      // Always refresh profile from database to sync coins/xp
+      if (user?.id) {
+        await refreshProfile(user.id);
+      }
+      setTimeout(() => setPurchaseNotice(null), 3500);
       return;
     }
 
-    const isOwned = ownedFrames.includes(item.id);
+    // ── 2. Border Equip (already owned) ──
+    const isOwned = ownedFrames.includes(item.id) || item.id === "frame_teal_tech";
 
     if (isOwned) {
       if (user?.id) {
         await equipFrameInDatabase(user.id, item.id);
+        await refreshProfile(user.id);
       }
       setSelectedFrame(item.id);
-      updateUser({ selected_frame: item.id });
       setPurchaseNotice(`✨ Border "${item.name}" berhasil dipasang!`);
       setTimeout(() => setPurchaseNotice(null), 3000);
-    } else {
-      const currentCoins = user?.coins ?? 0;
-      if (currentCoins < item.price) {
-        setPurchaseNotice(`⚠️ Koin kamu tidak cukup untuk membeli "${item.name}"!`);
-        setTimeout(() => setPurchaseNotice(null), 3000);
-        return;
-      }
-
-      if (user?.id) {
-        const result = await purchaseFrameTransaction({
-          userId: user.id,
-          frameId: item.id,
-          frameName: item.name,
-          priceCoins: item.price,
-        });
-
-        if (!result.success) {
-          setPurchaseNotice(`⚠️ ${result.message || "Gagal memproses transaksi!"}`);
-          setTimeout(() => setPurchaseNotice(null), 3000);
-          return;
-        }
-      }
-
-      const newCoins = currentCoins - item.price;
-      const newOwned = [...ownedFrames, item.id];
-      setOwnedFrames(newOwned);
-      setSelectedFrame(item.id);
-
-      updateUser({
-        coins: newCoins,
-        selected_frame: item.id,
-      });
-
-      setPurchaseNotice(`🎉 Border "${item.name}" berhasil dibeli dan terpasang!`);
-      setTimeout(() => setPurchaseNotice(null), 3000);
+      return;
     }
+
+    // ── 3. Border Purchase (not owned) ──
+    const result = await purchaseFrameTransaction({
+      userId: user?.id || "usr_guest",
+      frameId: item.id,
+      frameName: item.name,
+      priceCoins: item.price,
+    });
+
+    if (result.success) {
+      setPurchaseNotice(result.message || `🎉 Border "${item.name}" berhasil dibeli dan terpasang!`);
+      // Refresh profile and owned frames from database AFTER successful purchase
+      if (user?.id) {
+        await refreshProfile(user.id);
+        const freshOwned = await fetchUserOwnedFrames(user.id);
+        setOwnedFrames(freshOwned);
+        setSelectedFrame(item.id);
+      }
+    } else {
+      setPurchaseNotice(`⚠️ ${result.message || "Gagal memproses transaksi!"}`);
+      // Still refresh to ensure coins display is accurate
+      if (user?.id) {
+        await refreshProfile(user.id);
+      }
+    }
+    setTimeout(() => setPurchaseNotice(null), 3000);
   };
 
   return (

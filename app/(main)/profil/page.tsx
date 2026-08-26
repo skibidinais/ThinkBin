@@ -104,9 +104,9 @@ const BORDERS_CATALOG: Record<string, BorderConfigItem> = {
 
 export default function ProfilPage() {
   const router = useRouter();
-  const { user, updateUser } = useAuth();
-  const [ownedFrames, setOwnedFrames] = useState<string[]>([]);
-  const [selectedFrame, setSelectedFrame] = useState<string>("");
+  const { user, updateUser, refreshProfile } = useAuth();
+  const [ownedFrames, setOwnedFrames] = useState<string[]>(["frame_teal_tech"]);
+  const [selectedFrame, setSelectedFrame] = useState<string>("frame_teal_tech");
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [equipNotice, setEquipNotice] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -124,16 +124,17 @@ export default function ProfilPage() {
       }
 
       if (user?.id) {
+        refreshProfile(user.id).catch(() => {});
         const owned = await fetchUserOwnedFrames(user.id);
         setOwnedFrames(owned);
-        setSelectedFrame(user.selected_frame || "");
+        setSelectedFrame(user.selected_frame || "frame_teal_tech");
       } else {
         try {
           const savedOwned = localStorage.getItem("thinkbin_owned_frames");
           if (savedOwned) {
             setOwnedFrames(JSON.parse(savedOwned));
           }
-          const savedSelected = localStorage.getItem("thinkbin_selected_frame") || "";
+          const savedSelected = localStorage.getItem("thinkbin_selected_frame") || "frame_teal_tech";
           setSelectedFrame(savedSelected);
         } catch {
           // Fallback
@@ -141,7 +142,7 @@ export default function ProfilPage() {
       }
     }
     loadProfile();
-  }, [user]);
+  }, [user?.id]);
 
   const userXp = user?.xp ?? 0;
   const currentRank =
@@ -156,9 +157,11 @@ export default function ProfilPage() {
   const handleEquipBorder = async (frameId: string) => {
     if (user?.id) {
       await equipFrameInDatabase(user.id, frameId);
+      await refreshProfile(user.id);
+    } else {
+      updateUser({ selected_frame: frameId });
     }
     setSelectedFrame(frameId);
-    updateUser({ selected_frame: frameId });
     const borderName = frameId ? BORDERS_CATALOG[frameId]?.name || frameId : "Polos";
     setEquipNotice(`Border "${borderName}" berhasil dipasang!`);
     setTimeout(() => setEquipNotice(null), 2500);

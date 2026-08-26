@@ -12,7 +12,7 @@ export default function QuizPage() {
   const router = useRouter();
   const params = useParams();
   const nodeId = parseInt(params.nodeId as string, 10);
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, refreshProfile } = useAuth();
 
   const node = MODUL_DATA.find((n) => n.id === nodeId);
   const question = node?.question;
@@ -81,7 +81,7 @@ export default function QuizPage() {
     setIsSubmitted(true);
 
     if (correct) {
-      // 1. Record node completion in Supabase & LocalStorage (detects repeat)
+      // Record node completion in Supabase via Atomic RPC (idempotent)
       const result = await recordNodeCompletion({
         userId: user?.id || "usr_guest",
         nodeId,
@@ -91,16 +91,15 @@ export default function QuizPage() {
         isCorrect: true,
       });
 
-      setIsRepeatAttempt(result.isRepeat);
+      if (result.success) {
+        setIsRepeatAttempt(result.isRepeat);
+      } else {
+        console.error("Node completion failed:", result.message);
+      }
 
-      // 2. Update reactive state in AuthContext only on first completion
-      if (!result.isRepeat && (result.xpAwarded > 0 || result.coinsAwarded > 0)) {
-        const currentXp = user?.xp || 0;
-        const currentCoins = user?.coins || 0;
-        updateUser({
-          xp: currentXp + result.xpAwarded,
-          coins: currentCoins + result.coinsAwarded,
-        });
+      // Always refresh profile from database to get authoritative XP/coins
+      if (user?.id) {
+        await refreshProfile(user.id);
       }
     }
   };

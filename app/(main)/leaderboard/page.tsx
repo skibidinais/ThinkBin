@@ -21,58 +21,51 @@ interface LeaderboardEntry {
 }
 
 export default function LeaderboardPage() {
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const [activeTab, setActiveTab] = useState<LeaderboardTab>("individu");
   const [individualData, setIndividualData] = useState<UserProfile[]>([]);
   const [classData, setClassData] = useState<ClassLeaderboardItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
       setIsLoading(true);
+      setFetchError(null);
       try {
+        if (user?.id) {
+          refreshProfile(user.id).catch(() => {});
+        }
         const [users, classes] = await Promise.all([
           fetchLiveLeaderboard(),
           fetchLiveClassLeaderboard(),
         ]);
         setIndividualData(users);
         setClassData(classes);
-      } catch (err) {
+        if (users.length === 0 && classes.length === 0) {
+          console.warn("Leaderboard: No data returned from Supabase. Check RLS policies and user_profiles table.");
+        }
+      } catch (err: any) {
         console.error("Error loading leaderboard:", err);
+        setFetchError(err?.message || "Gagal memuat data leaderboard");
       } finally {
         setIsLoading(false);
       }
     }
     loadData();
-  }, [user]);
+  }, [user?.id]);
 
   // Transform data based on active tab
   const entries: LeaderboardEntry[] =
     activeTab === "individu"
-      ? (individualData.length > 0
-          ? individualData
-          : user
-          ? [user]
-          : []
-        ).map((u, index) => ({
+      ? individualData.map((u, index) => ({
           id: u.id,
           rank: index + 1,
           name: u.display_name?.split(" ")[0] || "Siswa",
           xp: u.xp || 0,
           isCurrentUser: u.id === user?.id,
         }))
-      : (classData.length > 0
-          ? classData
-          : user?.class_name
-          ? [
-              {
-                class_name: `Kelas ${user.class_name}`,
-                total_xp: user.xp || 0,
-                student_count: 1,
-              },
-            ]
-          : []
-        ).map((c, index) => ({
+      : classData.map((c, index) => ({
           id: c.class_name,
           rank: index + 1,
           name: c.class_name.startsWith("Kelas") ? c.class_name : `Kelas ${c.class_name}`,

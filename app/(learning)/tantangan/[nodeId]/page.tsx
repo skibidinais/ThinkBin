@@ -16,7 +16,7 @@ export default function TantanganPage() {
   const router = useRouter();
   const params = useParams();
   const nodeId = parseInt(params.nodeId as string, 10);
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, refreshProfile } = useAuth();
 
   const node = MODUL_DATA.find(n => n.id === nodeId);
 
@@ -58,40 +58,40 @@ export default function TantanganPage() {
       // Tantangan Dampak Sampah
       categories = ['Tanah & Air', 'Udara'];
       items = [
-        { id: '1', name: 'Cairan Lindi (Leachate) 💧', category: 'Tanah & Air' },
-        { id: '2', name: 'Gas Metana (Metana) 💨', category: 'Udara' },
-        { id: '3', name: 'Mikroplastik Renik 🔬', category: 'Tanah & Air' },
-        { id: '4', name: 'Karbon Dioksida (CO2) 🌫️', category: 'Udara' },
-        { id: '5', name: 'Pencemaran Sumur Warga 🚰', category: 'Tanah & Air' },
-        { id: '6', name: 'Asap Pembakaran Plastik 🔥', category: 'Udara' }
+        { id: '1', name: 'Air Lindi ☣️', category: 'Tanah & Air' },
+        { id: '2', name: 'Gas Metana 🔥', category: 'Udara' },
+        { id: '3', name: 'Pecahan Kaca 🪞', category: 'Tanah & Air' },
+        { id: '4', name: 'Asap Dioksin 🏭', category: 'Udara' },
+        { id: '5', name: 'Mikroplastik 🦐', category: 'Tanah & Air' },
+        { id: '6', name: 'Gas H2S Busuk 🤢', category: 'Udara' }
       ];
     } else if (nodeId === 10) {
-      // Tantangan Praktik 3R
+      // Praktik 3R
       categories = ['Reduce', 'Reuse', 'Recycle'];
       items = [
-        { id: '1', name: 'Bawa Tumbler Sendiri 🥛', category: 'Reduce' },
-        { id: '2', name: 'Toples Bekas jadi Pot 🪴', category: 'Reuse' },
-        { id: '3', name: 'Botol dilebur jadi Serat Benang 👕', category: 'Recycle' },
-        { id: '4', name: 'Menolak Sedotan Plastik 🚫', category: 'Reduce' },
-        { id: '5', name: 'Kotak Sepatu untuk Wadah Buku 📦', category: 'Reuse' },
-        { id: '6', name: 'Kertas Ujian dilebur jadi Bubur Kertas 📄', category: 'Recycle' }
+        { id: '1', name: 'Bawa Tumbler Sendiri 🍶', category: 'Reduce' },
+        { id: '2', name: 'Kaleng Jadi Pot Bunga 🪴', category: 'Reuse' },
+        { id: '3', name: 'Peleburan Botol di Pabrik 🏭', category: 'Recycle' },
+        { id: '4', name: 'Tolak Kantong Kresek 🚫', category: 'Reduce' },
+        { id: '5', name: 'Baju Bekas Jadi Kain Lap 👕', category: 'Reuse' },
+        { id: '6', name: 'Kardus Dicacah Jadi Kertas Baru 📦', category: 'Recycle' }
       ];
     } else if (nodeId === 12) {
-      // Pemilahan Sumber
-      categories = ['Basah', 'Kering', 'Anorganik'];
+      // Pemilahan Sumber 3 Tong
+      categories = ['Organik Basah', 'Organik Kering', 'Anorganik'];
       items = [
-        { id: '1', name: 'Sisa Sayuran Kantin 🥦', category: 'Basah' },
-        { id: '2', name: 'Guguran Daun Pohon 🍂', category: 'Kering' },
-        { id: '3', name: 'Wadah Gelas Plastik 🥤', category: 'Anorganik' },
-        { id: '4', name: 'Tulang Ayam Bekas 🍗', category: 'Basah' },
-        { id: '5', name: 'Ranting Kayu Kering 🪵', category: 'Kering' },
-        { id: '6', name: 'Kaleng Logam Aluminium 🥫', category: 'Anorganik' }
+        { id: '1', name: 'Sisa Kuah Sayur 🍲', category: 'Organik Basah' },
+        { id: '2', name: 'Ranting & Daun Kering 🍂', category: 'Organik Kering' },
+        { id: '3', name: 'Gelas Plastik Bersih 🥤', category: 'Anorganik' },
+        { id: '4', name: 'Kulit Semangka 🍉', category: 'Organik Basah' },
+        { id: '5', name: 'Kertas HVS Bekas 📄', category: 'Organik Kering' },
+        { id: '6', name: 'Kaleng Minuman 🥫', category: 'Anorganik' }
       ];
     } else {
       // Fallback
       categories = ['Organik', 'Anorganik'];
       items = [
-        { id: '1', name: 'Kulit Apel 🍎', category: 'Organik' },
+        { id: '1', name: 'Apel Busuk 🍏', category: 'Organik' },
         { id: '2', name: 'Kotak Susu 🥛', category: 'Anorganik' }
       ];
     }
@@ -106,7 +106,7 @@ export default function TantanganPage() {
     if (!gameStarted || gameOver) return;
 
     if (timeLeft <= 0) {
-      handleGameOver();
+      handleGameOver(score);
       return;
     }
 
@@ -115,7 +115,7 @@ export default function TantanganPage() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, gameStarted, gameOver]);
+  }, [timeLeft, gameStarted, gameOver, score]);
 
   const handleStartGame = () => {
     setGameStarted(true);
@@ -125,18 +125,20 @@ export default function TantanganPage() {
     setGameOver(false);
   };
 
-  const handleGameOver = async () => {
+  const handleGameOver = async (finalScore?: number) => {
     setGameOver(true);
+    const evaluatedScore = finalScore !== undefined ? finalScore : score;
+    setScore(evaluatedScore);
     
-    // Check if player scored at least 3 correct to pass
-    const isPassing = score >= 3 || score === gameItems.length;
-    if (isPassing && !hasUnlocked) {
+    // Check if player scored at least 3 correct (or all if < 3) to pass
+    const isPassingScore = gameItems.length > 0 && evaluatedScore >= Math.min(3, gameItems.length);
+    if (isPassingScore && !hasUnlocked) {
       setHasUnlocked(true);
       
       const xpReward = node?.xpReward || 12;
       const coinsReward = (node?.coinReward || 15) + 10;
 
-      // 1. Record node completion in Supabase & Local (detects repeat)
+      // Record node completion in Supabase via Atomic RPC (idempotent & safe)
       const result = await recordNodeCompletion({
         userId: user?.id || 'usr_guest',
         nodeId,
@@ -145,16 +147,15 @@ export default function TantanganPage() {
         isCorrect: true,
       });
 
-      setIsRepeatAttempt(result.isRepeat);
+      if (result.success) {
+        setIsRepeatAttempt(result.isRepeat);
+      } else {
+        console.error("Node completion failed:", result.message);
+      }
 
-      // 2. Update reactive state in AuthContext only on first completion
-      if (!result.isRepeat && (result.xpAwarded > 0 || result.coinsAwarded > 0)) {
-        const currentXp = user?.xp || 0;
-        const currentCoins = user?.coins || 0;
-        updateUser({
-          xp: currentXp + result.xpAwarded,
-          coins: currentCoins + result.coinsAwarded,
-        });
+      // Always refresh profile from database to get authoritative XP/coins
+      if (user?.id) {
+        await refreshProfile(user.id);
       }
     }
   };
@@ -169,15 +170,14 @@ export default function TantanganPage() {
     }
 
     if (currentItemIdx + 1 >= gameItems.length) {
-      setScore(newScore);
-      handleGameOver();
+      handleGameOver(newScore);
     } else {
       setCurrentItemIdx(currentItemIdx + 1);
     }
   };
 
   const currentItem = gameItems[currentItemIdx];
-  const isPassing = score >= 3 || score === gameItems.length;
+  const isPassing = gameItems.length > 0 && score >= Math.min(3, gameItems.length);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white flex flex-col justify-between p-4">
