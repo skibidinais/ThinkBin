@@ -15,7 +15,7 @@ function KuisionerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const surveyType = (searchParams.get("type") as "awal" | "akhir") || "awal";
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const config = getSurveyConfig(surveyType);
   const questions: SurveyQuestion[] = config.questions;
@@ -31,23 +31,23 @@ function KuisionerContent() {
     if (showRewardModal) {
       // First immediate burst
       confetti({
-        particleCount: 70,
-        spread: 60,
+        particleCount: 75,
+        spread: 65,
         origin: { y: 0.6 },
         colors: ["#85dd16", "#fdda5a", "#38bdf8", "#f97316", "#22c55e"],
       });
 
-      // Second burst after 250ms
+      // Second double burst
       const t = setTimeout(() => {
         confetti({
-          particleCount: 50,
+          particleCount: 55,
           angle: 60,
           spread: 55,
           origin: { x: 0 },
           colors: ["#85dd16", "#fdda5a", "#38bdf8", "#22c55e"],
         });
         confetti({
-          particleCount: 50,
+          particleCount: 55,
           angle: 120,
           spread: 55,
           origin: { x: 1 },
@@ -106,13 +106,12 @@ function KuisionerContent() {
     }
   };
 
-  const handleFinishToDashboard = () => {
-    router.push("/dashboard");
+  const handleGoToMap = () => {
+    router.push("/belajar");
   };
 
-  const handleExitAccount = () => {
-    logout();
-    router.push("/login");
+  const handleGoToDashboard = () => {
+    router.push("/dashboard");
   };
 
   return (
@@ -204,7 +203,7 @@ function KuisionerContent() {
         </form>
       </div>
 
-      {/* ── CELEBRATION REWARD MODAL WITH EXIT OPTION ── */}
+      {/* ── CELEBRATION REWARD MODAL ── */}
       {showRewardModal && (
         <div className="fixed inset-0 bg-[#0f172a]/75 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in zoom-in-95 duration-200">
           <div className="bg-white border-[3.5px] border-[#1e293b] rounded-[30px] max-w-[340px] w-full p-6 text-center shadow-[0_18px_40px_rgba(0,0,0,0.4),0_6px_0_#1e293b] flex flex-col items-center gap-2">
@@ -251,22 +250,22 @@ function KuisionerContent() {
               </div>
             </div>
 
-            {/* Action Buttons: Masuk ke Beranda & Opsi Keluar */}
+            {/* Action Buttons: Lanjut Belajar (Peta) & Kembali ke Beranda */}
             <div className="flex flex-col gap-2.5 w-full pt-1">
               <button
                 type="button"
-                onClick={handleFinishToDashboard}
+                onClick={handleGoToMap}
                 className="w-full py-3.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3px] border-[#1e293b] text-[#1e293b] font-fredoka font-black text-sm rounded-2xl shadow-[0_4px_0_#1e293b] active:translate-y-1 active:shadow-none transition-all cursor-pointer uppercase tracking-wider"
               >
-                Masuk ke Beranda
+                Lanjut ke Peta Belajar
               </button>
 
               <button
                 type="button"
-                onClick={handleExitAccount}
-                className="w-full py-2.5 bg-[#f1f5f9] hover:bg-[#e2e8f0] border-[2px] border-[#cbd5e1] text-[#64748b] hover:text-[#334155] font-fredoka font-bold text-xs rounded-xl transition-all cursor-pointer uppercase tracking-wide"
+                onClick={handleGoToDashboard}
+                className="w-full py-3 bg-[#f1f5f9] hover:bg-[#e2e8f0] border-[2.5px] border-[#cbd5e1] text-[#334155] font-fredoka font-bold text-xs rounded-xl shadow-[0_2px_0_#cbd5e1] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer uppercase tracking-wide"
               >
-                Keluar Akun
+                Kembali ke Beranda
               </button>
             </div>
 

@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { MODUL_DATA } from "@/lib/modul-data";
 import { useAuth } from "@/lib/auth-context";
 import { recordNodeCompletion } from "@/lib/supabase";
+import confetti from "canvas-confetti";
 
 export default function QuizPage() {
   const router = useRouter();
@@ -21,11 +22,53 @@ export default function QuizPage() {
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [showHintModal, setShowHintModal] = useState<boolean>(false);
 
+  // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16)
+  const isFinalNodeOfBagian = nodeId === 4 || nodeId === 8 || nodeId === 12 || nodeId === 16;
+
   useEffect(() => {
     if (!node || !question) {
       router.push("/belajar");
     }
   }, [node, question, router]);
+
+  // Trigger celebration confetti when answer is correct
+  useEffect(() => {
+    if (isSubmitted && isCorrect) {
+      if (isFinalNodeOfBagian) {
+        // Grand celebration for final level of node
+        confetti({
+          particleCount: 90,
+          spread: 70,
+          origin: { y: 0.55 },
+          colors: ["#fad85e", "#85dd16", "#38bdf8", "#f97316", "#22c55e"],
+        });
+        setTimeout(() => {
+          confetti({
+            particleCount: 60,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ["#fad85e", "#85dd16", "#38bdf8"],
+          });
+          confetti({
+            particleCount: 60,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ["#fad85e", "#85dd16", "#38bdf8"],
+          });
+        }, 250);
+      } else {
+        // Standard celebration burst
+        confetti({
+          particleCount: 60,
+          spread: 60,
+          origin: { y: 0.6 },
+          colors: ["#fad85e", "#85dd16", "#38bdf8", "#22c55e"],
+        });
+      }
+    }
+  }, [isSubmitted, isCorrect, isFinalNodeOfBagian]);
 
   if (!node || !question) return null;
 
@@ -255,7 +298,7 @@ export default function QuizPage() {
               </div>
             </div>
           ) : (
-            /* ── PERFECTLY VERTICALLY CENTERED RESULT FEEDBACK CARD ── */
+            /* ── PERFECTLY VERTICALLY CENTERED RESULT FEEDBACK CARD WITH CELEBRATION ── */
             <div className="flex flex-col items-center justify-center text-center my-auto py-2 gap-3.5 w-full animate-in zoom-in-95 duration-200">
               {/* Prominent, Large ThinkBin Mascot Logo */}
               <div className="w-28 h-16 flex items-center justify-center mb-0.5">
@@ -269,7 +312,7 @@ export default function QuizPage() {
               </div>
 
               <h2 className="font-fredoka font-black text-[20px] text-[#291e13] leading-tight">
-                {isCorrect ? "Jawaban Benar!" : "Jawaban Kurang Tepat"}
+                {isCorrect ? (isFinalNodeOfBagian ? "Luar Biasa! Level Selesai!" : "Jawaban Benar!") : "Jawaban Kurang Tepat"}
               </h2>
 
               <div
