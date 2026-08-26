@@ -66,31 +66,40 @@ export default function BacaanPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex justify-center items-center p-3 select-none overflow-x-hidden"
+      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none bg-[#1e120b]"
       style={{
-        backgroundColor: "#1e120b",
-        backgroundImage:
-          "radial-gradient(ellipse at 50% 30%, rgba(255, 185, 95, 0.18) 0%, rgba(0, 0, 0, 0.35) 100%), repeating-linear-gradient(90deg, #bb6e2a 0px, #bb6e2a 40px, #b36420 40px, #b36420 42px, #c47833 42px, #c47833 90px, #ae5f1d 90px, #ae5f1d 92px, #be712b 92px, #be712b 150px)",
+        WebkitOverflowScrolling: "touch",
+        scrollBehavior: "smooth",
       }}
     >
-      <div className="relative w-full max-w-[420px] min-h-[92vh] flex flex-col justify-between py-3 overflow-hidden">
+      {/* ── 1. HARDWARE-ACCELERATED FIXED WOOD BACKGROUND (Smooth 60/120 FPS scrolling) ── */}
+      <div
+        className="fixed inset-0 pointer-events-none -z-10 bg-[#1e120b]"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at 50% 30%, rgba(255, 185, 95, 0.18) 0%, rgba(0, 0, 0, 0.35) 100%), repeating-linear-gradient(90deg, #bb6e2a 0px, #bb6e2a 40px, #b36420 40px, #b36420 42px, #c47833 42px, #c47833 90px, #ae5f1d 90px, #ae5f1d 92px, #be712b 92px, #be712b 150px)",
+          transform: "translateZ(0)",
+        }}
+      />
+
+      <div className="relative w-full max-w-[420px] flex flex-col justify-between py-4 px-3 min-h-full">
         
-        {/* ── 1. DECORATIVE STATIONERY PROPS (Ruler, Crayon, Pencil, Sticky Notes) ── */}
+        {/* ── 2. DECORATIVE STATIONERY PROPS (Ruler, Crayon, Pencil, Sticky Notes) ── */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
           {/* Orange Sticky Note */}
           <div
-            className="absolute top-1 left-16 w-16 h-14 bg-[#f77028] rounded shadow-md -rotate-12"
-            style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.25))" }}
+            className="absolute top-2 left-16 w-16 h-14 bg-[#f77028] rounded shadow-md -rotate-12"
+            style={{ filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.2))" }}
           />
           {/* Yellow Sticky Note */}
           <div
-            className="absolute top-0 left-22 w-24 h-18 bg-[#fec432] rounded shadow-md rotate-6"
-            style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.25))" }}
+            className="absolute top-1 left-24 w-24 h-18 bg-[#fec432] rounded shadow-md rotate-6"
+            style={{ filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.2))" }}
           />
           {/* Green Sticky Note */}
           <div
-            className="absolute top-1 right-28 w-16 h-16 bg-[#cbd833] rounded shadow-md rotate-12"
-            style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.25))" }}
+            className="absolute top-2 right-28 w-16 h-16 bg-[#cbd833] rounded shadow-md rotate-12"
+            style={{ filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.2))" }}
           />
 
           {/* Ruler on Top Right */}
@@ -115,14 +124,14 @@ export default function BacaanPage() {
 
           {/* Black Pencil on Left */}
           <div className="absolute top-64 -left-5 w-14 h-28 -rotate-35 opacity-95">
-            <div className="w-2 h-2.5 bg-[#111] mx-auto clip-triangle" />
-            <div className="w-4 h-5 bg-[#dfbc8d] mx-auto clip-triangle" />
+            <div className="w-2 h-2.5 bg-[#111] mx-auto" />
+            <div className="w-4 h-5 bg-[#dfbc8d] mx-auto" />
             <div className="w-4 h-20 bg-[#232323] border-l-2 border-[#111] border-r-2 border-[#3d3d3d] rounded-b shadow-md mx-auto" />
           </div>
         </div>
 
-        {/* ── 2. TOP ROW (Circular Back Button & ThinkBin Logo Badge) ── */}
-        <header className="relative z-20 flex items-center justify-between px-2 mb-8">
+        {/* ── 3. TOP ROW (Circular Back Button & Clean ThinkBin Logo Card) ── */}
+        <header className="relative z-20 flex items-center justify-between px-2 mb-8 mt-1">
           {/* Back Button */}
           <button
             type="button"
@@ -142,20 +151,20 @@ export default function BacaanPage() {
             </svg>
           </button>
 
-          {/* ThinkBin Logo Badge */}
-          <div className="bg-white p-2 px-3.5 rounded-[20px] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] flex items-center justify-center max-w-[110px] max-h-[64px]">
+          {/* ThinkBin Logo Badge Card (Clean, perfectly contained, no overflow glitch) */}
+          <div className="w-24 h-14 bg-white rounded-[22px] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] flex items-center justify-center p-1.5 overflow-hidden">
             <Image
-              src="/screens_assets/thinkbin_badge_logo.png"
+              src="/screens_assets/logo.png"
               alt="ThinkBin Logo"
-              width={75}
-              height={42}
-              className="object-contain"
+              width={76}
+              height={40}
+              className="object-contain max-h-10 w-auto"
             />
           </div>
         </header>
 
-        {/* ── 3. MAIN WHITE READING CARD CONTAINER WITH FLOATING PILL ── */}
-        <div className="relative z-10 w-full bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.45)] px-4 pt-10 pb-5 flex flex-col gap-3.5">
+        {/* ── 4. MAIN WHITE READING CARD CONTAINER WITH FLOATING PILL ── */}
+        <div className="relative z-10 w-full bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.45)] px-4 pt-10 pb-6 flex flex-col gap-4 mb-4">
           
           {/* Floating Pill Badge: Node X / 16 • Bagian Y */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] px-6 py-2 rounded-full z-20 whitespace-nowrap">
@@ -185,7 +194,7 @@ export default function BacaanPage() {
           <div className="w-full h-[1px] bg-[#E7DED4] my-0.5" />
 
           {/* Konsep Inti Box (Light Cream/Beige) */}
-          <div className="w-full bg-[#FFFDF5] border-[1.5px] border-[#EADFC9] rounded-2xl p-4 text-justify font-nunito font-semibold text-[13.5px] leading-relaxed text-[#291e13] shadow-inner">
+          <div className="w-full bg-[#FFFDF5] border-[1.5px] border-[#EADFC9] rounded-2xl p-4 text-justify font-nunito font-semibold text-[14px] leading-relaxed text-[#291e13] shadow-inner">
             {node.konsepInti}
           </div>
 
@@ -195,7 +204,7 @@ export default function BacaanPage() {
               <span>💡</span>
               <span>Contoh Nyata:</span>
             </div>
-            <p className="font-nunito font-bold text-[13px] text-[#166534] leading-relaxed">
+            <p className="font-nunito font-bold text-[13.5px] text-[#166534] leading-relaxed">
               {node.contoh}
             </p>
           </div>
@@ -205,7 +214,7 @@ export default function BacaanPage() {
             <button
               type="button"
               onClick={handleNext}
-              className="w-full max-w-[240px] py-3 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-base text-[#3b1d03] tracking-wider uppercase transition-transform cursor-pointer text-center"
+              className="w-full max-w-[240px] py-3.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none rounded-2xl font-fredoka font-black text-base text-[#3b1d03] tracking-wider uppercase transition-transform cursor-pointer text-center"
             >
               LANJUT
             </button>
