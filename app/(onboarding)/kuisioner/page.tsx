@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -9,12 +9,13 @@ import {
   SurveyQuestion,
 } from "@/lib/survey-data";
 import { saveSurveyAnswers } from "@/lib/supabase";
+import confetti from "canvas-confetti";
 
 function KuisionerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const surveyType = (searchParams.get("type") as "awal" | "akhir") || "awal";
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, logout } = useAuth();
 
   const config = getSurveyConfig(surveyType);
   const questions: SurveyQuestion[] = config.questions;
@@ -24,6 +25,39 @@ function KuisionerContent() {
   const [showRewardModal, setShowRewardModal] = useState<boolean>(false);
 
   const isAllAnswered = questions.every((q) => answers[q.id]);
+
+  // Trigger celebration confetti when modal appears
+  useEffect(() => {
+    if (showRewardModal) {
+      // First immediate burst
+      confetti({
+        particleCount: 70,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ["#85dd16", "#fdda5a", "#38bdf8", "#f97316", "#22c55e"],
+      });
+
+      // Second burst after 250ms
+      const t = setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ["#85dd16", "#fdda5a", "#38bdf8", "#22c55e"],
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ["#85dd16", "#fdda5a", "#38bdf8", "#22c55e"],
+        });
+      }, 250);
+
+      return () => clearTimeout(t);
+    }
+  }, [showRewardModal]);
 
   const handleSelectOption = (questionId: number, optionKey: string) => {
     setAnswers((prev) => ({
@@ -63,6 +97,7 @@ function KuisionerContent() {
         onboarding_completed: true,
       });
 
+      // Direct immediate celebration
       setShowRewardModal(true);
     } catch (err) {
       console.error("Survey submission error:", err);
@@ -73,6 +108,11 @@ function KuisionerContent() {
 
   const handleFinishToDashboard = () => {
     router.push("/dashboard");
+  };
+
+  const handleExitAccount = () => {
+    logout();
+    router.push("/login");
   };
 
   return (
@@ -91,7 +131,7 @@ function KuisionerContent() {
           <span>{config.stepLabel}</span>
         </div>
 
-        {/* Header Title (Clean without emoji) */}
+        {/* Header Title */}
         <div className="mb-4">
           <h1 className="font-fredoka font-black text-[24px] text-[#0b1a2d] leading-tight mb-1">
             {config.title}
@@ -153,46 +193,50 @@ function KuisionerContent() {
             </div>
           ))}
 
-          {/* Submit CTA Button (Clean without emoji) */}
+          {/* Submit CTA Button */}
           <button
             type="submit"
             disabled={!isAllAnswered || isSubmitting}
             className="w-full h-[54px] bg-gradient-to-b from-[#fad85e] to-[#e7a627] hover:brightness-105 disabled:bg-none disabled:bg-[#e2e8f0] disabled:border-[#cbd5e1] disabled:text-[#94a3b8] disabled:shadow-none disabled:cursor-not-allowed border-[3px] border-[#1e293b] rounded-[22px] text-[#1e293b] font-fredoka font-black text-base shadow-[0_5px_0_#1e293b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#1e293b] mt-2 mb-6 transition-all cursor-pointer uppercase tracking-wide flex items-center justify-center gap-2"
           >
-            <span>{isSubmitting ? "Menyimpan Jawaban..." : "Selesai & Masuk Dashboard"}</span>
+            <span>{isSubmitting ? "Menyimpan Jawaban..." : "Selesai & Lihat Hasil"}</span>
           </button>
         </form>
       </div>
 
-      {/* CELEBRATION REWARD MODAL (Clean without emoji) */}
+      {/* ── CELEBRATION REWARD MODAL WITH EXIT OPTION ── */}
       {showRewardModal && (
-        <div className="fixed inset-0 bg-[#0f172a]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in zoom-in-95 duration-200">
-          <div className="bg-white border-[3.5px] border-[#1e293b] rounded-[28px] max-w-[340px] w-full p-6 text-center shadow-[0_16px_36px_rgba(0,0,0,0.35),0_6px_0_#1e293b] flex flex-col items-center">
-            <div className="w-20 h-20 mb-2 flex items-center justify-center">
+        <div className="fixed inset-0 bg-[#0f172a]/75 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in zoom-in-95 duration-200">
+          <div className="bg-white border-[3.5px] border-[#1e293b] rounded-[30px] max-w-[340px] w-full p-6 text-center shadow-[0_18px_40px_rgba(0,0,0,0.4),0_6px_0_#1e293b] flex flex-col items-center gap-2">
+            
+            {/* Mascot Celebration Animation */}
+            <div className="w-24 h-24 mb-1 flex items-center justify-center">
               <Image
                 src="/screens_assets/mascot_main.png"
                 alt="Celebration Mascot"
-                width={80}
-                height={80}
+                width={95}
+                height={95}
                 className="object-contain animate-bounce"
+                style={{ animationDuration: "1.5s" }}
               />
             </div>
 
-            <h3 className="font-fredoka font-black text-xl text-[#0f172a] mb-1">
+            <h3 className="font-fredoka font-black text-[22px] text-[#0f172a] leading-tight">
               Kuisioner Selesai!
             </h3>
-            <p className="font-nunito font-semibold text-xs text-[#64748b] mb-4">
-              Terima kasih! Kamu telah membuka akses penuh ke petualangan ThinkBin.
+            
+            <p className="font-nunito font-semibold text-xs text-[#64748b] leading-relaxed max-w-[260px]">
+              Terima kasih! Kamu telah menyelesaikan kuisioner dan membuka akses petualangan ThinkBin.
             </p>
 
             {/* Rewards Pill */}
-            <div className="flex items-center justify-center gap-3 bg-[#fffbea] border-[2px] border-[#f59e0b] rounded-2xl p-3 mb-5 w-full shadow-inner">
+            <div className="flex items-center justify-center gap-4 bg-[#fffbea] border-[2px] border-[#f59e0b] rounded-2xl p-3 my-2 w-full shadow-inner">
               <div className="flex items-center gap-1.5">
                 <Image
                   src="/screens_assets/logo.png"
                   alt="ThinkBin XP"
-                  width={20}
-                  height={20}
+                  width={22}
+                  height={22}
                   className="object-contain"
                 />
                 <span className="font-fredoka font-extrabold text-base text-[#16a34a]">
@@ -207,13 +251,25 @@ function KuisionerContent() {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={handleFinishToDashboard}
-              className="w-full py-3.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3px] border-[#1e293b] text-[#1e293b] font-fredoka font-black text-sm rounded-2xl shadow-[0_4px_0_#1e293b] active:translate-y-1 active:shadow-none transition-all cursor-pointer uppercase"
-            >
-              Masuk ke Beranda
-            </button>
+            {/* Action Buttons: Masuk ke Beranda & Opsi Keluar */}
+            <div className="flex flex-col gap-2.5 w-full pt-1">
+              <button
+                type="button"
+                onClick={handleFinishToDashboard}
+                className="w-full py-3.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3px] border-[#1e293b] text-[#1e293b] font-fredoka font-black text-sm rounded-2xl shadow-[0_4px_0_#1e293b] active:translate-y-1 active:shadow-none transition-all cursor-pointer uppercase tracking-wider"
+              >
+                Masuk ke Beranda
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExitAccount}
+                className="w-full py-2.5 bg-[#f1f5f9] hover:bg-[#e2e8f0] border-[2px] border-[#cbd5e1] text-[#64748b] hover:text-[#334155] font-fredoka font-bold text-xs rounded-xl transition-all cursor-pointer uppercase tracking-wide"
+              >
+                Keluar Akun
+              </button>
+            </div>
+
           </div>
         </div>
       )}
