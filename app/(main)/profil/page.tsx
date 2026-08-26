@@ -188,14 +188,17 @@ export default function ProfilPage() {
   const equippedConfig = selectedFrame ? BORDERS_CATALOG[selectedFrame] : null;
 
   return (
-    <div className="relative flex flex-col min-h-full px-4 pt-3 pb-28 select-none bg-[#FDE8A5]">
+    <div
+      className="relative flex flex-col w-full min-h-full px-4 pt-3 pb-36 select-none bg-[#FDE8A5] overflow-y-auto overscroll-y-contain"
+      style={{ WebkitOverflowScrolling: "touch" }}
+    >
       
       {/* ── 1. HEADER (Back Button & Title) ── */}
-      <header className="flex items-center gap-3 mb-3 pt-1">
+      <header className="flex items-center gap-3 mb-3 pt-1 flex-shrink-0">
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="w-10 h-10 rounded-[16px] bg-white border-[2.5px] border-[#382C22] shadow-[0_3px_0_#382C22] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer transition-transform"
+          className="w-10 h-10 rounded-[16px] bg-white border-[2.5px] border-[#382C22] shadow-[0_3px_0_#382C22] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer transition-transform flex-shrink-0"
           aria-label="Kembali"
         >
           <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#382C22" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
@@ -219,7 +222,7 @@ export default function ProfilPage() {
       />
 
       {/* ── 2. CARD 1: PROFILE HERO BANNER CARD (Full Landscape Background, Avatar, Name, Level Bar) ── */}
-      <div className="relative w-full min-h-[220px] bg-[#E8F5E9] border-[2.5px] border-[#382C22] rounded-[24px] overflow-hidden shadow-[0_4px_0_rgba(0,0,0,0.05)] mb-3 flex flex-col items-center justify-center">
+      <div className="relative w-full min-h-[220px] bg-[#E8F5E9] border-[2.5px] border-[#382C22] rounded-[24px] overflow-hidden shadow-[0_4px_0_rgba(0,0,0,0.05)] mb-3 flex flex-col items-center justify-center flex-shrink-0">
         
         {/* Full Card Landscape Cover Background */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -310,7 +313,7 @@ export default function ProfilPage() {
       </div>
 
       {/* ── 3. CARD 2: THREE SEPARATE SQUARE STATS CARDS (Streak, XP, Koin) ── */}
-      <div className="grid grid-cols-3 gap-2.5 mb-3">
+      <div className="grid grid-cols-3 gap-2.5 mb-3 flex-shrink-0">
         
         {/* Square 1: Streak */}
         <div className="flex flex-col items-center bg-white border-[2.5px] border-[#382C22] rounded-[22px] p-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
@@ -373,13 +376,13 @@ export default function ProfilPage() {
 
       {/* NOTIFICATION TOAST */}
       {equipNotice && (
-        <div className="p-2 mb-2 bg-[#ecfccb] border-[2px] border-[#65a30d] rounded-2xl font-fredoka font-black text-xs text-[#3f6212] text-center shadow-xs animate-in zoom-in duration-200">
+        <div className="p-2 mb-2 bg-[#ecfccb] border-[2px] border-[#65a30d] rounded-2xl font-fredoka font-black text-xs text-[#3f6212] text-center shadow-xs animate-in zoom-in duration-200 flex-shrink-0">
           {equipNotice}
         </div>
       )}
 
       {/* ── 4. CARD 2.5: BORDER AVATAR COLLECTION (Pasang & Koleksi Border) ── */}
-      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 mb-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 mb-3 shadow-[0_4px_0_rgba(0,0,0,0.05)] flex-shrink-0">
         <div className="flex items-center justify-between mb-3">
           <div className="flex flex-col">
             <span className="font-fredoka font-black text-[11px] text-[#796F65] uppercase tracking-wider">
@@ -504,7 +507,7 @@ export default function ProfilPage() {
       </div>
 
       {/* ── 5. CARD 3: RANK SAAT INI CARD ── */}
-      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 mb-3 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 mb-3 shadow-[0_4px_0_rgba(0,0,0,0.05)] flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex flex-col flex-1 pr-3">
             <span className="font-fredoka font-black text-[11px] text-[#D97706] uppercase tracking-wider mb-0.5">
@@ -545,7 +548,7 @@ export default function ProfilPage() {
       </div>
 
       {/* ── 6. CARD 4: JALUR RANK CARD (All 5 Ranks with Arrows & Gold Highlight on Current) ── */}
-      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 shadow-[0_4px_0_rgba(0,0,0,0.05)]">
+      <div className="bg-white border-[2.5px] border-[#382C22] rounded-[24px] p-4 shadow-[0_4px_0_rgba(0,0,0,0.05)] flex-shrink-0 mb-4">
         <h3 className="font-fredoka font-black text-[18px] text-[#382C22] mb-3">
           Jalur Rank
         </h3>
@@ -596,6 +599,9 @@ export default function ProfilPage() {
           })}
         </div>
       </div>
+
+      {/* ── 7. BOTTOM SAFE AREA SPACER (Allows full scroll way past bottom navigation dock) ── */}
+      <div className="w-full h-32 flex-shrink-0" />
 
     </div>
   );
