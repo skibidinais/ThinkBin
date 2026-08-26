@@ -52,12 +52,14 @@ export default function LoginPage() {
 
           <div className="mascot-hero relative w-60 h-60 sm:w-64 sm:h-64 max-h-[38vh] aspect-square flex items-center justify-center">
             <Image
-              src="/screens_assets/mascot_main.png"
+              src="/screens_assets/mascot_main.webp"
               alt="ThinkBin Mascot Hero"
               width={260}
-              height={260}
+              height={238}
+              sizes="260px"
               className="w-full h-full object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)] pointer-events-none"
               priority
+              fetchPriority="high"
             />
           </div>
         </div>

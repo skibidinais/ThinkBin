@@ -41,6 +41,13 @@ export default function RootLayout({
     <html lang="id" className={`${fredoka.variable} ${nunito.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          as="image"
+          href="/screens_assets/mascot_main.webp"
+          type="image/webp"
+          fetchPriority="high"
+        />
       </head>
       <body className="bg-[#120b06] antialiased">
         <AuthProvider>
