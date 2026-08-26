@@ -251,7 +251,7 @@ export default function TokoPage() {
           fill
           priority
           sizes="(max-width: 480px) 100vw, 440px"
-          className="object-contain object-center"
+          className="object-cover object-center"
         />
       </div>
 
