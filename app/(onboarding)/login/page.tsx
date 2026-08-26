@@ -22,42 +22,59 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FFFBEA] p-6 pb-9 justify-between select-none">
-      <div className="flex flex-col flex-1 items-center justify-center">
-        {/* Mascot Hero Illustration with floating animation */}
-        <div className="w-full flex justify-center items-center py-6">
-          <div className="relative w-44 h-44 flex items-center justify-center animate-bounce" style={{ animationDuration: "3s" }}>
-            <Image
-              src="/assets/mascot_leonardo.png"
-              alt="ThinkBin Mascot"
-              width={175}
-              height={175}
-              className="object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.15)]"
-              priority
-            />
-          </div>
+    <div
+      className="flex flex-col min-h-screen h-[100dvh] justify-between p-6 pb-9 select-none overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, #85dd16 0%, #68c309 100%)",
+      }}
+    >
+      {/* ── CSS FOR MASCOT BREATHING & WAVING ANIMATION ── */}
+      <style jsx>{`
+        @keyframes mascotFloat {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(-1.5deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .mascot-hero {
+          animation: mascotFloat 3s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* ── 1. LARGE MASCOT ILLUSTRATION (TOP ~60% OF SCREEN) ── */}
+      <div className="w-full flex-1 flex items-center justify-center pt-4 pb-2 relative">
+        {/* Subtle waving motion arcs on top-right */}
+        <div className="absolute top-10 right-10 text-[#4a8500] font-black text-2xl opacity-60 pointer-events-none select-none">
+          ))
         </div>
 
-        {/* Welcome Text Box */}
-        <div className="text-center mb-7 px-2">
-          <span className="inline-block bg-[#FEF3C7] text-[#B45309] border-[2px] border-[#F59E0B] text-[11px] font-black tracking-wider px-3 py-1 rounded-full mb-3 uppercase">
-            THINKBIN APP
-          </span>
-          <h1 className="font-fredoka font-black text-[26px] text-[#0F172A] leading-tight mb-2.5">
-            Selamat Datang di ThinkBin!
-          </h1>
-          <p className="font-nunito font-semibold text-[14.5px] text-[#64748B] leading-relaxed px-2">
-            Belajar memilah sampah cerdas, kumpulkan poin, dan raih rank tertinggi bersama teman sekelasmu!
-          </p>
+        <div className="mascot-hero relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
+          <Image
+            src="/screens_assets/mascot_main.png"
+            alt="ThinkBin Mascot Hero"
+            width={320}
+            height={320}
+            className="w-full h-full object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.22)] pointer-events-none"
+            priority
+          />
         </div>
       </div>
 
-      {/* Google OAuth ONLY Button */}
-      <div className="mt-auto flex flex-col items-center gap-3 pb-2.5">
+      {/* ── 2. WELCOME TEXT (Heading & Subtext with high contrast against green) ── */}
+      <div className="text-center px-2 mb-6">
+        <h1 className="font-fredoka font-black text-[30px] sm:text-[32px] text-[#0b1a2d] leading-tight mb-2.5 tracking-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)]">
+          Selamat Datang di ThinkBin!
+        </h1>
+        <p className="font-nunito font-extrabold text-[14.5px] sm:text-[15px] text-[#1e3a1e] leading-relaxed max-w-[320px] mx-auto">
+          Belajar memilah sampah cerdas, kumpulkan poin, dan raih rank tertinggi bersama teman sekelasmu!
+        </p>
+      </div>
+
+      {/* ── 3. GOOGLE SIGN-IN BUTTON ── */}
+      <div className="w-full flex flex-col items-center">
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full h-14 bg-white border-[2.5px] border-[#2B2B2B] rounded-[20px] shadow-[0_4px_0_#2B2B2B] active:translate-y-[3px] active:shadow-[0_1px_0_#2B2B2B] flex items-center justify-center gap-3 cursor-pointer transition-all"
+          className="w-full max-w-[320px] h-14 bg-white border-[2.5px] border-[#2b2b2b] rounded-[22px] shadow-[0_5px_0_#2b2b2b] active:translate-y-[3px] active:shadow-[0_2px_0_#2b2b2b] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-[#f8fafc]"
         >
           {/* Google Official SVG Icon */}
           <svg className="w-[22px] h-[22px]" viewBox="0 0 24 24">
@@ -78,13 +95,10 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          <span className="font-fredoka font-extrabold text-[17px] text-[#1E293B] tracking-wide">
+          <span className="font-fredoka font-black text-[17px] text-[#1e293b] tracking-wide">
             Google
           </span>
         </button>
-        <span className="font-nunito font-bold text-xs text-[#94A3B8] text-center">
-          Masuk cepat dan aman menggunakan akun Google
-        </span>
       </div>
     </div>
   );
