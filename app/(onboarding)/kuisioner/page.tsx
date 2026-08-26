@@ -76,19 +76,27 @@ function KuisionerContent() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FFFBEA] p-5 pb-9 justify-between select-none">
-      <div className="flex flex-col flex-1">
+    <div
+      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none p-4 sm:p-5 pb-16"
+      style={{
+        background: "linear-gradient(180deg, #85dd16 0%, #68c309 100%)",
+        WebkitOverflowScrolling: "touch",
+        scrollBehavior: "smooth",
+      }}
+    >
+      <div className="w-full max-w-[390px] mx-auto flex flex-col flex-1 py-2">
+        
         {/* Step Progress Badge */}
-        <div className="inline-flex self-start bg-[#FEF3C7] border-[1.5px] border-[#F59E0B] text-[#B45309] text-[11.5px] font-fredoka font-bold px-3 py-1 rounded-full mb-3">
+        <div className="inline-flex self-start bg-[#f0fdf4] border-[2px] border-[#15803d] text-[#14532d] text-[12px] font-fredoka font-black px-3.5 py-1 rounded-full mb-3 shadow-xs">
           <span>{config.stepLabel}</span>
         </div>
 
         {/* Header Title */}
         <div className="mb-4">
-          <h2 className="font-fredoka font-black text-[22px] text-[#0F172A] mb-1">
+          <h1 className="font-fredoka font-black text-[24px] text-[#0b1a2d] leading-tight mb-1">
             {config.title}
-          </h2>
-          <p className="font-nunito font-semibold text-[13.5px] text-[#64748B] leading-snug">
+          </h1>
+          <p className="font-nunito font-bold text-[13.5px] text-[#1e3a1e] leading-snug">
             {config.subtitle}
           </p>
         </div>
@@ -98,14 +106,14 @@ function KuisionerContent() {
           {questions.map((q, idx) => (
             <div
               key={q.id}
-              className="bg-white border-[2px] border-[#E2E8F0] rounded-[20px] p-3.5 shadow-xs"
+              className="bg-white border-[3px] border-[#1e293b] rounded-[24px] p-4 shadow-[0_5px_0_#1e293b]"
             >
               {/* Question Number Badge */}
-              <span className="inline-block bg-[#FEF3C7] text-[#B45309] font-fredoka font-bold text-[11px] px-2 py-0.5 rounded-md mb-2">
+              <div className="inline-block bg-[#ecfccb] border border-[#84cc16] text-[#3f6212] font-fredoka font-black text-[11px] px-2.5 py-0.5 rounded-lg mb-2">
                 Pertanyaan {idx + 1}/{questions.length}
-              </span>
+              </div>
 
-              <p className="font-fredoka font-extrabold text-sm text-[#0F172A] leading-snug mb-3">
+              <p className="font-fredoka font-extrabold text-[14.5px] text-[#0f172a] leading-snug mb-3">
                 {q.question}
               </p>
 
@@ -115,34 +123,30 @@ function KuisionerContent() {
                   const isSelected = answers[q.id] === opt.key;
 
                   return (
-                    <label
+                    <div
                       key={opt.key}
                       onClick={() => handleSelectOption(q.id, opt.key)}
-                      className="cursor-pointer block"
+                      className={`flex items-center gap-3 p-3 rounded-2xl border-[2px] transition-all cursor-pointer ${
+                        isSelected
+                          ? "bg-[#ecfccb] border-[#65a30d] text-[#3f6212] shadow-xs"
+                          : "bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] hover:bg-[#f1f5f9]"
+                      }`}
                     >
+                      {/* Option Key Badge (A/B/C/D) */}
                       <div
-                        className={`flex items-center gap-2.5 p-2.5 rounded-2xl border-[2px] transition-all ${
+                        className={`w-7 h-7 rounded-full flex items-center justify-center font-fredoka font-black text-xs flex-shrink-0 border-[2px] ${
                           isSelected
-                            ? "bg-[#F0FDF4] border-[#22C55E] shadow-[0_0_0_1.5px_#22C55E]"
-                            : "bg-[#F8FAFC] border-[#E2E8F0] hover:bg-gray-100"
+                            ? "bg-[#65a30d] border-[#3f6212] text-white"
+                            : "bg-white border-[#cbd5e1] text-[#475569]"
                         }`}
                       >
-                        {/* Option Key Badge (A/B/C/D) */}
-                        <div
-                          className={`w-6.5 h-6.5 rounded-lg flex items-center justify-center font-fredoka font-extrabold text-xs flex-shrink-0 border ${
-                            isSelected
-                              ? "bg-[#22C55E] border-[#15803D] text-white"
-                              : "bg-white border-[#CBD5E1] text-[#475569]"
-                          }`}
-                        >
-                          {opt.key}
-                        </div>
-
-                        <span className="font-nunito font-bold text-xs text-[#334155] leading-tight">
-                          {opt.text}
-                        </span>
+                        {opt.key}
                       </div>
-                    </label>
+
+                      <span className="font-nunito font-bold text-xs leading-snug">
+                        {opt.text}
+                      </span>
+                    </div>
                   );
                 })}
               </div>
@@ -153,58 +157,53 @@ function KuisionerContent() {
           <button
             type="submit"
             disabled={!isAllAnswered || isSubmitting}
-            className="w-full h-[52px] bg-[#22C55E] hover:bg-[#16A34A] disabled:bg-[#CBD5E1] disabled:border-[#94A3B8] disabled:shadow-none disabled:cursor-not-allowed border-[2.5px] border-[#15803D] rounded-[18px] text-white font-fredoka font-extrabold text-base shadow-[0_4px_0_#15803D] active:translate-y-[3px] active:shadow-[0_1px_0_#15803D] mt-2 mb-6 transition-all cursor-pointer"
+            className="w-full h-[54px] bg-gradient-to-b from-[#fad85e] to-[#e7a627] hover:brightness-105 disabled:bg-none disabled:bg-[#e2e8f0] disabled:border-[#cbd5e1] disabled:text-[#94a3b8] disabled:shadow-none disabled:cursor-not-allowed border-[3px] border-[#1e293b] rounded-[22px] text-[#1e293b] font-fredoka font-black text-base shadow-[0_5px_0_#1e293b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#1e293b] mt-2 mb-6 transition-all cursor-pointer uppercase tracking-wide flex items-center justify-center gap-2"
           >
-            {isSubmitting ? "Menyimpan Jawaban..." : "Selesai & Masuk Dashboard 🚀"}
+            <span>{isSubmitting ? "Menyimpan Jawaban..." : "Selesai & Masuk Dashboard"}</span>
+            {!isSubmitting && <span>🚀</span>}
           </button>
         </form>
       </div>
 
       {/* CELEBRATION REWARD MODAL */}
       {showRewardModal && (
-        <div className="fixed inset-0 bg-[#0F172A]/70 backdrop-blur-xs z-50 flex items-center justify-center p-5 animate-in zoom-in duration-200">
-          <div className="bg-white border-[3px] border-[#22C55E] rounded-[28px] max-w-[340px] w-full p-6 text-center shadow-2xl flex flex-col items-center">
-            <div className="relative w-24 h-24 mb-2 flex items-center justify-center">
+        <div className="fixed inset-0 bg-[#0f172a]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in zoom-in-95 duration-200">
+          <div className="bg-white border-[3.5px] border-[#1e293b] rounded-[28px] max-w-[340px] w-full p-6 text-center shadow-[0_16px_36px_rgba(0,0,0,0.35),0_6px_0_#1e293b] flex flex-col items-center">
+            <div className="w-20 h-20 mb-2 flex items-center justify-center">
               <Image
-                src="/assets/mascot_leonardo.png"
+                src="/screens_assets/mascot_main.png"
                 alt="Celebration Mascot"
-                width={90}
-                height={90}
+                width={80}
+                height={80}
                 className="object-contain animate-bounce"
               />
             </div>
 
-            <h3 className="font-fredoka font-black text-xl text-[#0F172A] mb-1">
+            <h3 className="font-fredoka font-black text-xl text-[#0f172a] mb-1">
               Kuisioner Selesai! 🎉
             </h3>
-            <p className="font-nunito font-semibold text-xs text-[#64748B] mb-4">
+            <p className="font-nunito font-semibold text-xs text-[#64748b] mb-4">
               Terima kasih! Kamu telah membuka akses penuh ke petualangan ThinkBin.
             </p>
 
             {/* Rewards Pill */}
-            <div className="flex items-center justify-center gap-3 bg-[#FFFBEA] border-[2px] border-[#F59E0B] rounded-2xl p-3 mb-5 w-full shadow-inner">
+            <div className="flex items-center justify-center gap-3 bg-[#fffbea] border-[2px] border-[#f59e0b] rounded-2xl p-3 mb-5 w-full shadow-inner">
               <div className="flex items-center gap-1.5">
                 <Image
-                  src="/assets_game/exp_progress.png"
-                  alt="XP Daun Petir"
-                  width={22}
-                  height={22}
+                  src="/screens_assets/logo.png"
+                  alt="ThinkBin XP"
+                  width={20}
+                  height={20}
                   className="object-contain"
                 />
-                <span className="font-fredoka font-extrabold text-base text-[#1CB0F6]">
+                <span className="font-fredoka font-extrabold text-base text-[#16a34a]">
                   +{config.reward.xp} XP
                 </span>
               </div>
-              <div className="w-[1.5px] h-6 bg-[#F59E0B]/40" />
+              <div className="w-[1.5px] h-6 bg-[#f59e0b]/40" />
               <div className="flex items-center gap-1.5">
-                <Image
-                  src="/assets_game/coin.png"
-                  alt="Koin Daun Kuning"
-                  width={22}
-                  height={22}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-extrabold text-base text-[#F57F17]">
+                <span className="font-fredoka font-black text-lg text-[#eab308]">🪙</span>
+                <span className="font-fredoka font-extrabold text-base text-[#d97706]">
                   +{config.reward.coins} Koin
                 </span>
               </div>
@@ -213,9 +212,9 @@ function KuisionerContent() {
             <button
               type="button"
               onClick={handleFinishToDashboard}
-              className="w-full py-3.5 bg-[#22C55E] border-[2px] border-[#15803D] text-white font-fredoka font-extrabold text-base rounded-2xl shadow-[0_4px_0_#15803D] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+              className="w-full py-3.5 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3px] border-[#1e293b] text-[#1e293b] font-fredoka font-black text-sm rounded-2xl shadow-[0_4px_0_#1e293b] active:translate-y-1 active:shadow-none transition-all cursor-pointer uppercase"
             >
-              Masuk ke Beranda 🏠
+              Masuk ke Beranda
             </button>
           </div>
         </div>

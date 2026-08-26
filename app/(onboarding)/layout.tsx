@@ -6,7 +6,7 @@ export default function OnboardingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative w-full flex-1 flex flex-col bg-[#FFFBEA]">
+    <div className="relative w-full h-full flex-1 flex flex-col overflow-hidden">
       {children}
     </div>
   );
