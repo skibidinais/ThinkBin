@@ -8,25 +8,29 @@ import { fetchUserCompletedNodes } from "@/lib/supabase";
 
 interface MissionState {
   m1Claimed: boolean; // Login
-  m2Claimed: boolean; // 1 Node Belajar Claimed
+  m2Claimed: boolean; // 1 Node Belajar
   m3Visited: boolean; // Leaderboard
   m3Claimed: boolean;
   m4Visited: boolean; // Toko
   m4Claimed: boolean;
+  m5Visited: boolean; // Profil
+  m5Claimed: boolean;
 }
 
 export default function MissionPage() {
   const { user, updateUser } = useAuth();
   const router = useRouter();
 
-  // State for missions
+  // State for 5 missions
   const [missionState, setMissionState] = useState<MissionState>({
-    m1Claimed: true, // Login
+    m1Claimed: true, // Login claimed by default on open
     m2Claimed: false,
     m3Visited: false,
     m3Claimed: false,
     m4Visited: false,
     m4Claimed: false,
+    m5Visited: false,
+    m5Claimed: false,
   });
 
   const [completedNodeCount, setCompletedNodeCount] = useState<number>(0);
@@ -60,7 +64,7 @@ export default function MissionPage() {
   // Load saved state from localStorage
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("thinkbin_missions_progress_v2");
+      const saved = localStorage.getItem("thinkbin_missions_progress_v3");
       if (saved) {
         setMissionState(JSON.parse(saved));
       }
@@ -98,7 +102,7 @@ export default function MissionPage() {
   const saveState = (newState: MissionState) => {
     setMissionState(newState);
     try {
-      localStorage.setItem("thinkbin_missions_progress_v2", JSON.stringify(newState));
+      localStorage.setItem("thinkbin_missions_progress_v3", JSON.stringify(newState));
     } catch {
       // ignore
     }
@@ -110,6 +114,7 @@ export default function MissionPage() {
     missionState.m2Claimed,
     missionState.m3Claimed,
     missionState.m4Claimed,
+    missionState.m5Claimed,
   ].filter(Boolean).length;
 
   const showToast = (msg: string) => {
@@ -117,16 +122,17 @@ export default function MissionPage() {
     setTimeout(() => setToastMsg(null), 3000);
   };
 
-  const handleClaim = (missionKey: keyof MissionState, coinReward: number, title: string) => {
+  const handleClaim = (missionKey: keyof MissionState, coinReward: number, xpReward: number, title: string) => {
     const newCoins = (user?.coins ?? 0) + coinReward;
-    updateUser({ coins: newCoins });
+    const newXp = (user?.xp ?? 0) + xpReward;
+    updateUser({ coins: newCoins, xp: newXp });
 
     const updated = { ...missionState, [missionKey]: true };
     saveState(updated);
-    showToast(`🎉 Berhasil klaim +${coinReward} Coin dari "${title}"!`);
+    showToast(`Berhasil klaim +${coinReward} Coin & +${xpReward} XP dari "${title}"!`);
   };
 
-  const handleNavigate = (path: string, visitKey?: "m3Visited" | "m4Visited") => {
+  const handleNavigate = (path: string, visitKey?: "m3Visited" | "m4Visited" | "m5Visited") => {
     if (visitKey) {
       const updated = { ...missionState, [visitKey]: true };
       saveState(updated);
@@ -162,43 +168,58 @@ export default function MissionPage() {
               className="object-contain"
             />
             <span className="font-fredoka font-black text-sm text-[#382C22]">
-              {user?.coins ?? 705}
+              {user?.coins ?? 0}
             </span>
           </div>
 
           {/* XP Pill */}
           <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
             <Image
-              src="/assets_game/exp_progress.png"
+              src="/screens_assets/xp_icon.png"
               alt="XP"
               width={16}
               height={16}
               className="object-contain"
             />
             <span className="font-fredoka font-black text-sm text-[#382C22]">
-              {user?.xp ?? 252}
+              {user?.xp ?? 0}
             </span>
           </div>
         </div>
       </header>
 
-      {/* ── 2. TOTAL HADIAH HARIAN & RESET BANNER ── */}
+      {/* ── 2. TOTAL HADIAH HARIAN & RESET BANNER (5 Misi: 55 Koin & 15 XP / hari) ── */}
       <div className="bg-gradient-to-br from-[#FFF9E6] to-white border-[2.5px] border-[#382C22] rounded-[22px] p-3.5 flex items-center justify-between shadow-[0_3px_0_rgba(0,0,0,0.05)] mb-3 flex-shrink-0">
         <div className="flex flex-col gap-0.5">
           <span className="font-fredoka font-black text-[11px] uppercase text-[#796F65] tracking-wider">
-            TOTAL HADIAH HARIAN
+            TOTAL HADIAH HARIAN (5 MISI)
           </span>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <Image
-              src="/screens_assets/coin.png"
-              alt="Coin"
-              width={22}
-              height={22}
-              className="object-contain"
-            />
-            <span className="font-fredoka font-black text-[19px] text-[#B45309]">
-              45 Coin
-            </span>
+          <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={18}
+                height={18}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[17px] text-[#B45309]">
+                55 Coin
+              </span>
+            </div>
+            <span className="text-[#94a3b8] font-bold text-xs">•</span>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/xp_icon.png"
+                alt="XP"
+                width={16}
+                height={16}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[17px] text-[#16A34A]">
+                15 XP
+              </span>
+            </div>
             <span className="font-fredoka font-bold text-xs text-[#796F65]">
               / hari
             </span>
@@ -222,12 +243,13 @@ export default function MissionPage() {
           DAFTAR MISI HARI INI
         </span>
         <span className="bg-[#DCFCE7] border border-[#86EFAC] text-[#15803D] font-fredoka font-extrabold text-[11px] px-2.5 py-0.5 rounded-full">
-          {completedCount}/4 Selesai
+          {completedCount}/5 Selesai
         </span>
       </div>
 
-      {/* ── 4. STACK OF 4 MISSION CARDS ── */}
+      {/* ── 4. STACK OF 5 MISSION CARDS (Each awards Coin + 3 XP) ── */}
       <div className="flex flex-col gap-2.5 mb-3.5 flex-shrink-0">
+        
         {/* MISSION 1: Login hari ini (buka app) */}
         <div
           className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
@@ -260,17 +282,32 @@ export default function MissionPage() {
             >
               Login hari ini (buka app)
             </span>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/screens_assets/coin.png"
-                alt="Coin"
-                width={14}
-                height={14}
-                className="object-contain"
-              />
-              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                +10 Coin
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/coin.png"
+                  alt="Coin"
+                  width={14}
+                  height={14}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                  +10 Coin
+                </span>
+              </div>
+              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/xp_icon.png"
+                  alt="XP"
+                  width={13}
+                  height={13}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
+                  +3 XP
+                </span>
+              </div>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -290,7 +327,7 @@ export default function MissionPage() {
           ) : (
             <button
               type="button"
-              onClick={() => handleClaim("m1Claimed", 10, "Login hari ini")}
+              onClick={() => handleClaim("m1Claimed", 10, 3, "Login hari ini")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -298,7 +335,7 @@ export default function MissionPage() {
           )}
         </div>
 
-        {/* MISSION 2: Selesaikan minimal 1 node belajar (Dynamically Checked!) */}
+        {/* MISSION 2: Selesaikan minimal 1 node belajar */}
         <div
           className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
             missionState.m2Claimed
@@ -330,17 +367,32 @@ export default function MissionPage() {
             >
               Selesaikan minimal 1 node belajar
             </span>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/screens_assets/coin.png"
-                alt="Coin"
-                width={14}
-                height={14}
-                className="object-contain"
-              />
-              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                +15 Coin
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/coin.png"
+                  alt="Coin"
+                  width={14}
+                  height={14}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                  +15 Coin
+                </span>
+              </div>
+              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/xp_icon.png"
+                  alt="XP"
+                  width={13}
+                  height={13}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
+                  +3 XP
+                </span>
+              </div>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -351,7 +403,7 @@ export default function MissionPage() {
             </div>
           </div>
 
-          {/* Action Button: Selesai ✓ IF Claimed, Klaim! IF Completed, Mulai IF not yet done */}
+          {/* Action Button */}
           {missionState.m2Claimed ? (
             <button
               type="button"
@@ -363,7 +415,7 @@ export default function MissionPage() {
           ) : isM2ReadyToClaim ? (
             <button
               type="button"
-              onClick={() => handleClaim("m2Claimed", 15, "Selesaikan 1 node belajar")}
+              onClick={() => handleClaim("m2Claimed", 15, 3, "Selesaikan 1 node belajar")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -414,23 +466,38 @@ export default function MissionPage() {
             >
               Kunjungi Papan Peringkat
             </span>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/screens_assets/coin.png"
-                alt="Coin"
-                width={14}
-                height={14}
-                className="object-contain"
-              />
-              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                +10 Coin
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/coin.png"
+                  alt="Coin"
+                  width={14}
+                  height={14}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                  +10 Coin
+                </span>
+              </div>
+              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/xp_icon.png"
+                  alt="XP"
+                  width={13}
+                  height={13}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
+                  +3 XP
+                </span>
+              </div>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
               <div
                 className="h-full bg-[#22C55E] rounded-full transition-all"
-                style={{ width: missionState.m3Claimed ? "100%" : "0%" }}
+                style={{ width: missionState.m3Claimed || missionState.m3Visited ? "100%" : "0%" }}
               />
             </div>
           </div>
@@ -443,6 +510,14 @@ export default function MissionPage() {
               className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
             >
               Selesai ✓
+            </button>
+          ) : missionState.m3Visited ? (
+            <button
+              type="button"
+              onClick={() => handleClaim("m3Claimed", 10, 3, "Kunjungi Papan Peringkat")}
+              className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
+            >
+              Klaim!
             </button>
           ) : (
             <button
@@ -487,23 +562,38 @@ export default function MissionPage() {
             >
               Kunjungi Toko
             </span>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/screens_assets/coin.png"
-                alt="Coin"
-                width={14}
-                height={14}
-                className="object-contain"
-              />
-              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                +10 Coin
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/coin.png"
+                  alt="Coin"
+                  width={14}
+                  height={14}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                  +10 Coin
+                </span>
+              </div>
+              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/xp_icon.png"
+                  alt="XP"
+                  width={13}
+                  height={13}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
+                  +3 XP
+                </span>
+              </div>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
               <div
                 className="h-full bg-[#22C55E] rounded-full transition-all"
-                style={{ width: missionState.m4Claimed ? "100%" : "0%" }}
+                style={{ width: missionState.m4Claimed || missionState.m4Visited ? "100%" : "0%" }}
               />
             </div>
           </div>
@@ -517,6 +607,14 @@ export default function MissionPage() {
             >
               Selesai ✓
             </button>
+          ) : missionState.m4Visited ? (
+            <button
+              type="button"
+              onClick={() => handleClaim("m4Claimed", 10, 3, "Kunjungi Toko")}
+              className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
+            >
+              Klaim!
+            </button>
           ) : (
             <button
               type="button"
@@ -527,6 +625,103 @@ export default function MissionPage() {
             </button>
           )}
         </div>
+
+        {/* MISSION 5: Cek Profil & Rank Kamu */}
+        <div
+          className={`border-[2.5px] rounded-[20px] p-3 flex items-center gap-3 shadow-[0_3px_0_#382C22] transition-all ${
+            missionState.m5Claimed
+              ? "bg-[#F0FDF4] border-[#86EFAC]"
+              : "bg-white border-[#382C22]"
+          }`}
+        >
+          <div className="w-11 h-11 min-w-[44px] bg-[#8B5CF6] border-2 border-[#382C22] rounded-xl flex items-center justify-center shadow-[0_2px_0_#382C22] flex-shrink-0">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <span
+              className={`font-fredoka font-black text-[13.5px] leading-snug truncate ${
+                missionState.m5Claimed ? "line-through text-[#15803D]" : "text-[#382C22]"
+              }`}
+            >
+              Cek Profil & Rank Kamu
+            </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/coin.png"
+                  alt="Coin"
+                  width={14}
+                  height={14}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                  +10 Coin
+                </span>
+              </div>
+              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
+              <div className="flex items-center gap-1">
+                <Image
+                  src="/screens_assets/xp_icon.png"
+                  alt="XP"
+                  width={13}
+                  height={13}
+                  className="object-contain"
+                />
+                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
+                  +3 XP
+                </span>
+              </div>
+            </div>
+            {/* Progress track */}
+            <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
+              <div
+                className="h-full bg-[#22C55E] rounded-full transition-all"
+                style={{ width: missionState.m5Claimed || missionState.m5Visited ? "100%" : "0%" }}
+              />
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {missionState.m5Claimed ? (
+            <button
+              type="button"
+              disabled
+              className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
+            >
+              Selesai ✓
+            </button>
+          ) : missionState.m5Visited ? (
+            <button
+              type="button"
+              onClick={() => handleClaim("m5Claimed", 10, 3, "Cek Profil & Rank Kamu")}
+              className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
+            >
+              Klaim!
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleNavigate("/profil", "m5Visited")}
+              className="bg-[#F5B82E] hover:bg-[#EAB308] text-[#382C22] font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0"
+            >
+              Buka
+            </button>
+          )}
+        </div>
+
       </div>
 
       {/* ── 5. KUIS TANTANGAN (4 CHECKPOINT) SPECIAL CARD ── */}

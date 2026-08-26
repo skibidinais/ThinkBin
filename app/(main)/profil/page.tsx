@@ -17,11 +17,11 @@ interface RankTier {
 }
 
 const RANK_TIERS: RankTier[] = [
-  { name: "Rookie", minXp: 0, maxXp: 49, badgeImg: "/screens_assets/badge_rookie.png" },
-  { name: "Explorer", minXp: 50, maxXp: 99, badgeImg: "/screens_assets/badge_explorer.png" },
-  { name: "Guardian", minXp: 100, maxXp: 159, badgeImg: "/screens_assets/badge_guardian.png" },
-  { name: "Warrior", minXp: 160, maxXp: 249, badgeImg: "/screens_assets/badge_warrior.png" },
-  { name: "Champion", minXp: 250, maxXp: 350, badgeImg: "/screens_assets/badge_champion.png" },
+  { name: "Rookie", minXp: 0, maxXp: 39, badgeImg: "/screens_assets/badge_rookie.png" },
+  { name: "Explorer", minXp: 40, maxXp: 79, badgeImg: "/screens_assets/badge_explorer.png" },
+  { name: "Guardian", minXp: 80, maxXp: 119, badgeImg: "/screens_assets/badge_guardian.png" },
+  { name: "Warrior", minXp: 120, maxXp: 179, badgeImg: "/screens_assets/badge_warrior.png" },
+  { name: "Champion", minXp: 180, maxXp: 239, badgeImg: "/screens_assets/badge_champion.png" },
 ];
 
 interface BorderConfigItem {
@@ -134,7 +134,7 @@ export default function ProfilPage() {
   const userXp = user?.xp ?? 0;
   const currentRank =
     RANK_TIERS.find((r) => userXp >= r.minXp && userXp <= r.maxXp) ||
-    (userXp > 350 ? RANK_TIERS[4] : RANK_TIERS[0]);
+    (userXp > 239 ? RANK_TIERS[4] : RANK_TIERS[0]);
 
   const progressPercent = Math.min(
     Math.round(((userXp - currentRank.minXp) / (currentRank.maxXp - currentRank.minXp || 1)) * 100),

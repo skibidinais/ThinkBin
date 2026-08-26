@@ -27,16 +27,16 @@ export const BAGIAN_INFO = [
 ];
 
 export const RANK_TIERS = [
-  { name: 'Rookie', minXp: 0, maxXp: 49, color: 'text-slate-500 bg-slate-100 border-slate-300' },
-  { name: 'Explorer', minXp: 50, maxXp: 99, color: 'text-teal-600 bg-teal-50 border-teal-200' },
-  { name: 'Guardian', minXp: 100, maxXp: 159, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-  { name: 'Warrior', minXp: 160, maxXp: 249, color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  { name: 'Champion', minXp: 250, maxXp: 319, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
-  { name: 'Legend', minXp: 320, maxXp: 999, color: 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse' }
+  { name: 'Rookie', minXp: 0, maxXp: 39, color: 'text-slate-500 bg-slate-100 border-slate-300' },
+  { name: 'Explorer', minXp: 40, maxXp: 79, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+  { name: 'Guardian', minXp: 80, maxXp: 119, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+  { name: 'Warrior', minXp: 120, maxXp: 179, color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  { name: 'Champion', minXp: 180, maxXp: 239, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+  { name: 'Legend', minXp: 240, maxXp: 999, color: 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse' }
 ];
 
 export function getRankTier(xp: number) {
-  return RANK_TIERS.find(t => xp >= t.minXp && xp <= t.maxXp) || RANK_TIERS[0];
+  return RANK_TIERS.find(t => xp >= t.minXp && xp <= t.maxXp) || (xp >= 240 ? RANK_TIERS[5] : RANK_TIERS[0]);
 }
 
 export const MODUL_DATA: ModulNode[] = [
