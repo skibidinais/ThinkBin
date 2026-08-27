@@ -123,24 +123,23 @@ export default function MissionPage() {
     setTimeout(() => setToastMsg(null), 3000);
   };
 
-  const handleClaim = async (missionKey: keyof MissionState, coinReward: number, xpReward: number, title: string) => {
+  const handleClaim = async (missionKey: keyof MissionState, coinReward: number, title: string) => {
     if (user?.id) {
       await claimDailyMissionTransaction({
         userId: user.id,
         missionId: missionKey,
         coinReward,
-        xpReward,
+        xpReward: 0,
       });
       await refreshProfile(user.id);
     } else {
       const newCoins = (user?.coins ?? 0) + coinReward;
-      const newXp = (user?.xp ?? 0) + xpReward;
-      updateUser({ coins: newCoins, xp: newXp });
+      updateUser({ coins: newCoins });
     }
 
     const updated = { ...missionState, [missionKey]: true };
     saveState(updated);
-    showToast(`Berhasil klaim +${coinReward} Coin & +${xpReward} XP dari "${title}"!`);
+    showToast(`Berhasil klaim +${coinReward} Coin dari "${title}"!`);
   };
 
   const handleNavigate = (path: string, visitKey?: "m3Visited" | "m4Visited" | "m5Visited") => {
@@ -162,7 +161,7 @@ export default function MissionPage() {
         </div>
       )}
 
-      {/* ── 1. HEADER (Title on left, Coin & XP Counter Pills on right) ── */}
+      {/* ── 1. HEADER (Title on left, Coin Counter Pill on right) ── */}
       <header className="flex items-center justify-between pt-1 pb-3 flex-shrink-0">
         <h1 className="font-fredoka font-extrabold text-[26px] text-[#382C22] tracking-tight">
           Misi Harian
@@ -182,24 +181,10 @@ export default function MissionPage() {
               {user?.coins ?? 0}
             </span>
           </div>
-
-          {/* XP Pill */}
-          <div className="flex items-center gap-1.5 bg-white border-[2.5px] border-[#382C22] rounded-full px-3 py-1 shadow-[0_2.5px_0_#382C22]">
-            <Image
-              src="/screens_assets/xp_icon.png"
-              alt="XP"
-              width={16}
-              height={16}
-              className="object-contain"
-            />
-            <span className="font-fredoka font-black text-sm text-[#382C22]">
-              {user?.xp ?? 0}
-            </span>
-          </div>
         </div>
       </header>
 
-      {/* ── 2. TOTAL HADIAH HARIAN & RESET BANNER (5 Misi: 55 Koin & 15 XP / hari) ── */}
+      {/* ── 2. TOTAL HADIAH HARIAN & RESET BANNER (5 Misi: 55 Koin / hari) ── */}
       <div className="bg-gradient-to-br from-[#FFF9E6] to-white border-[2.5px] border-[#382C22] rounded-[22px] p-3.5 flex items-center justify-between shadow-[0_3px_0_rgba(0,0,0,0.05)] mb-3 flex-shrink-0">
         <div className="flex flex-col gap-0.5">
           <span className="font-fredoka font-black text-[11px] uppercase text-[#796F65] tracking-wider">
@@ -216,19 +201,6 @@ export default function MissionPage() {
               />
               <span className="font-fredoka font-black text-[17px] text-[#B45309]">
                 55 Coin
-              </span>
-            </div>
-            <span className="text-[#94a3b8] font-bold text-xs">•</span>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/screens_assets/xp_icon.png"
-                alt="XP"
-                width={16}
-                height={16}
-                className="object-contain"
-              />
-              <span className="font-fredoka font-black text-[17px] text-[#16A34A]">
-                15 XP
               </span>
             </div>
             <span className="font-fredoka font-bold text-xs text-[#796F65]">
@@ -293,32 +265,17 @@ export default function MissionPage() {
             >
               Login hari ini (buka app)
             </span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/coin.png"
-                  alt="Coin"
-                  width={14}
-                  height={14}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                  +10 Coin
-                </span>
-              </div>
-              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/xp_icon.png"
-                  alt="XP"
-                  width={13}
-                  height={13}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
-                  +3 XP
-                </span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -338,7 +295,7 @@ export default function MissionPage() {
           ) : (
             <button
               type="button"
-              onClick={() => handleClaim("m1Claimed", 10, 3, "Login hari ini")}
+              onClick={() => handleClaim("m1Claimed", 10, "Login hari ini")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -378,32 +335,17 @@ export default function MissionPage() {
             >
               Selesaikan minimal 1 node belajar
             </span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/coin.png"
-                  alt="Coin"
-                  width={14}
-                  height={14}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                  +15 Coin
-                </span>
-              </div>
-              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/xp_icon.png"
-                  alt="XP"
-                  width={13}
-                  height={13}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
-                  +3 XP
-                </span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +15 Coin
+              </span>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -426,7 +368,7 @@ export default function MissionPage() {
           ) : isM2ReadyToClaim ? (
             <button
               type="button"
-              onClick={() => handleClaim("m2Claimed", 15, 3, "Selesaikan 1 node belajar")}
+              onClick={() => handleClaim("m2Claimed", 15, "Selesaikan 1 node belajar")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -477,32 +419,17 @@ export default function MissionPage() {
             >
               Kunjungi Papan Peringkat
             </span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/coin.png"
-                  alt="Coin"
-                  width={14}
-                  height={14}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                  +10 Coin
-                </span>
-              </div>
-              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/xp_icon.png"
-                  alt="XP"
-                  width={13}
-                  height={13}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
-                  +3 XP
-                </span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -525,7 +452,7 @@ export default function MissionPage() {
           ) : missionState.m3Visited ? (
             <button
               type="button"
-              onClick={() => handleClaim("m3Claimed", 10, 3, "Kunjungi Papan Peringkat")}
+              onClick={() => handleClaim("m3Claimed", 10, "Kunjungi Papan Peringkat")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -573,32 +500,17 @@ export default function MissionPage() {
             >
               Kunjungi Toko
             </span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/coin.png"
-                  alt="Coin"
-                  width={14}
-                  height={14}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                  +10 Coin
-                </span>
-              </div>
-              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/xp_icon.png"
-                  alt="XP"
-                  width={13}
-                  height={13}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
-                  +3 XP
-                </span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -621,7 +533,7 @@ export default function MissionPage() {
           ) : missionState.m4Visited ? (
             <button
               type="button"
-              onClick={() => handleClaim("m4Claimed", 10, 3, "Kunjungi Toko")}
+              onClick={() => handleClaim("m4Claimed", 10, "Kunjungi Toko")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -669,32 +581,17 @@ export default function MissionPage() {
             >
               Cek Profil & Rank Kamu
             </span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/coin.png"
-                  alt="Coin"
-                  width={14}
-                  height={14}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
-                  +10 Coin
-                </span>
-              </div>
-              <span className="text-[#cbd5e1] font-bold text-xs">•</span>
-              <div className="flex items-center gap-1">
-                <Image
-                  src="/screens_assets/xp_icon.png"
-                  alt="XP"
-                  width={13}
-                  height={13}
-                  className="object-contain"
-                />
-                <span className="font-fredoka font-black text-[11.5px] text-[#16A34A]">
-                  +3 XP
-                </span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Image
+                src="/screens_assets/coin.png"
+                alt="Coin"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+              <span className="font-fredoka font-black text-[11.5px] text-[#D97706]">
+                +10 Coin
+              </span>
             </div>
             {/* Progress track */}
             <div className="w-full h-2.5 bg-[#E2D3B8] border border-[#382C22] rounded-full overflow-hidden mt-0.5">
@@ -717,7 +614,7 @@ export default function MissionPage() {
           ) : missionState.m5Visited ? (
             <button
               type="button"
-              onClick={() => handleClaim("m5Claimed", 10, 3, "Cek Profil & Rank Kamu")}
+              onClick={() => handleClaim("m5Claimed", 10, "Cek Profil & Rank Kamu")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!

@@ -778,7 +778,7 @@ export async function openMysteryBoxTransaction(userId?: string): Promise<Myster
             };
           }
 
-          const rewardXp = Math.floor(Math.random() * 25) + 15;
+          const rewardXp = Math.floor(Math.random() * 6) + 5; // 5 to 10 XP
           const newCoins = (prof.coins || 0) - price;
           const newXp = (prof.xp || 0) + rewardXp;
 
