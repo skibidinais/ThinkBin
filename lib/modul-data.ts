@@ -53,12 +53,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Sampah sisa makanan dan bungkus jajanan dari kantin sekolah termasuk jenis sampah apa?',
       options: [
-        { value: 'A', text: 'Sampah sejenis rumah tangga' },
-        { value: 'B', text: 'Sampah luar angkasa' },
+        { value: 'A', text: 'Sampah luar angkasa' },
+        { value: 'B', text: 'Sampah sejenis rumah tangga' },
         { value: 'C', text: 'Sampah pabrik kimia' },
         { value: 'D', text: 'Sampah tanaman hutan' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Sampah dari fasilitas umum seperti kantin sekolah dikategorikan sebagai sampah sejenis rumah tangga.'
     },
     xpReward: 12,
@@ -76,12 +76,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Sisa sayuran, potongan buah, dan sisa makanan yang berair termasuk jenis sampah apa?',
       options: [
-        { value: 'A', text: 'Sampah organik basah' },
-        { value: 'B', text: 'Sampah organik kering' },
-        { value: 'C', text: 'Sampah plastik buatan' },
-        { value: 'D', text: 'Sampah botol kaca' }
+        { value: 'A', text: 'Sampah botol kaca' },
+        { value: 'B', text: 'Sampah plastik buatan' },
+        { value: 'C', text: 'Sampah organik basah' },
+        { value: 'D', text: 'Sampah organik kering' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Sisa sayuran dan buah berkadar air tinggi sehingga digolongkan sebagai sampah organik basah.'
     },
     xpReward: 12,
@@ -99,12 +99,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Mengapa kita tidak boleh menaruh makanan yang masih sangat panas ke dalam wadah styrofoam?',
       options: [
-        { value: 'A', text: 'Zat kimia styrofoam bisa larut dan berpindah ke makanan' },
-        { value: 'B', text: 'Makanan akan langsung berubah menjadi dingin' },
-        { value: 'C', text: 'Makanan akan bertambah banyak sendiri' },
-        { value: 'D', text: 'Styrofoam akan berubah menjadi batu keras' }
+        { value: 'A', text: 'Makanan akan langsung berubah menjadi dingin' },
+        { value: 'B', text: 'Makanan akan bertambah banyak sendiri' },
+        { value: 'C', text: 'Styrofoam akan berubah menjadi batu keras' },
+        { value: 'D', text: 'Zat kimia styrofoam bisa larut dan berpindah ke makanan' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Suhu panas dapat melarutkan monomer styrene berbahaya dari wadah styrofoam ke dalam makanan.'
     },
     xpReward: 12,
@@ -147,12 +147,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Cairan kotor dan bau yang merembes dari tumpukan sampah basah disebut apa?',
       options: [
-        { value: 'A', text: 'Air lindi (leachate)' },
-        { value: 'B', text: 'Air mineral pegunungan' },
+        { value: 'A', text: 'Air mineral pegunungan' },
+        { value: 'B', text: 'Air lindi (leachate)' },
         { value: 'C', text: 'Air hujan bersih' },
         { value: 'D', text: 'Air embun pagi' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Air lindi adalah cairan kotor beracun yang keluar merembes dari tumpukan sampah basah.'
     },
     xpReward: 12,
@@ -170,12 +170,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa bahaya yang ditimbulkan jika kaleng dan botol bekas tergenang air hujan di halaman sekolah?',
       options: [
-        { value: 'A', text: 'Menjadi tempat bersarang dan bertelurnya nyamuk DBD' },
-        { value: 'B', text: 'Menghasilkan mata air baru yang jernih' },
-        { value: 'C', text: 'Membuat udara di sekitar menjadi sangat dingin' },
+        { value: 'A', text: 'Menghasilkan mata air baru yang jernih' },
+        { value: 'B', text: 'Membuat udara di sekitar menjadi sangat dingin' },
+        { value: 'C', text: 'Menjadi tempat bersarang dan bertelurnya nyamuk DBD' },
         { value: 'D', text: 'Membuat tanaman di sekitar tumbuh lebih cepat' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Genangan air bersih di sampah anorganik merupakan habitat ideal nyamuk Aedes aegypti berkembang biak.'
     },
     xpReward: 12,
@@ -193,12 +193,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Bagaimana pecahan plastik super kecil (mikroplastik) di laut bisa masuk ke tubuh manusia?',
       options: [
-        { value: 'A', text: 'Melalui ikan laut yang memakan mikroplastik lalu kita santap' },
-        { value: 'B', text: 'Lewat sinar matahari yang terik di siang hari' },
-        { value: 'C', text: 'Melalui hembusan angin sejuk di pantai' },
-        { value: 'D', text: 'Lewat suara ombak di pinggir laut' }
+        { value: 'A', text: 'Lewat sinar matahari yang terik di siang hari' },
+        { value: 'B', text: 'Melalui hembusan angin sejuk di pantai' },
+        { value: 'C', text: 'Lewat suara ombak di pinggir laut' },
+        { value: 'D', text: 'Melalui ikan laut yang memakan mikroplastik lalu kita santap' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Mikroplastik termakan oleh ikan laut dan berpindah ke tubuh manusia melalui rantai makanan.'
     },
     xpReward: 12,
@@ -216,12 +216,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Sampah sisa makanan dan organik dapat diolah menjadi gas alami yang disebut apa?',
       options: [
-        { value: 'A', text: 'Biogas' },
-        { value: 'B', text: 'Oksigen murni' },
+        { value: 'A', text: 'Oksigen murni' },
+        { value: 'B', text: 'Biogas' },
         { value: 'C', text: 'Batu bara cair' },
         { value: 'D', text: 'Minyak goreng' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Biogas dihasilkan dari proses fermentasi sampah organik tanpa udara yang kaya akan gas metana ramah lingkungan.'
     },
     xpReward: 12,
@@ -241,12 +241,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa yang membedakan Reuse dengan Recycle?',
       options: [
-        { value: 'A', text: 'Reuse memakai kembali barang apa adanya, Recycle mengolahnya di pabrik jadi barang baru' },
-        { value: 'B', text: 'Reuse harus membakar sampah, Recycle membuang sampah ke sungai' },
-        { value: 'C', text: 'Reuse hanya untuk sisa nasi, Recycle hanya untuk daun kering' },
+        { value: 'A', text: 'Reuse harus membakar sampah, Recycle membuang sampah ke sungai' },
+        { value: 'B', text: 'Reuse hanya untuk sisa nasi, Recycle hanya untuk daun kering' },
+        { value: 'C', text: 'Reuse memakai kembali barang apa adanya, Recycle mengolahnya di pabrik jadi barang baru' },
         { value: 'D', text: 'Keduanya sama persis dan tidak ada bedanya sama sekali' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Reuse menggunakan barang kembali secara langsung, sedangkan Recycle melibatkan pemrosesan ulang/peleburan bahan di pabrik.'
     },
     xpReward: 12,
@@ -264,12 +264,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Tindakan membawa kotak bekal dan botol minum tumbler sendiri dari rumah ke sekolah termasuk contoh dari...',
       options: [
-        { value: 'A', text: 'Reduce (mengurangi timbulan sampah plastik sekali pakai)' },
-        { value: 'B', text: 'Recycle (melebur sampah plastik di pabrik)' },
-        { value: 'C', text: 'Residu (membuang sampah ke tempat akhir)' },
-        { value: 'D', text: 'Reboisasi (menanam kembali pohon di hutan)' }
+        { value: 'A', text: 'Recycle (melebur sampah plastik di pabrik)' },
+        { value: 'B', text: 'Residu (membuang sampah ke tempat akhir)' },
+        { value: 'C', text: 'Reboisasi (menanam kembali pohon di hutan)' },
+        { value: 'D', text: 'Reduce (mengurangi timbulan sampah plastik sekali pakai)' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Membawa wadah makan dan minum sendiri mencegah terciptanya sampah plastik sekali pakai (Reduce).'
     },
     xpReward: 12,
@@ -310,12 +310,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa langkah yang benar sebelum membuang botol atau gelas plastik bekas minuman manis ke tong anorganik?',
       options: [
-        { value: 'A', text: 'Mengosongkan sisa air minumannya terlebih dahulu agar bersih dan kering' },
-        { value: 'B', text: 'Membiarkan air manisnya tetap penuh di dalam botol' },
+        { value: 'A', text: 'Membiarkan air manisnya tetap penuh di dalam botol' },
+        { value: 'B', text: 'Mengosongkan sisa air minumannya terlebih dahulu agar bersih dan kering' },
         { value: 'C', text: 'Mencampurnya dengan sisa kuah bakso dan sambal' },
         { value: 'D', text: 'Membakar botol plastiknya di halaman kelas' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Mengosongkan cairan dari wadah plastik mencegah kebusukan dan mempermudah proses daur ulang.'
     },
     xpReward: 12,
@@ -335,12 +335,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Dari mana asal dana dan hadiah reward yang diperoleh siswa di ThinkBin?',
       options: [
-        { value: 'A', text: 'Dari hasil penjualan sampah yang dikumpulkan di Bank Sampah' },
-        { value: 'B', text: 'Dari membeli kupon undian berbayar' },
-        { value: 'C', text: 'Dari meminjam uang di bank keliling' },
+        { value: 'A', text: 'Dari membeli kupon undian berbayar' },
+        { value: 'B', text: 'Dari meminjam uang di bank keliling' },
+        { value: 'C', text: 'Dari hasil penjualan sampah yang dikumpulkan di Bank Sampah' },
         { value: 'D', text: 'Dari menebang pohon di taman kota' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Hasil penjualan sampah terpilah di Bank Sampah menjadi sumber sirkular pendanaan reward siswa.'
     },
     xpReward: 12,
@@ -358,12 +358,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Mengapa botol plastik yang bersih dan dilepas labelnya dihargai lebih mahal di Bank Sampah?',
       options: [
-        { value: 'A', text: 'Karena jenis plastiknya murni dan mudah langsung didaur ulang pabrik' },
-        { value: 'B', text: 'Karena botol bersih terasa jauh lebih berat daripada botol kotor' },
-        { value: 'C', text: 'Karena warnanya bisa menyala sendiri dalam gelap' },
-        { value: 'D', text: 'Karena botol bersih bisa langsung diminum airnya tanpa dicuci' }
+        { value: 'A', text: 'Karena botol bersih terasa jauh lebih berat daripada botol kotor' },
+        { value: 'B', text: 'Karena warnanya bisa menyala sendiri dalam gelap' },
+        { value: 'C', text: 'Karena botol bersih bisa langsung diminum airnya tanpa dicuci' },
+        { value: 'D', text: 'Karena jenis plastiknya murni dan mudah langsung didaur ulang pabrik' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Botol bersih tanpa label memiliki kemurnian bahan PET tinggi sehingga langsung siap dicacah oleh pabrik.'
     },
     xpReward: 12,
@@ -404,12 +404,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Setelah mempelajari seluruh materi ThinkBin, apa langkah terpenting yang harus kita lakukan setiap hari?',
       options: [
-        { value: 'A', text: 'Mempraktikkan kebiasaan memilah sampah secara konsisten di sekolah dan rumah' },
-        { value: 'B', text: 'Melupakan semua materi yang sudah dipelajari' },
+        { value: 'A', text: 'Melupakan semua materi yang sudah dipelajari' },
+        { value: 'B', text: 'Mempraktikkan kebiasaan memilah sampah secara konsisten di sekolah dan rumah' },
         { value: 'C', text: 'Membuang sampah di sembarang tempat jika tidak ada yang melihat' },
         { value: 'D', text: 'Menggunakan plastik sekali pakai sebanyak-banyaknya' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Praktik konsisten setiap hari adalah wujud nyata komitmen seorang Guardian Lingkungan ThinkBin!'
     },
     xpReward: 12,
