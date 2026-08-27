@@ -52,7 +52,20 @@ export default function LeaderboardPage() {
         setIsLoading(false);
       }
     }
+
     loadData();
+
+    const handleFocus = () => {
+      loadData();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("visibilitychange", handleFocus);
+    };
   }, [user?.id]);
 
   // Transform data based on active tab

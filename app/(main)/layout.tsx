@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { usePathname } from "next/navigation";
+import React, { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import StatusBar from "@/components/shared/StatusBar";
 import BottomDock from "@/components/shared/BottomDock";
 import { useAuth } from "@/lib/auth-context";
@@ -11,8 +11,20 @@ export default function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Guard: If user is logged in but hasn't completed setup-profil / has no class_name, force setup-profil
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user) {
+        router.replace("/login");
+      } else if (!user.class_name || !user.student_number) {
+        router.replace("/setup-profil");
+      }
+    }
+  }, [user, isLoading, router]);
 
   // Hide top StatusBar on pages that render their own header, stats, or full-bleed background
   const isDashboard = pathname === "/dashboard";

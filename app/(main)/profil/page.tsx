@@ -295,9 +295,29 @@ export default function ProfilPage() {
           </div>
 
           {/* User Display Name */}
-          <h2 className="font-fredoka font-black text-[22px] text-[#1F2937] text-center leading-tight mb-2.5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.9)]">
-            {user?.display_name || user?.email?.split("@")[0] || ""}
+          <h2 className="font-fredoka font-black text-[22px] text-[#1F2937] text-center leading-tight mb-1.5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.9)]">
+            {user?.display_name || user?.email?.split("@")[0] || "Siswa ThinkBin"}
           </h2>
+
+          {/* Class & Student Number Badge */}
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="bg-[#15803d] text-white font-fredoka font-extrabold text-[12px] px-3 py-0.5 rounded-full shadow-xs">
+              {user?.class_name ? `Kelas ${user.class_name}` : "Belum Pilih Kelas"}
+            </span>
+            {user?.student_number && (
+              <span className="bg-[#3b82f6] text-white font-fredoka font-extrabold text-[12px] px-2.5 py-0.5 rounded-full shadow-xs">
+                Absen #{user.student_number}
+              </span>
+            )}
+            {/* Edit / Pilih Identitas Button */}
+            <button
+              type="button"
+              onClick={() => router.push("/setup-profil")}
+              className="bg-white/90 hover:bg-white text-[#382C22] border border-[#382C22] font-fredoka font-extrabold text-[10.5px] px-2.5 py-0.5 rounded-full shadow-xs active:scale-95 transition-transform"
+            >
+              Ubah
+            </button>
+          </div>
 
           {/* Centered Level Progress Bar Container */}
           <div className="w-full max-w-[280px] bg-white/95 backdrop-blur-xs border-[1.5px] border-[#382C22] rounded-[14px] px-3.5 py-1.5 shadow-[0_2px_0_#382C22] flex flex-col items-center gap-1">
