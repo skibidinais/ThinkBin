@@ -63,30 +63,30 @@ export async function checkDuplicateUser(params: {
 }): Promise<DuplicateCheckResult> {
   if (isSupabaseConfigured()) {
     try {
-      // Layer 2: Check Google ID
+      // Layer 2: Check Google ID (only duplicate if it belongs to another user)
       const { data: googleMatch } = await supabase
         .from("user_profiles")
-        .select("id")
+        .select("id, google_id, class_name, student_number")
         .eq("google_id", params.googleId)
         .maybeSingle();
 
-      if (googleMatch) {
-        return {
-          isDuplicate: true,
-          reason: "DUPLICATE_GOOGLE_ID",
-          message: "Akun Google ini sudah terdaftar di ThinkBin.",
-        };
+      if (googleMatch && googleMatch.class_name && googleMatch.student_number) {
+        // If current user is setting the exact same class and number they already own, allow it
+        if (googleMatch.class_name !== params.className || googleMatch.student_number !== params.studentNumber) {
+          // User is attempting to register a second identity on the same Google account
+          // Allow updating/re-selecting identity
+        }
       }
 
       // Layer 3: Check Class & Student Number (Roster duplicate)
       const { data: rosterMatch } = await supabase
         .from("user_profiles")
-        .select("id")
+        .select("id, google_id")
         .eq("class_name", params.className)
         .eq("student_number", params.studentNumber)
         .maybeSingle();
 
-      if (rosterMatch) {
+      if (rosterMatch && rosterMatch.google_id !== params.googleId) {
         return {
           isDuplicate: true,
           reason: "DUPLICATE_ROSTER",

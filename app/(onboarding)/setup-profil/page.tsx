@@ -76,7 +76,7 @@ export default function SetupProfilPage() {
           ? user.google_id
           : generateUuid();
 
-      // Save user profile
+      // Save user profile (preserve existing XP and coins if they have played)
       const updatedProfile = {
         id: safeId,
         google_id: googleId,
@@ -85,17 +85,23 @@ export default function SetupProfilPage() {
         class_name: selectedClass,
         student_number: selectedStudent.studentNumber,
         device_fingerprint: fingerprint,
-        coins: 0,
-        xp: 0,
-        streak: 1,
-        onboarding_completed: false,
+        coins: user?.coins || 0,
+        xp: user?.xp || 0,
+        streak: user?.streak || 1,
+        selected_frame: user?.selected_frame || "frame_teal_tech",
+        onboarding_completed: true,
       };
 
       await saveUserProfile(updatedProfile);
       updateUser(updatedProfile);
 
-      // Proceed to Pre-Survey (Kuisioner Awal)
-      router.push("/kuisioner?type=awal");
+      // If user already completed onboarding/has progress, go to dashboard directly
+      if (user?.xp && user.xp > 0) {
+        router.push("/dashboard");
+      } else {
+        // Proceed to Pre-Survey (Kuisioner Awal)
+        router.push("/kuisioner?type=awal");
+      }
     } catch (err) {
       console.error("Setup profile error:", err);
       setDuplicateError("Terjadi kendala saat menyimpan profil. Silakan coba lagi.");
