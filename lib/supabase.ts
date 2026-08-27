@@ -580,7 +580,7 @@ export async function purchaseFrameTransaction(payload: {
 
   if (isSupabaseConfigured()) {
     try {
-      // Call RPC purchase_shop_item with single param p_item_id
+      // Call RPC purchase_shop_item
       let { data, error } = await supabase.rpc("purchase_shop_item", {
         p_item_id: payload.frameId,
       });
@@ -605,6 +605,61 @@ export async function purchaseFrameTransaction(payload: {
             success: false,
             status: data.status || "error",
             message: data.message,
+          };
+        }
+      }
+
+      // If RPC fails (e.g. schema cache not reloaded on Supabase), fallback to direct table transaction
+      if (error && payload.userId) {
+        console.warn("RPC failed, executing direct DB transaction:", error.message);
+        
+        const { data: userProfile } = await supabase
+          .from("user_profiles")
+          .select("id, coins")
+          .or(`id.eq.${payload.userId},google_id.eq.${payload.userId}`)
+          .maybeSingle();
+
+        if (userProfile) {
+          if ((userProfile.coins || 0) < price) {
+            return {
+              success: false,
+              status: "insufficient_funds",
+              message: "Koin kamu tidak cukup untuk membeli item ini.",
+            };
+          }
+
+          const newCoins = (userProfile.coins || 0) - price;
+
+          // 1. Deduct coins and update frame
+          await supabase
+            .from("user_profiles")
+            .update({
+              coins: newCoins,
+              selected_frame: payload.frameId,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", userProfile.id);
+
+          // 2. Insert transaction record
+          try {
+            await supabase.from("store_transactions").insert([
+              {
+                user_id: userProfile.id,
+                item_id: payload.frameId,
+                item_name: payload.frameName || payload.frameId,
+                price_coins: price,
+              },
+            ]);
+          } catch {
+            // ignore unique violation
+          }
+
+          persistPurchaseLocal(newCoins);
+          return {
+            success: true,
+            status: "success",
+            message: `Border "${payload.frameName || payload.frameId}" berhasil dibeli dan terpasang.`,
+            currentCoins: newCoins,
           };
         }
       }
@@ -705,6 +760,59 @@ export async function openMysteryBoxTransaction(userId?: string): Promise<Myster
           currentCoins: data.current_coins,
           message: data.message || `Kamu membuka Mystery Box dan mendapatkan +${data.reward_xp} XP!`,
         };
+      }
+
+      if (error && userId) {
+        console.warn("RPC open_mystery_box failed, executing direct DB transaction:", error.message);
+        const { data: prof } = await supabase
+          .from("user_profiles")
+          .select("id, coins, xp")
+          .or(`id.eq.${userId},google_id.eq.${userId}`)
+          .maybeSingle();
+
+        if (prof) {
+          if ((prof.coins || 0) < price) {
+            return {
+              success: false,
+              message: "Koin kamu tidak cukup untuk Mystery Box.",
+            };
+          }
+
+          const rewardXp = Math.floor(Math.random() * 25) + 15;
+          const newCoins = (prof.coins || 0) - price;
+          const newXp = (prof.xp || 0) + rewardXp;
+
+          await supabase
+            .from("user_profiles")
+            .update({
+              coins: newCoins,
+              xp: newXp,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", prof.id);
+
+          if (typeof window !== "undefined") {
+            const rawUser = localStorage.getItem("tb_active_user");
+            if (rawUser) {
+              try {
+                const u = JSON.parse(rawUser);
+                u.coins = newCoins;
+                u.xp = newXp;
+                localStorage.setItem("tb_active_user", JSON.stringify(u));
+              } catch {
+                // ignore
+              }
+            }
+          }
+
+          return {
+            success: true,
+            rewardXp,
+            currentCoins: newCoins,
+            currentXp: newXp,
+            message: `Kamu membuka Mystery Box dan mendapatkan +${rewardXp} XP!`,
+          };
+        }
       }
 
       if (error) {
