@@ -848,7 +848,7 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
     try {
       let query = supabase
         .from("user_profiles")
-        .select("*")
+        .select("id, google_id, email, display_name, class_name, student_number, coins, xp, streak, selected_frame")
         .order("xp", { ascending: false })
         .limit(200);
 
