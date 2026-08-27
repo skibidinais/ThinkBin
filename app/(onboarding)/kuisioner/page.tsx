@@ -119,7 +119,7 @@ function KuisionerContent() {
 
   return (
     <div
-      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-y-auto overscroll-y-contain flex justify-center select-none p-4 sm:p-5 pb-16"
+      className="relative w-full min-h-[100dvh] h-auto overflow-y-auto overscroll-y-contain flex justify-center select-none p-4 sm:p-5 pb-36"
       style={{
         background: "linear-gradient(180deg, #85dd16 0%, #68c309 100%)",
         WebkitOverflowScrolling: "touch",
@@ -148,18 +148,19 @@ function KuisionerContent() {
           {questions.map((q, idx) => (
             <div
               key={q.id}
-              className="bg-white border-[3px] border-[#1e293b] rounded-[24px] p-4 shadow-[0_5px_0_#1e293b]"
+              className="bg-white border-[3px] border-[#1e293b] rounded-[24px] p-4 shadow-[0_5px_0_#1e293b] flex flex-col gap-3"
             >
-              {/* Question Number Badge */}
-              <div className="inline-block bg-[#ecfccb] border border-[#84cc16] text-[#3f6212] font-fredoka font-black text-[11px] px-2.5 py-0.5 rounded-lg mb-2">
-                Pertanyaan {idx + 1}/{questions.length}
+              {/* Question Badge & Text */}
+              <div className="flex flex-col gap-1">
+                <span className="self-start bg-[#ecfccb] border border-[#84cc16] text-[#3f6212] font-fredoka font-black text-[11px] px-2.5 py-0.5 rounded-full">
+                  Pertanyaan {idx + 1}/{questions.length}
+                </span>
+                <h3 className="font-fredoka font-bold text-[14.5px] text-[#0f172a] leading-snug">
+                  &ldquo;{q.question}&rdquo;
+                </h3>
               </div>
 
-              <p className="font-fredoka font-extrabold text-[14.5px] text-[#0f172a] leading-snug mb-3">
-                {q.question}
-              </p>
-
-              {/* Options Group */}
+              {/* Options Radio List */}
               <div className="flex flex-col gap-2">
                 {q.options.map((opt) => {
                   const isSelected = answers[q.id] === opt.key;
@@ -168,24 +169,31 @@ function KuisionerContent() {
                     <div
                       key={opt.key}
                       onClick={() => handleSelectOption(q.id, opt.key)}
-                      className={`flex items-center gap-3 p-3 rounded-2xl border-[2px] transition-all cursor-pointer ${
+                      className={`w-full min-h-[46px] rounded-xl border-[2px] px-3 py-2 flex items-center gap-2.5 cursor-pointer transition-all ${
                         isSelected
-                          ? "bg-[#ecfccb] border-[#65a30d] text-[#3f6212] shadow-xs"
-                          : "bg-[#f8fafc] border-[#e2e8f0] text-[#1e293b] hover:bg-[#f1f5f9]"
+                          ? "bg-[#ecfccb] border-[#65a30d] shadow-xs"
+                          : "bg-[#f8fafc] border-[#cbd5e1] hover:border-[#94a3b8]"
                       }`}
                     >
-                      {/* Option Key Badge (A/B/C/D) */}
+                      {/* Option Pill */}
                       <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center font-fredoka font-black text-xs flex-shrink-0 border-[2px] ${
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-fredoka font-black text-xs flex-shrink-0 transition-colors ${
                           isSelected
-                            ? "bg-[#65a30d] border-[#3f6212] text-white"
-                            : "bg-white border-[#cbd5e1] text-[#475569]"
+                            ? "bg-[#65a30d] text-white"
+                            : "bg-[#e2e8f0] text-[#64748b]"
                         }`}
                       >
                         {opt.key}
                       </div>
 
-                      <span className="font-nunito font-bold text-xs leading-snug">
+                      {/* Option Text */}
+                      <span
+                        className={`font-fredoka text-[13px] leading-tight flex-1 ${
+                          isSelected
+                            ? "font-black text-[#1a2e05]"
+                            : "font-semibold text-[#334155]"
+                        }`}
+                      >
                         {opt.text}
                       </span>
                     </div>
@@ -199,7 +207,7 @@ function KuisionerContent() {
           <button
             type="submit"
             disabled={!isAllAnswered || isSubmitting}
-            className="w-full h-[54px] bg-gradient-to-b from-[#fad85e] to-[#e7a627] hover:brightness-105 disabled:bg-none disabled:bg-[#e2e8f0] disabled:border-[#cbd5e1] disabled:text-[#94a3b8] disabled:shadow-none disabled:cursor-not-allowed border-[3px] border-[#1e293b] rounded-[22px] text-[#1e293b] font-fredoka font-black text-base shadow-[0_5px_0_#1e293b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#1e293b] mt-2 mb-6 transition-all cursor-pointer uppercase tracking-wide flex items-center justify-center gap-2"
+            className="w-full h-[56px] bg-gradient-to-b from-[#fad85e] to-[#e7a627] hover:brightness-105 disabled:bg-none disabled:bg-[#e2e8f0] disabled:border-[#cbd5e1] disabled:text-[#94a3b8] disabled:shadow-none disabled:cursor-not-allowed border-[3px] border-[#1e293b] rounded-[22px] text-[#1e293b] font-fredoka font-black text-base shadow-[0_5px_0_#1e293b] active:translate-y-[3px] active:shadow-[0_1.5px_0_#1e293b] mt-4 mb-12 transition-all cursor-pointer uppercase tracking-wide flex items-center justify-center gap-2"
           >
             <span>{isSubmitting ? "Menyimpan Jawaban..." : "Selesai & Lihat Hasil"}</span>
           </button>
