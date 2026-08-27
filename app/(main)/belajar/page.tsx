@@ -89,16 +89,50 @@ export default function BelajarPage() {
         refreshProfile(user.id).catch(() => {});
         const completed = await fetchUserCompletedNodes(user.id);
         setCompletedNodeIds(completed);
+        let nextUnlocked = 16;
+        for (let i = 1; i <= 16; i++) {
+          if (!completed.includes(i)) {
+            nextUnlocked = i;
+            break;
+          }
+        }
+        const recommendedBagian = Math.min(4, Math.max(1, Math.ceil(nextUnlocked / 4)));
+        setCurrentBagian(recommendedBagian);
       } else {
         try {
           const raw = localStorage.getItem("thinkbin_completed_nodes");
-          if (raw) setCompletedNodeIds(JSON.parse(raw));
+          if (raw) {
+            const completed: number[] = JSON.parse(raw);
+            setCompletedNodeIds(completed);
+            let nextUnlocked = 16;
+            for (let i = 1; i <= 16; i++) {
+              if (!completed.includes(i)) {
+                nextUnlocked = i;
+                break;
+              }
+            }
+            const recommendedBagian = Math.min(4, Math.max(1, Math.ceil(nextUnlocked / 4)));
+            setCurrentBagian(recommendedBagian);
+          }
         } catch {
           // Fallback
         }
       }
     }
+
     loadProgress();
+
+    const handleFocus = () => {
+      loadProgress();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("visibilitychange", handleFocus);
+    };
   }, [user?.id]);
 
   // Sequential unlock logic: first uncompleted node from 1 to 16

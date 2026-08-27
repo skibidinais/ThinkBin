@@ -1,9 +1,9 @@
 -- =========================================================================
--- THINKBIN URGENT SHOP RPC FIX (PRODUCTION)
+-- THINKBIN DEPLOY SHOP RPC FUNCTIONS (PRODUCTION)
 -- Jalankan skrip ini di Supabase Dashboard -> SQL Editor -> Run
 -- =========================================================================
 
--- 1. Hapus versi lama agar tidak ada konflik signature di schema cache
+-- 1. CLEANUP OLD FUNCTION OVERLOADS
 DROP FUNCTION IF EXISTS public.purchase_shop_item(TEXT, TEXT);
 DROP FUNCTION IF EXISTS public.purchase_shop_item(TEXT);
 DROP FUNCTION IF EXISTS public.equip_shop_item(TEXT, TEXT);
@@ -11,7 +11,7 @@ DROP FUNCTION IF EXISTS public.equip_shop_item(TEXT);
 DROP FUNCTION IF EXISTS public.open_mystery_box(TEXT);
 DROP FUNCTION IF EXISTS public.open_mystery_box();
 
--- 2. Pastikan tabel shop_catalog terisi data harga resmi
+-- 2. ENSURE SHOP CATALOG TABLE EXISTS WITH AUTHORITATIVE PRICES
 CREATE TABLE IF NOT EXISTS public.shop_catalog (
     item_id TEXT PRIMARY KEY,
     item_name TEXT NOT NULL,
@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS public.shop_catalog (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Seed / update border prices
 INSERT INTO public.shop_catalog (item_id, item_name, price_coins) VALUES
 ('eco_green', 'Eco Green Border', 30),
 ('autumn_forest', 'Autumn Forest Border', 40),
@@ -38,11 +39,20 @@ ON CONFLICT (item_id) DO UPDATE SET
     item_name = EXCLUDED.item_name,
     price_coins = EXCLUDED.price_coins;
 
--- 3. FUNCTION TUNGGAL: purchase_shop_item(p_item_id TEXT, p_user_id TEXT)
---    Now accepts p_user_id fallback, matching complete_node & claim_daily_mission pattern.
+-- 3. STORE TRANSACTIONS TABLE
+CREATE TABLE IF NOT EXISTS public.store_transactions (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+    item_id VARCHAR(100) NOT NULL,
+    item_name VARCHAR(100) NOT NULL,
+    price_coins INT NOT NULL CHECK (price_coins >= 0),
+    purchased_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT unique_user_item UNIQUE (user_id, item_id)
+);
+
+-- 4. ATOMIC RPC: purchase_shop_item(p_item_id TEXT)
 CREATE OR REPLACE FUNCTION public.purchase_shop_item(
-    p_item_id TEXT,
-    p_user_id TEXT DEFAULT NULL
+    p_item_id TEXT
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -56,14 +66,8 @@ DECLARE
     v_updated_rows INT;
     v_new_coins INT;
 BEGIN
-    -- User resolution: auth.uid() first, then p_user_id fallback (UUID or google_id lookup)
-    IF auth.uid() IS NOT NULL THEN
-        v_user_id := auth.uid();
-    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
-        v_user_id := p_user_id::UUID;
-    ELSIF p_user_id IS NOT NULL THEN
-        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
-    END IF;
+    -- Auth resolution strictly from session
+    v_user_id := auth.uid();
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object(
@@ -73,7 +77,7 @@ BEGIN
         );
     END IF;
 
-    -- Validasi item dari tabel katalog resmi
+    -- Fetch item details from shop_catalog
     SELECT price_coins, item_name INTO v_price, v_item_name
     FROM public.shop_catalog
     WHERE item_id = p_item_id;
@@ -86,7 +90,7 @@ BEGIN
         );
     END IF;
 
-    -- Cek jika sudah pernah membeli item ini
+    -- Check if item is already owned
     IF EXISTS (
         SELECT 1 FROM public.store_transactions
         WHERE user_id = v_user_id AND item_id = p_item_id
@@ -104,7 +108,7 @@ BEGIN
         );
     END IF;
 
-    -- Atomic conditional update koin (mencegah saldo minus & race condition)
+    -- Atomic conditional update for coins
     UPDATE public.user_profiles
     SET coins = coins - v_price,
         selected_frame = p_item_id,
@@ -122,12 +126,11 @@ BEGIN
         );
     END IF;
 
-    -- Simpan pencatatan transaksi ownership
+    -- Record ownership transaction
     BEGIN
         INSERT INTO public.store_transactions (user_id, item_id, item_name, price_coins, purchased_at)
         VALUES (v_user_id, p_item_id, v_item_name, v_price, NOW());
     EXCEPTION WHEN unique_violation THEN
-        -- Rollback saldo jika duplikasi concurrent
         UPDATE public.user_profiles
         SET coins = coins + v_price
         WHERE id = v_user_id
@@ -150,11 +153,9 @@ BEGIN
 END;
 $$;
 
--- 4. FUNCTION TUNGGAL: equip_shop_item(p_item_id TEXT, p_user_id TEXT)
---    Now accepts p_user_id fallback.
+-- 5. ATOMIC RPC: equip_shop_item(p_item_id TEXT)
 CREATE OR REPLACE FUNCTION public.equip_shop_item(
-    p_item_id TEXT,
-    p_user_id TEXT DEFAULT NULL
+    p_item_id TEXT
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -164,14 +165,7 @@ AS $$
 DECLARE
     v_user_id UUID;
 BEGIN
-    -- User resolution: auth.uid() first, then p_user_id fallback
-    IF auth.uid() IS NOT NULL THEN
-        v_user_id := auth.uid();
-    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
-        v_user_id := p_user_id::UUID;
-    ELSIF p_user_id IS NOT NULL THEN
-        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
-    END IF;
+    v_user_id := auth.uid();
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
@@ -192,11 +186,8 @@ BEGIN
 END;
 $$;
 
--- 5. FUNCTION TUNGGAL: open_mystery_box(p_user_id TEXT)
---    Now accepts p_user_id fallback.
-CREATE OR REPLACE FUNCTION public.open_mystery_box(
-    p_user_id TEXT DEFAULT NULL
-)
+-- 6. ATOMIC RPC: open_mystery_box()
+CREATE OR REPLACE FUNCTION public.open_mystery_box()
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -206,58 +197,50 @@ DECLARE
     v_user_id UUID;
     v_price INT := 40;
     v_reward_xp INT;
-    v_updated_rows INT;
-    v_new_xp INT;
     v_new_coins INT;
+    v_new_xp INT;
+    v_updated_rows INT;
 BEGIN
-    -- User resolution: auth.uid() first, then p_user_id fallback
-    IF auth.uid() IS NOT NULL THEN
-        v_user_id := auth.uid();
-    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
-        v_user_id := p_user_id::UUID;
-    ELSIF p_user_id IS NOT NULL THEN
-        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
-    END IF;
+    v_user_id := auth.uid();
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
     END IF;
 
-    v_reward_xp := floor(random() * 25 + 15)::INT;
+    -- Random XP reward between 15 and 40
+    v_reward_xp := floor(random() * (40 - 15 + 1) + 15)::INT;
 
     UPDATE public.user_profiles
     SET coins = coins - v_price,
-        xp = COALESCE(xp, 0) + v_reward_xp,
+        xp = xp + v_reward_xp,
         updated_at = NOW()
     WHERE id = v_user_id AND coins >= v_price
-    RETURNING xp, coins INTO v_new_xp, v_new_coins;
+    RETURNING coins, xp INTO v_new_coins, v_new_xp;
 
     GET DIAGNOSTICS v_updated_rows = ROW_COUNT;
 
     IF v_updated_rows = 0 THEN
         RETURN jsonb_build_object(
             'success', false,
-            'status', 'insufficient_funds',
-            'message', 'Koin tidak cukup untuk Mystery Box.'
+            'message', 'Koin kamu tidak cukup untuk membuka Mystery Box.'
         );
     END IF;
 
     RETURN jsonb_build_object(
         'success', true,
-        'status', 'success',
         'reward_xp', v_reward_xp,
-        'current_xp', v_new_xp,
         'current_coins', v_new_coins,
+        'current_xp', v_new_xp,
         'message', format('Kamu membuka Mystery Box dan mendapatkan +%s XP!', v_reward_xp)
     );
 END;
 $$;
 
--- 6. GRANT PERMISSIONS (new signatures with p_user_id TEXT parameter)
-GRANT EXECUTE ON FUNCTION public.purchase_shop_item(TEXT, TEXT) TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.equip_shop_item(TEXT, TEXT) TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.open_mystery_box(TEXT) TO anon, authenticated, service_role;
+-- 7. GRANTS
+GRANT EXECUTE ON FUNCTION public.purchase_shop_item(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.equip_shop_item(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.open_mystery_box() TO anon, authenticated, service_role;
 GRANT SELECT ON public.shop_catalog TO anon, authenticated, service_role;
 
--- 7. REFRESH SCHEMA CACHE
+-- 8. RELOAD SCHEMA CACHE
 NOTIFY pgrst, 'reload schema';

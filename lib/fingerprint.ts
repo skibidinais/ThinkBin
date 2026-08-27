@@ -26,9 +26,9 @@ export function getDeviceFingerprint(): string {
       ctx.fillStyle = "#f60";
       ctx.fillRect(125, 1, 62, 20);
       ctx.fillStyle = "#069";
-      ctx.fillText("ThinkBinFP,🌿", 2, 15);
+      ctx.fillText("ThinkBinFP,CanvasText", 2, 15);
       ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
-      ctx.fillText("ThinkBinFP,🌿", 4, 17);
+      ctx.fillText("ThinkBinFP,CanvasText", 4, 17);
       canvasHash = canvas.toDataURL().slice(-50);
     }
 

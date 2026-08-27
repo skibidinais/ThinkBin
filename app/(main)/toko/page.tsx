@@ -189,10 +189,16 @@ export default function TokoPage() {
         const result = await openMysteryBoxTransaction(user?.id || "usr_guest");
         if (result.success) {
           setPurchaseNotice(result.message || `Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
+          if (result.currentCoins !== undefined || result.currentXp !== undefined) {
+            updateUser({
+              coins: result.currentCoins ?? (user?.coins ? user.coins - item.price : 0),
+              xp: result.currentXp ?? ((user?.xp || 0) + (result.rewardXp || 20)),
+            });
+          }
         } else {
           setPurchaseNotice(result.message || "Koin tidak cukup untuk Mystery Box.");
         }
-        // Always refresh profile from database to sync coins/xp
+        // Refresh profile from database to sync coins/xp
         if (user?.id) {
           await refreshProfile(user.id);
         }
@@ -207,6 +213,8 @@ export default function TokoPage() {
         if (user?.id) {
           await equipFrameInDatabase(user.id, item.id);
           await refreshProfile(user.id);
+        } else {
+          updateUser({ selected_frame: item.id });
         }
         setSelectedFrame(item.id);
         setPurchaseNotice(`Border "${item.name}" berhasil dipasang.`);
@@ -224,16 +232,22 @@ export default function TokoPage() {
 
       if (result.success) {
         setPurchaseNotice(result.message || `Border "${item.name}" berhasil dibeli dan terpasang.`);
+        const newOwned = Array.from(new Set([...ownedFrames, item.id]));
+        setOwnedFrames(newOwned);
+        setSelectedFrame(item.id);
+        if (result.currentCoins !== undefined) {
+          updateUser({ coins: result.currentCoins, selected_frame: item.id });
+        } else if (user?.coins !== undefined) {
+          updateUser({ coins: user.coins - item.price, selected_frame: item.id });
+        }
         // Refresh profile and owned frames from database AFTER successful purchase
         if (user?.id) {
           await refreshProfile(user.id);
           const freshOwned = await fetchUserOwnedFrames(user.id);
           setOwnedFrames(freshOwned);
-          setSelectedFrame(item.id);
         }
       } else {
         setPurchaseNotice(result.message || "Gagal memproses transaksi.");
-        // Still refresh to ensure coins display is accurate
         if (user?.id) {
           await refreshProfile(user.id);
         }
@@ -384,7 +398,12 @@ export default function TokoPage() {
                   }`}
                 >
                   {isEquipped ? (
-                    <span>✓ Terpasang</span>
+                    <span className="flex items-center gap-1">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>Terpasang</span>
+                    </span>
                   ) : isOwned ? (
                     <span>Pasang</span>
                   ) : (

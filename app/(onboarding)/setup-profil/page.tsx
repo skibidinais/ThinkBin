@@ -269,9 +269,13 @@ export default function SetupProfilPage() {
               <button
                 type="button"
                 onClick={() => setShowClassModal(false)}
-                className="w-8 h-8 rounded-full bg-[#f1f5f9] border-[2px] border-[#cbd5e1] flex items-center justify-center font-black text-xs text-[#475569] active:scale-95"
+                className="w-8 h-8 rounded-full bg-[#f1f5f9] border-[2px] border-[#cbd5e1] flex items-center justify-center text-[#475569] active:scale-95 cursor-pointer"
+                aria-label="Tutup"
               >
-                ✕
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
 
@@ -326,9 +330,13 @@ export default function SetupProfilPage() {
                   setShowStudentModal(false);
                   setStudentSearchQuery("");
                 }}
-                className="w-8 h-8 rounded-full bg-[#f1f5f9] border-[2px] border-[#cbd5e1] flex items-center justify-center font-black text-xs text-[#475569] active:scale-95"
+                className="w-8 h-8 rounded-full bg-[#f1f5f9] border-[2px] border-[#cbd5e1] flex items-center justify-center text-[#475569] active:scale-95 cursor-pointer"
+                aria-label="Tutup"
               >
-                ✕
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
 

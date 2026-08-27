@@ -65,7 +65,7 @@ export default function TantanganPage() {
         { id: '5', name: 'Mikroplastik', category: 'Tanah & Air' },
         { id: '6', name: 'Gas H2S Busuk', category: 'Udara' }
       ];
-    } else if (nodeId === 10) {
+    } else if (nodeId === 10 || nodeId === 11) {
       // Praktik 3R
       categories = ['Reduce', 'Reuse', 'Recycle'];
       items = [
@@ -76,7 +76,7 @@ export default function TantanganPage() {
         { id: '5', name: 'Baju Bekas Jadi Kain Lap', category: 'Reuse' },
         { id: '6', name: 'Kardus Dicacah Jadi Kertas Baru', category: 'Recycle' }
       ];
-    } else if (nodeId === 12) {
+    } else if (nodeId === 12 || nodeId === 15) {
       // Pemilahan Sumber 3 Tong
       categories = ['Organik Basah', 'Organik Kering', 'Anorganik'];
       items = [
@@ -88,11 +88,13 @@ export default function TantanganPage() {
         { id: '6', name: 'Kaleng Minuman', category: 'Anorganik' }
       ];
     } else {
-      // Fallback
+      // General Fallback
       categories = ['Organik', 'Anorganik'];
       items = [
         { id: '1', name: 'Apel Busuk', category: 'Organik' },
-        { id: '2', name: 'Kotak Susu', category: 'Anorganik' }
+        { id: '2', name: 'Kotak Susu', category: 'Anorganik' },
+        { id: '3', name: 'Kulit Pisang', category: 'Organik' },
+        { id: '4', name: 'Botol Plastik', category: 'Anorganik' }
       ];
     }
 
@@ -186,9 +188,13 @@ export default function TantanganPage() {
       <div className="w-full max-w-md mx-auto flex items-center justify-between py-2 border-b border-slate-800">
         <button
           onClick={() => router.push('/belajar')}
-          className="text-slate-400 hover:text-white flex items-center gap-1 font-bold text-xs"
+          className="text-slate-400 hover:text-white flex items-center gap-1.5 font-bold text-xs cursor-pointer"
         >
-          ← Peta Belajar
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          <span>Peta Belajar</span>
         </button>
         <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-black">
           Tantangan #{nodeId}

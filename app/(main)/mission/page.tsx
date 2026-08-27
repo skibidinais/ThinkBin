@@ -333,7 +333,7 @@ export default function MissionPage() {
               disabled
               className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
             >
-              Selesai ✓
+              Selesai
             </button>
           ) : (
             <button
@@ -421,7 +421,7 @@ export default function MissionPage() {
               disabled
               className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
             >
-              Selesai ✓
+              Selesai
             </button>
           ) : isM2ReadyToClaim ? (
             <button
@@ -520,7 +520,7 @@ export default function MissionPage() {
               disabled
               className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
             >
-              Selesai ✓
+              Selesai
             </button>
           ) : missionState.m3Visited ? (
             <button
@@ -616,7 +616,7 @@ export default function MissionPage() {
               disabled
               className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
             >
-              Selesai ✓
+              Selesai
             </button>
           ) : missionState.m4Visited ? (
             <button
@@ -712,7 +712,7 @@ export default function MissionPage() {
               disabled
               className="bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] font-fredoka font-black text-xs px-3 py-1.5 rounded-xl cursor-default flex-shrink-0"
             >
-              Selesai ✓
+              Selesai
             </button>
           ) : missionState.m5Visited ? (
             <button

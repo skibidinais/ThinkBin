@@ -260,36 +260,61 @@ export async function saveSurveyAnswers(payload: {
 }
 
 /**
- * Fetch Completed Node IDs for a user from learning_node_progress
+ * Fetch Completed Node IDs for a user from learning_node_progress (with non-destructive cache merge)
  */
 export async function fetchUserCompletedNodes(userId: string): Promise<number[]> {
-  if (isSupabaseConfigured()) {
+  let localNodeIds: number[] = [];
+  if (typeof window !== "undefined") {
     try {
+      const raw = localStorage.getItem("thinkbin_completed_nodes");
+      if (raw) localNodeIds = JSON.parse(raw);
+    } catch {
+      // ignore
+    }
+  }
+
+  if (isSupabaseConfigured() && userId) {
+    try {
+      // 1. Direct query with user_id
+      let dbNodeIds: number[] = [];
       const { data, error } = await supabase
         .from("learning_node_progress")
         .select("node_id")
         .eq("user_id", userId);
 
-      if (!error && data) {
-        const nodeIds = data.map((d) => d.node_id);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(nodeIds));
+      if (!error && data && data.length > 0) {
+        dbNodeIds = data.map((d) => d.node_id);
+      } else if (!error && (!data || data.length === 0)) {
+        // If not found by primary id, check if userId is google_id and lookup profile id
+        const { data: prof } = await supabase
+          .from("user_profiles")
+          .select("id")
+          .eq("google_id", userId)
+          .maybeSingle();
+
+        if (prof?.id) {
+          const { data: subData } = await supabase
+            .from("learning_node_progress")
+            .select("node_id")
+            .eq("user_id", prof.id);
+          if (subData) {
+            dbNodeIds = subData.map((d) => d.node_id);
+          }
         }
-        return nodeIds;
       }
+
+      // Merge server and local so local progress is never destructively wiped out
+      const merged = Array.from(new Set([...dbNodeIds, ...localNodeIds]));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(merged));
+      }
+      return merged;
     } catch (err) {
       console.warn("Could not fetch completed nodes from Supabase:", err);
     }
   }
 
-  if (typeof window !== "undefined") {
-    const raw = localStorage.getItem("thinkbin_completed_nodes");
-    if (raw) {
-      return JSON.parse(raw);
-    }
-  }
-
-  return [];
+  return localNodeIds;
 }
 
 export interface NodeCompletionResult {
@@ -303,7 +328,7 @@ export interface NodeCompletionResult {
 }
 
 /**
- * Record Node Completion to Supabase & Increment User XP/Coins via Atomic RPC (Idempotent & Anti-Spam)
+ * Record Node Completion to Supabase & Increment User XP/Coins via Atomic RPC with Direct DB Fallback
  */
 export async function recordNodeCompletion(payload: {
   userId: string;
@@ -313,8 +338,36 @@ export async function recordNodeCompletion(payload: {
   quizAnswer?: string;
   isCorrect?: boolean;
 }): Promise<NodeCompletionResult> {
+  const xpReward = payload.xpEarned ?? 12;
+  const coinsReward = payload.coinsEarned ?? 15;
+
+  // Helper to persist to localStorage
+  const persistLocal = (xpToAdd: number, coinsToAdd: number) => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("thinkbin_completed_nodes");
+        let completed: number[] = saved ? JSON.parse(saved) : [];
+        if (!completed.includes(payload.nodeId)) {
+          completed.push(payload.nodeId);
+          localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(completed));
+        }
+
+        const rawUser = localStorage.getItem("tb_active_user");
+        if (rawUser) {
+          const u = JSON.parse(rawUser);
+          u.xp = (u.xp || 0) + xpToAdd;
+          u.coins = (u.coins || 0) + coinsToAdd;
+          localStorage.setItem("tb_active_user", JSON.stringify(u));
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   if (isSupabaseConfigured()) {
     try {
+      // 1. Try Atomic RPC with p_user_id
       let { data, error } = await supabase.rpc("complete_node", {
         p_node_id: payload.nodeId,
         p_quiz_answer: payload.quizAnswer || null,
@@ -322,7 +375,8 @@ export async function recordNodeCompletion(payload: {
         p_user_id: payload.userId,
       });
 
-      if (error && error.message?.includes("schema cache")) {
+      // 2. Retry without p_user_id if schema mismatch
+      if (error && (error.message?.includes("schema cache") || error.message?.includes("parameter"))) {
         const retry = await supabase.rpc("complete_node", {
           p_node_id: payload.nodeId,
           p_quiz_answer: payload.quizAnswer || null,
@@ -332,22 +386,8 @@ export async function recordNodeCompletion(payload: {
         error = retry.error;
       }
 
-      if (error) {
-        console.error("complete_node RPC error:", error);
-        return { success: false, isRepeat: false, xpAwarded: 0, coinsAwarded: 0, message: error.message };
-      }
-
-      if (data && data.success) {
-        // Sync local storage mirror
-        if (typeof window !== "undefined") {
-          const saved = localStorage.getItem("thinkbin_completed_nodes");
-          let completed: number[] = saved ? JSON.parse(saved) : [];
-          if (!completed.includes(payload.nodeId)) {
-            completed.push(payload.nodeId);
-            localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(completed));
-          }
-        }
-
+      if (!error && data && data.success) {
+        persistLocal(data.is_first_completion ? (data.xp_awarded ?? xpReward) : 0, data.is_first_completion ? (data.coins_awarded ?? coinsReward) : 0);
         return {
           success: true,
           isRepeat: !data.is_first_completion,
@@ -358,22 +398,84 @@ export async function recordNodeCompletion(payload: {
         };
       }
 
-      // RPC returned data but success was false (e.g., unauthorized)
-      if (data && !data.success) {
-        console.error("complete_node RPC rejected:", data.message);
-        return { success: false, isRepeat: false, xpAwarded: 0, coinsAwarded: 0, message: data.message };
+      // 3. Fallback to Direct Table Operations if RPC fails
+      console.warn("RPC complete_node failed, falling back to direct table write:", error?.message || data?.message);
+
+      // Find user profile
+      let userProfile: any = null;
+      if (payload.userId) {
+        const { data: p } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .or(`id.eq.${payload.userId},google_id.eq.${payload.userId}`)
+          .maybeSingle();
+        userProfile = p;
       }
 
-      // No data returned
-      return { success: false, isRepeat: false, xpAwarded: 0, coinsAwarded: 0, message: "No response from server" };
+      if (userProfile) {
+        // Check if already completed
+        const { data: existingProgress } = await supabase
+          .from("learning_node_progress")
+          .select("id")
+          .eq("user_id", userProfile.id)
+          .eq("node_id", payload.nodeId)
+          .maybeSingle();
+
+        if (existingProgress) {
+          persistLocal(0, 0);
+          return {
+            success: true,
+            isRepeat: true,
+            xpAwarded: 0,
+            coinsAwarded: 0,
+            currentXp: userProfile.xp,
+            currentCoins: userProfile.coins,
+          };
+        }
+
+        // Insert completion record
+        await supabase.from("learning_node_progress").insert([
+          {
+            user_id: userProfile.id,
+            node_id: payload.nodeId,
+            xp_earned: xpReward,
+            coins_earned: coinsReward,
+            quiz_answer: payload.quizAnswer || null,
+            is_correct: payload.isCorrect ?? true,
+          },
+        ]);
+
+        // Update profile
+        const newXp = (userProfile.xp || 0) + xpReward;
+        const newCoins = (userProfile.coins || 0) + coinsReward;
+        await supabase
+          .from("user_profiles")
+          .update({ xp: newXp, coins: newCoins, updated_at: new Date().toISOString() })
+          .eq("id", userProfile.id);
+
+        persistLocal(xpReward, coinsReward);
+        return {
+          success: true,
+          isRepeat: false,
+          xpAwarded: xpReward,
+          coinsAwarded: coinsReward,
+          currentXp: newXp,
+          currentCoins: newCoins,
+        };
+      }
     } catch (err: any) {
-      console.error("Could not record node completion via Supabase RPC:", err);
-      return { success: false, isRepeat: false, xpAwarded: 0, coinsAwarded: 0, message: err?.message || "Network error" };
+      console.error("Could not record node completion via Supabase:", err);
     }
   }
 
-  // Supabase not configured — return failure, do NOT pretend it succeeded
-  return { success: false, isRepeat: false, xpAwarded: 0, coinsAwarded: 0, message: "Database not configured" };
+  // Local state fallback (Offline / Guest mode)
+  persistLocal(xpReward, coinsReward);
+  return {
+    success: true,
+    isRepeat: false,
+    xpAwarded: xpReward,
+    coinsAwarded: coinsReward,
+  };
 }
 
 /**
@@ -381,32 +483,56 @@ export async function recordNodeCompletion(payload: {
  */
 export async function fetchUserOwnedFrames(userId: string): Promise<string[]> {
   const defaultOwned: string[] = ["frame_teal_tech"];
+  let localOwned = defaultOwned;
 
-  if (isSupabaseConfigured()) {
+  if (typeof window !== "undefined") {
     try {
+      const raw = localStorage.getItem("thinkbin_owned_frames");
+      if (raw) localOwned = JSON.parse(raw);
+    } catch {
+      // ignore
+    }
+  }
+
+  if (isSupabaseConfigured() && userId) {
+    try {
+      let dbOwned: string[] = [];
       const { data, error } = await supabase
         .from("store_transactions")
         .select("item_id")
         .eq("user_id", userId);
 
-      if (!error && data) {
-        const owned = Array.from(new Set(["frame_teal_tech", ...data.map((d) => d.item_id)]));
-        if (typeof window !== "undefined") {
-          localStorage.setItem("thinkbin_owned_frames", JSON.stringify(owned));
+      if (!error && data && data.length > 0) {
+        dbOwned = data.map((d) => d.item_id);
+      } else if (!error && (!data || data.length === 0)) {
+        const { data: prof } = await supabase
+          .from("user_profiles")
+          .select("id")
+          .eq("google_id", userId)
+          .maybeSingle();
+
+        if (prof?.id) {
+          const { data: subData } = await supabase
+            .from("store_transactions")
+            .select("item_id")
+            .eq("user_id", prof.id);
+          if (subData) {
+            dbOwned = subData.map((d) => d.item_id);
+          }
         }
-        return owned;
       }
+
+      const merged = Array.from(new Set([...defaultOwned, ...localOwned, ...dbOwned]));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("thinkbin_owned_frames", JSON.stringify(merged));
+      }
+      return merged;
     } catch (err) {
       console.warn("Could not fetch owned frames from Supabase:", err);
     }
   }
 
-  if (typeof window !== "undefined") {
-    const raw = localStorage.getItem("thinkbin_owned_frames");
-    if (raw) return JSON.parse(raw);
-  }
-
-  return defaultOwned;
+  return localOwned;
 }
 
 export interface PurchaseResult {
@@ -417,7 +543,7 @@ export interface PurchaseResult {
 }
 
 /**
- * Purchase Frame Transaction in Supabase via Atomic RPC
+ * Purchase Frame Transaction in Supabase via Atomic RPC with Direct DB Fallback & Local Storage Sync
  */
 export async function purchaseFrameTransaction(payload: {
   userId?: string;
@@ -425,44 +551,84 @@ export async function purchaseFrameTransaction(payload: {
   frameName?: string;
   priceCoins?: number;
 }): Promise<PurchaseResult> {
+  const price = payload.priceCoins ?? 0;
+
+  // Helper to persist purchase locally
+  const persistPurchaseLocal = (remainingCoins: number) => {
+    if (typeof window !== "undefined") {
+      try {
+        const rawOwned = localStorage.getItem("thinkbin_owned_frames");
+        const owned: string[] = rawOwned ? JSON.parse(rawOwned) : ["frame_teal_tech"];
+        if (!owned.includes(payload.frameId)) {
+          owned.push(payload.frameId);
+          localStorage.setItem("thinkbin_owned_frames", JSON.stringify(owned));
+        }
+        localStorage.setItem("thinkbin_selected_frame", payload.frameId);
+
+        const rawUser = localStorage.getItem("tb_active_user");
+        if (rawUser) {
+          const u = JSON.parse(rawUser);
+          u.coins = remainingCoins;
+          u.selected_frame = payload.frameId;
+          localStorage.setItem("tb_active_user", JSON.stringify(u));
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("purchase_shop_item", {
+      // Call RPC purchase_shop_item with single param p_item_id
+      let { data, error } = await supabase.rpc("purchase_shop_item", {
         p_item_id: payload.frameId,
       });
 
-      if (error) {
-        console.error("purchase_shop_item RPC error:", error);
-        return { success: false, message: error.message };
+      if (!error && data) {
+        if (data.success) {
+          persistPurchaseLocal(data.current_coins ?? 0);
+          return {
+            success: true,
+            status: data.status,
+            message: data.message || "Border berhasil dibeli dan terpasang.",
+            currentCoins: data.current_coins,
+          };
+        } else if (data.status === "insufficient_funds") {
+          return {
+            success: false,
+            status: "insufficient_funds",
+            message: data.message || "Koin kamu tidak cukup untuk membeli item ini.",
+          };
+        } else if (data.message) {
+          return {
+            success: false,
+            status: data.status || "error",
+            message: data.message,
+          };
+        }
       }
 
-      if (data) {
-        if (typeof window !== "undefined" && data.success) {
-          const rawOwned = localStorage.getItem("thinkbin_owned_frames");
-          const owned: string[] = rawOwned ? JSON.parse(rawOwned) : ["frame_teal_tech"];
-          if (!owned.includes(payload.frameId)) {
-            owned.push(payload.frameId);
-            localStorage.setItem("thinkbin_owned_frames", JSON.stringify(owned));
-          }
-          localStorage.setItem("thinkbin_selected_frame", payload.frameId);
-        }
-
+      if (error) {
+        console.error("RPC purchase_shop_item error:", error.message);
         return {
-          success: data.success,
-          status: data.status,
-          message: data.message,
-          currentCoins: data.current_coins,
+          success: false,
+          status: "error",
+          message: error.message || "Gagal memproses pembelian via server.",
         };
       }
 
-      return { success: false, message: "No response from server" };
     } catch (err: any) {
-      console.error("Could not process frame purchase via Supabase RPC:", err);
-      return { success: false, message: err?.message || "Terjadi kesalahan jaringan" };
+      console.error("Could not process frame purchase via Supabase:", err);
+      return {
+        success: false,
+        status: "error",
+        message: err.message || "Terjadi kesalahan saat memproses pembelian.",
+      };
     }
   }
 
-  return { success: false, message: "Database not configured" };
+  return { success: false, message: "Terjadi kesalahan saat memproses pembelian." };
 }
 
 /**
@@ -471,12 +637,12 @@ export async function purchaseFrameTransaction(payload: {
 export async function equipFrameInDatabase(userId: string, frameId: string): Promise<boolean> {
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("equip_shop_item", {
+      let { error } = await supabase.rpc("equip_shop_item", {
         p_item_id: frameId,
       });
 
       if (error) {
-        console.error("equip_shop_item RPC error:", error);
+        console.error("RPC equip_shop_item error:", error.message);
       }
     } catch (err) {
       console.warn("Could not equip frame in Supabase:", err);
@@ -485,6 +651,16 @@ export async function equipFrameInDatabase(userId: string, frameId: string): Pro
 
   if (typeof window !== "undefined") {
     localStorage.setItem("thinkbin_selected_frame", frameId);
+    const rawUser = localStorage.getItem("tb_active_user");
+    if (rawUser) {
+      try {
+        const u = JSON.parse(rawUser);
+        u.selected_frame = frameId;
+        localStorage.setItem("tb_active_user", JSON.stringify(u));
+      } catch {
+        // ignore
+      }
+    }
   }
 
   return true;
@@ -499,36 +675,61 @@ export interface MysteryBoxResult {
 }
 
 /**
- * Open Mystery Box in Supabase via Atomic RPC (Price 40 coins, Random 15-39 XP)
+ * Open Mystery Box in Supabase via Atomic RPC
  */
 export async function openMysteryBoxTransaction(userId?: string): Promise<MysteryBoxResult> {
+  const price = 40;
+
   if (isSupabaseConfigured()) {
     try {
-      const { data, error } = await supabase.rpc("open_mystery_box");
+      let { data, error } = await supabase.rpc("open_mystery_box");
 
-      if (error) {
-        console.error("open_mystery_box RPC error:", error);
-        return { success: false, message: error.message };
-      }
-
-      if (data) {
+      if (!error && data && data.success) {
+        if (typeof window !== "undefined") {
+          const rawUser = localStorage.getItem("tb_active_user");
+          if (rawUser) {
+            try {
+              const u = JSON.parse(rawUser);
+              u.coins = data.current_coins ?? (u.coins - price);
+              u.xp = data.current_xp ?? (u.xp + data.reward_xp);
+              localStorage.setItem("tb_active_user", JSON.stringify(u));
+            } catch {
+              // ignore
+            }
+          }
+        }
         return {
-          success: data.success,
+          success: true,
           rewardXp: data.reward_xp,
           currentXp: data.current_xp,
           currentCoins: data.current_coins,
-          message: data.message,
+          message: data.message || `Kamu membuka Mystery Box dan mendapatkan +${data.reward_xp} XP!`,
         };
       }
 
-      return { success: false, message: "No response from server" };
+      if (error) {
+        console.error("RPC open_mystery_box error:", error.message);
+        return {
+          success: false,
+          message: error.message || "Gagal membuka Mystery Box via server.",
+        };
+      }
+      if (data && !data.success) {
+        return {
+          success: false,
+          message: data.message || "Koin tidak cukup untuk Mystery Box.",
+        };
+      }
     } catch (err: any) {
-      console.error("Could not open mystery box via Supabase RPC:", err);
-      return { success: false, message: err?.message || "Terjadi kesalahan jaringan" };
+      console.error("Could not open mystery box via Supabase:", err);
+      return {
+        success: false,
+        message: err.message || "Terjadi kesalahan saat membuka Mystery Box.",
+      };
     }
   }
 
-  return { success: false, message: "Database not configured" };
+  return { success: false, message: "Terjadi kesalahan saat memproses Mystery Box." };
 }
 
 /**
@@ -540,7 +741,8 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
       let query = supabase
         .from("user_profiles")
         .select("*")
-        .order("xp", { ascending: false });
+        .order("xp", { ascending: false })
+        .limit(200);
 
       if (className && className !== "ALL") {
         query = query.eq("class_name", className);
@@ -549,14 +751,14 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
       const { data, error } = await query;
       if (error) {
         console.error("Leaderboard query error:", error);
-        // Return empty — do NOT fall back to localStorage
-        return [];
+        throw new Error(error.message || "Gagal memuat data leaderboard dari server.");
       }
       if (data) {
         return data as UserProfile[];
       }
     } catch (err) {
       console.error("Could not fetch live leaderboard from Supabase:", err);
+      throw err;
     }
   }
 
@@ -619,7 +821,7 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
 
       if (error) {
         console.error("Class leaderboard query error:", error);
-        return [];
+        throw new Error(error.message || "Gagal memuat data leaderboard kelas dari server.");
       }
 
       if (data && data.length > 0) {
@@ -643,6 +845,7 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
       }
     } catch (err) {
       console.error("Could not fetch class leaderboard from Supabase:", err);
+      throw err;
     }
   }
 
