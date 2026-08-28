@@ -84,8 +84,13 @@ export default function LeaderboardPage() {
           })
           .sort((a, b) => (b.xp || 0) - (a.xp || 0))
           .map((u, index) => {
-            let firstName = u.display_name?.split(" ")[0] || "Siswa";
-            if (index === 2 || firstName.toUpperCase() === "MUHAMMAD") {
+            let fullName = u.display_name || "";
+            let firstName = fullName.split(" ")[0] || "Siswa";
+            if (
+              index === 2 || 
+              firstName.toUpperCase().includes("MUHAMMAD") || 
+              fullName.toUpperCase().includes("MUHAMMAD")
+            ) {
               firstName = "Wildan";
             }
             return {
