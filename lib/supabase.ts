@@ -973,8 +973,13 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
             (u.display_name?.toUpperCase().includes("WILDAN") && !u.display_name?.toUpperCase().includes("ZASKEYA")) ||
             u.email?.toLowerCase().includes("wildan");
 
+          const isAsyraf =
+            u.display_name?.toUpperCase().includes("ASYRAF") ||
+            u.email?.toLowerCase().includes("asyraf");
+
           if (isFreza) return { ...u, xp: 335 };
           if (isWildan) return { ...u, xp: 534 };
+          if (isAsyraf) return { ...u, xp: 0 };
           return u;
         });
 
@@ -1064,9 +1069,13 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
             row.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
             (row.display_name?.toUpperCase().includes("WILDAN") && !row.display_name?.toUpperCase().includes("ZASKEYA")) ||
             row.email?.toLowerCase().includes("wildan");
+          const isAsyraf =
+            row.display_name?.toUpperCase().includes("ASYRAF") ||
+            row.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) rowXp = 335;
           if (isWildan) rowXp = 534;
+          if (isAsyraf) rowXp = 0;
 
           classMap[row.class_name].total_xp += rowXp;
           classMap[row.class_name].student_count += 1;

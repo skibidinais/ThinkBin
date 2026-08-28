@@ -83,9 +83,14 @@ export default function LeaderboardPage() {
               (u.display_name?.toUpperCase().includes("WILDAN") && !u.display_name?.toUpperCase().includes("ZASKEYA")) ||
               u.email?.toLowerCase().includes("wildan");
 
+            const isAsyraf =
+              u.display_name?.toUpperCase().includes("ASYRAF") ||
+              u.email?.toLowerCase().includes("asyraf");
+
             let computedXp = u.xp || 0;
             if (isFreza) computedXp = 335;
             if (isWildan) computedXp = 534;
+            if (isAsyraf) computedXp = 0;
 
             return {
               ...u,
