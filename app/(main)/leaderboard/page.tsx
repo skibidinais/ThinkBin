@@ -88,13 +88,12 @@ export default function LeaderboardPage() {
             let words = fullName.split(/\s+/).filter(Boolean);
             let displayName = words[0] || "Siswa";
 
-            // If the name starts with MUHAMMAD/MUHAMAD/MOCH, take the actual calling name (2nd word)
-            if (["MUHAMMAD", "MUHAMAD", "MOCH", "MOCH."].includes(displayName.toUpperCase()) && words.length > 1) {
-              displayName = words[1];
-            }
-
-            // Strictly override Rank 3 to WILDAN
-            if (index === 2 || fullName.toUpperCase().includes("WILDAN ARYASATYA")) {
+            // If user is specifically MUHAMMAD WILDAN ARYASATYA, display WILDAN in CAPSLOCK
+            if (
+              fullName.toUpperCase().includes("WILDAN ARYASATYA") ||
+              fullName.toUpperCase() === "MUHAMMAD WILDAN" ||
+              (fullName.toUpperCase().includes("WILDAN") && !fullName.toUpperCase().includes("ZASKEYA"))
+            ) {
               displayName = "WILDAN";
             }
 
