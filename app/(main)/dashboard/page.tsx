@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center w-full min-h-full py-4 pb-20 select-none bg-cover bg-center bg-no-repeat"
+      className="relative flex flex-col items-center justify-center w-full h-full min-h-0 flex-1 select-none bg-cover bg-center bg-no-repeat pb-[70px] overflow-hidden"
       style={{ backgroundImage: "url('/screens_assets/background.png')" }}
     >
       {/* TOAST ALERT NOTIFICATION */}
@@ -48,21 +48,21 @@ export default function DashboardPage() {
 
       {/* ── 1. HERO: THINKBIN LOGO + MASCOT ── */}
       <div
-        className="relative z-10 w-full flex justify-center animate-bounce flex-shrink-0 mb-1"
+        className="relative z-10 w-full flex justify-center animate-bounce flex-shrink-0 mb-2"
         style={{ animationDuration: "4s" }}
       >
         <Image
           src="/screens_assets/logo.png"
           alt="ThinkBin Logo and Mascot"
-          width={250}
-          height={155}
-          className="w-[250px] max-w-[68vw] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
+          width={240}
+          height={145}
+          className="w-[240px] max-w-[66vw] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
           priority
         />
       </div>
 
-      {/* ── 2. ACTION BUTTONS (centered directly below the logo) ── */}
-      <div className="relative z-20 w-full max-w-[320px] px-4 flex flex-col items-center gap-2 mt-1 flex-shrink-0">
+      {/* ── 2. ACTION BUTTONS (perfectly centered directly below the logo) ── */}
+      <div className="relative z-20 w-full max-w-[310px] px-4 flex flex-col items-center gap-2 mt-0.5 flex-shrink-0">
 
         {/* BIG GREEN 3D PLAY BUTTON */}
         <button
