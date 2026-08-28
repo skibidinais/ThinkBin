@@ -23,7 +23,7 @@ export default function MissionPage() {
 
   // State for 5 missions
   const [missionState, setMissionState] = useState<MissionState>({
-    m1Claimed: true, // Login claimed by default on open
+    m1Claimed: false,
     m2Claimed: false,
     m3Visited: false,
     m3Claimed: false,
@@ -36,6 +36,19 @@ export default function MissionPage() {
   const [completedNodeCount, setCompletedNodeCount] = useState<number>(0);
   const [countdown, setCountdown] = useState<string>("00:00:00");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const getTodayKey = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getStorageKey = () => {
+    const userSuffix = user?.id ? `_${user.id}` : "_guest";
+    return `thinkbin_missions_${getTodayKey()}${userSuffix}`;
+  };
 
   // Load completed nodes & fresh profile from Supabase / localStorage
   useEffect(() => {
@@ -62,17 +75,37 @@ export default function MissionPage() {
     checkNodes();
   }, [user?.id]);
 
-  // Load saved state from localStorage
+  // Load saved state from localStorage with today's date validation (Auto-Reset per day)
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("thinkbin_missions_progress_v3");
+      // Clean up legacy non-dated cache if present
+      localStorage.removeItem("thinkbin_missions_progress_v3");
+      localStorage.removeItem("thinkbin_missions_progress_v2");
+      localStorage.removeItem("thinkbin_missions_progress");
+
+      const key = getStorageKey();
+      const saved = localStorage.getItem(key);
       if (saved) {
         setMissionState(JSON.parse(saved));
+      } else {
+        // New day or first open today -> Reset missions to fresh state
+        const freshState: MissionState = {
+          m1Claimed: false,
+          m2Claimed: false,
+          m3Visited: false,
+          m3Claimed: false,
+          m4Visited: false,
+          m4Claimed: false,
+          m5Visited: false,
+          m5Claimed: false,
+        };
+        setMissionState(freshState);
+        localStorage.setItem(key, JSON.stringify(freshState));
       }
     } catch {
       // Fallback
     }
-  }, []);
+  }, [user?.id]);
 
   // Update countdown every second
   useEffect(() => {
@@ -103,7 +136,8 @@ export default function MissionPage() {
   const saveState = (newState: MissionState) => {
     setMissionState(newState);
     try {
-      localStorage.setItem("thinkbin_missions_progress_v3", JSON.stringify(newState));
+      const key = getStorageKey();
+      localStorage.setItem(key, JSON.stringify(newState));
     } catch {
       // ignore
     }
@@ -124,6 +158,8 @@ export default function MissionPage() {
   };
 
   const handleClaim = async (missionKey: keyof MissionState, coinReward: number, title: string) => {
+    if (missionState[missionKey]) return; // Prevent double claim
+
     if (user?.id) {
       await claimDailyMissionTransaction({
         userId: user.id,

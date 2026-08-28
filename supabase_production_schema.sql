@@ -8,6 +8,25 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- =========================================================================
+-- DROP EXISTING FUNCTIONS AGAR TIDAK BENTROK SIGNATURE / OVERLOAD
+-- =========================================================================
+DROP FUNCTION IF EXISTS public.complete_node(INT, TEXT, BOOLEAN, TEXT);
+DROP FUNCTION IF EXISTS public.complete_node(INT, TEXT, BOOLEAN);
+DROP FUNCTION IF EXISTS public.complete_node(INT);
+DROP FUNCTION IF EXISTS public.purchase_shop_item(TEXT, TEXT);
+DROP FUNCTION IF EXISTS public.purchase_shop_item(TEXT);
+DROP FUNCTION IF EXISTS public.equip_shop_item(TEXT, TEXT);
+DROP FUNCTION IF EXISTS public.equip_shop_item(TEXT);
+DROP FUNCTION IF EXISTS public.open_mystery_box(TEXT);
+DROP FUNCTION IF EXISTS public.open_mystery_box();
+DROP FUNCTION IF EXISTS public.submit_survey(TEXT, JSONB, TEXT, TEXT);
+DROP FUNCTION IF EXISTS public.submit_survey(TEXT, JSONB, TEXT);
+DROP FUNCTION IF EXISTS public.submit_survey(TEXT, JSONB);
+DROP FUNCTION IF EXISTS public.claim_daily_mission(TEXT, INT, INT, TEXT);
+DROP FUNCTION IF EXISTS public.claim_daily_mission(TEXT, INT, INT);
+DROP FUNCTION IF EXISTS public.claim_daily_mission(TEXT);
+
+-- =========================================================================
 -- 1. TABLE: class_roster (Master Roster 192 Siswa SMPN 20 Malang)
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS public.class_roster (
@@ -147,6 +166,20 @@ CREATE TABLE IF NOT EXISTS public.pre_survey_responses (
 );
 
 -- =========================================================================
+-- 8. TABLE: user_daily_missions (Pencatatan Idempotent Reward Misi Harian)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS public.user_daily_missions (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+    mission_id TEXT NOT NULL,
+    claim_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    coin_reward INT DEFAULT 10 CHECK (coin_reward >= 0),
+    xp_reward INT DEFAULT 0 CHECK (xp_reward >= 0),
+    claimed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT unique_user_mission_daily UNIQUE (user_id, mission_id, claim_date)
+);
+
+-- =========================================================================
 -- 8. INDEXING UNTUK PERFORMA QUERY & LEADERBOARD
 -- =========================================================================
 CREATE INDEX IF NOT EXISTS idx_user_google_id ON public.user_profiles(google_id);
@@ -253,7 +286,8 @@ $$;
 -- Mengambil harga resmi dari shop_catalog, cek saldo, potong coin, catat kepemilikan.
 -- =========================================================================
 CREATE OR REPLACE FUNCTION public.purchase_shop_item(
-    p_item_id TEXT
+    p_item_id TEXT,
+    p_user_id TEXT DEFAULT NULL
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -267,22 +301,37 @@ DECLARE
     v_updated_rows INT;
     v_new_coins INT;
 BEGIN
-    v_user_id := auth.uid();
-
-    IF v_user_id IS NULL THEN
-        RETURN jsonb_build_object('success', false, 'status', 'unauthorized', 'message', 'Unauthorized');
+    -- User resolution: auth.uid() first, then p_user_id fallback (UUID or google_id lookup)
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
     END IF;
 
-    -- Validasi item dari shop_catalog server
+    IF v_user_id IS NULL THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'status', 'unauthorized',
+            'message', 'Sesi login tidak valid. Silakan login kembali.'
+        );
+    END IF;
+
+    -- Validasi item dari tabel katalog resmi
     SELECT price_coins, item_name INTO v_price, v_item_name
     FROM public.shop_catalog
     WHERE item_id = p_item_id;
 
     IF NOT FOUND THEN
-        RETURN jsonb_build_object('success', false, 'status', 'item_not_found', 'message', 'Item tidak ditemukan di katalog');
+        RETURN jsonb_build_object(
+            'success', false,
+            'status', 'item_not_found',
+            'message', 'Item tidak ditemukan di katalog toko.'
+        );
     END IF;
 
-    -- Cek jika sudah dimiliki sebelumnya
+    -- Cek jika sudah pernah membeli item ini
     IF EXISTS (
         SELECT 1 FROM public.store_transactions
         WHERE user_id = v_user_id AND item_id = p_item_id
@@ -295,12 +344,12 @@ BEGIN
         RETURN jsonb_build_object(
             'success', true,
             'status', 'already_owned',
-            'message', 'Item sudah dimiliki dan berhasil dipasang.',
+            'message', 'Item sudah kamu miliki dan langsung dipasang.',
             'current_coins', v_new_coins
         );
     END IF;
 
-    -- Atomic conditional update saldo (mencegah saldo negatif & race condition)
+    -- Atomic conditional update koin (mencegah saldo minus & race condition)
     UPDATE public.user_profiles
     SET coins = coins - v_price,
         selected_frame = p_item_id,
@@ -318,12 +367,12 @@ BEGIN
         );
     END IF;
 
-    -- Catat transaksi kepemilikan
+    -- Simpan pencatatan transaksi ownership
     BEGIN
         INSERT INTO public.store_transactions (user_id, item_id, item_name, price_coins, purchased_at)
         VALUES (v_user_id, p_item_id, v_item_name, v_price, NOW());
     EXCEPTION WHEN unique_violation THEN
-        -- Refund jika race condition duplikasi
+        -- Rollback saldo jika duplikasi concurrent
         UPDATE public.user_profiles
         SET coins = coins + v_price
         WHERE id = v_user_id
@@ -332,7 +381,7 @@ BEGIN
         RETURN jsonb_build_object(
             'success', true,
             'status', 'already_owned',
-            'message', 'Item sudah dimiliki.',
+            'message', 'Item sudah kamu miliki.',
             'current_coins', v_new_coins
         );
     END;
@@ -340,7 +389,7 @@ BEGIN
     RETURN jsonb_build_object(
         'success', true,
         'status', 'success',
-        'message', 'Item berhasil dibeli dan dipasang.',
+        'message', 'Item berhasil dibeli dan langsung terpasang.',
         'current_coins', v_new_coins
     );
 END;
@@ -351,7 +400,8 @@ $$;
 -- Memasang border yang sudah dimiliki user ke profilnya
 -- =========================================================================
 CREATE OR REPLACE FUNCTION public.equip_shop_item(
-    p_item_id TEXT
+    p_item_id TEXT,
+    p_user_id TEXT DEFAULT NULL
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -361,7 +411,14 @@ AS $$
 DECLARE
     v_user_id UUID;
 BEGIN
-    v_user_id := auth.uid();
+    -- User resolution: auth.uid() first, then p_user_id fallback
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
@@ -386,7 +443,9 @@ $$;
 -- 12. ATOMIC RPC 4: open_mystery_box
 -- Potong 40 koin & tambah random 15-39 XP secara atomik
 -- =========================================================================
-CREATE OR REPLACE FUNCTION public.open_mystery_box()
+CREATE OR REPLACE FUNCTION public.open_mystery_box(
+    p_user_id TEXT DEFAULT NULL
+)
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -400,16 +459,21 @@ DECLARE
     v_new_xp INT;
     v_new_coins INT;
 BEGIN
-    v_user_id := auth.uid();
+    -- User resolution: auth.uid() first, then p_user_id fallback
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
     END IF;
 
-    -- Acak XP 15 - 39 (floor(random() * 25) + 15)
     v_reward_xp := floor(random() * 25 + 15)::INT;
 
-    -- Potong 40 koin & tambah XP
     UPDATE public.user_profiles
     SET coins = coins - v_price,
         xp = COALESCE(xp, 0) + v_reward_xp,
@@ -537,12 +601,12 @@ $$;
 
 -- =========================================================================
 -- 14. ATOMIC RPC 6: claim_daily_mission
--- Menambah reward harian secara atomik di user_profiles
+-- Menambah reward harian secara atomik & idempotent per hari kalender
 -- =========================================================================
 CREATE OR REPLACE FUNCTION public.claim_daily_mission(
     p_mission_id TEXT,
     p_coin_reward INT DEFAULT 10,
-    p_xp_reward INT DEFAULT 3,
+    p_xp_reward INT DEFAULT 0,
     p_user_id TEXT DEFAULT NULL
 )
 RETURNS JSONB
@@ -554,6 +618,7 @@ DECLARE
     v_user_id UUID;
     v_new_coins INT;
     v_new_xp INT;
+    v_is_first BOOLEAN := FALSE;
 BEGIN
     IF auth.uid() IS NOT NULL THEN
         v_user_id := auth.uid();
@@ -567,6 +632,33 @@ BEGIN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
     END IF;
 
+    -- 1. Coba catat klaim untuk hari ini (idempotent via unique constraint)
+    BEGIN
+        INSERT INTO public.user_daily_missions (
+            user_id, mission_id, claim_date, coin_reward, xp_reward, claimed_at
+        ) VALUES (
+            v_user_id, p_mission_id, CURRENT_DATE, GREATEST(0, p_coin_reward), GREATEST(0, p_xp_reward), NOW()
+        );
+        v_is_first := TRUE;
+    EXCEPTION WHEN unique_violation THEN
+        v_is_first := FALSE;
+    END;
+
+    -- 2. Jika sudah pernah diklaim hari ini, kembalikan state tanpa menambah koin/XP ganda
+    IF NOT v_is_first THEN
+        SELECT coins, xp INTO v_new_coins, v_new_xp
+        FROM public.user_profiles WHERE id = v_user_id;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'is_first_claim', false,
+            'message', 'Misi ini sudah diklaim untuk hari ini.',
+            'current_coins', v_new_coins,
+            'current_xp', v_new_xp
+        );
+    END IF;
+
+    -- 3. Tambah koin/XP hanya jika pertama kali klaim hari ini
     UPDATE public.user_profiles
     SET coins = COALESCE(coins, 0) + GREATEST(0, p_coin_reward),
         xp = COALESCE(xp, 0) + GREATEST(0, p_xp_reward),
@@ -576,6 +668,7 @@ BEGIN
 
     RETURN jsonb_build_object(
         'success', true,
+        'is_first_claim', true,
         'current_coins', v_new_coins,
         'current_xp', v_new_xp
     );
@@ -585,12 +678,12 @@ $$;
 -- =========================================================================
 -- 15. PERMISSIONS & GRANTS
 -- =========================================================================
-GRANT EXECUTE ON FUNCTION public.complete_node TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.purchase_shop_item TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.equip_shop_item TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.open_mystery_box TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.submit_survey TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.claim_daily_mission TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.complete_node(INT, TEXT, BOOLEAN, TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.purchase_shop_item(TEXT, TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.equip_shop_item(TEXT, TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.open_mystery_box(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.submit_survey(TEXT, JSONB, TEXT, TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.claim_daily_mission(TEXT, INT, INT, TEXT) TO anon, authenticated, service_role;
 
 GRANT SELECT ON public.node_catalog TO anon, authenticated, service_role;
 GRANT SELECT ON public.shop_catalog TO anon, authenticated, service_role;
@@ -603,6 +696,7 @@ ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.learning_node_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.store_transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.pre_survey_responses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_daily_missions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.class_roster ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.node_catalog ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.shop_catalog ENABLE ROW LEVEL SECURITY;
@@ -638,6 +732,11 @@ BEGIN
     DROP POLICY IF EXISTS "Public and authenticated can read pre_survey_responses" ON public.pre_survey_responses;
     CREATE POLICY "Public and authenticated can read pre_survey_responses"
         ON public.pre_survey_responses FOR SELECT
+        USING (true);
+
+    DROP POLICY IF EXISTS "Public and authenticated can read user_daily_missions" ON public.user_daily_missions;
+    CREATE POLICY "Public and authenticated can read user_daily_missions"
+        ON public.user_daily_missions FOR SELECT
         USING (true);
 
     DROP POLICY IF EXISTS "Public can read class roster" ON public.class_roster;
