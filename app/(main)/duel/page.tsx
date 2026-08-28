@@ -309,23 +309,23 @@ export default function DuelPage() {
       const isWinner = myScore > oppScore;
       const isDraw = myScore === oppScore;
 
-      // Differentiated rewards: Bot (Practice) vs PvP (Real Friend)
+      // Modest and balanced rewards: Bot vs PvP
       const isBotMode = mode === "bot";
       const xpEarned = isBotMode
         ? isWinner
-          ? 10
-          : 5
+          ? 5
+          : 2
         : isWinner
-        ? 35
-        : 15;
+        ? 12
+        : 5;
 
       const coinsEarned = isBotMode
         ? isWinner
-          ? 8
-          : 4
+          ? 3
+          : 1
         : isWinner
-        ? 30
-        : 10;
+        ? 10
+        : 3;
 
       if (isWinner) {
         confetti({
