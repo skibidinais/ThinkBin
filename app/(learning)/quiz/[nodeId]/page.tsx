@@ -23,8 +23,8 @@ export default function QuizPage() {
   const [isRepeatAttempt, setIsRepeatAttempt] = useState<boolean>(false);
   const [showHintModal, setShowHintModal] = useState<boolean>(false);
 
-  // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16)
-  const isFinalNodeOfBagian = nodeId === 4 || nodeId === 8 || nodeId === 12 || nodeId === 16;
+  // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16, 20, 24, 28)
+  const isFinalNodeOfBagian = nodeId % 4 === 0;
 
   useEffect(() => {
     if (!node || !question) {

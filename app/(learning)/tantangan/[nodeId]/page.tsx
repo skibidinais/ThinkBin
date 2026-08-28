@@ -87,6 +87,28 @@ export default function TantanganPage() {
         { id: '5', name: 'Kertas HVS Bekas', category: 'Organik Kering' },
         { id: '6', name: 'Kaleng Minuman', category: 'Anorganik' }
       ];
+    } else if (nodeId === 20) {
+      // Daur Ulang Kreatif (Kompos vs Upcycling vs Pakan Maggot)
+      categories = ['Kompos / Enzim', 'Ecobrick / Upcycle', 'Pakan Maggot'];
+      items = [
+        { id: '1', name: 'Kulit Jeruk & Apel', category: 'Kompos / Enzim' },
+        { id: '2', name: 'Plastik Sachet Kering', category: 'Ecobrick / Upcycle' },
+        { id: '3', name: 'Sisa Nasi & Daging Kantin', category: 'Pakan Maggot' },
+        { id: '4', name: 'Sisa Sayur Mentah', category: 'Kompos / Enzim' },
+        { id: '5', name: 'Kresek Bersih', category: 'Ecobrick / Upcycle' },
+        { id: '6', name: 'Sisa Lauk Berlemak', category: 'Pakan Maggot' }
+      ];
+    } else if (nodeId === 24) {
+      // Aksi Sekolah Adiwiyata (Ramah Lingkungan vs Tidak Ramah)
+      categories = ['Aksi Adiwiyata', 'Bukan Adiwiyata'];
+      items = [
+        { id: '1', name: 'Bawa Misting & Tumbler', category: 'Aksi Adiwiyata' },
+        { id: '2', name: 'Beli Kemasan Sachet Sekali Pakai', category: 'Bukan Adiwiyata' },
+        { id: '3', name: 'Ikut Piket Timbang Sampah Kelas', category: 'Aksi Adiwiyata' },
+        { id: '4', name: 'Menaruh Sampah di Kolong Meja', category: 'Bukan Adiwiyata' },
+        { id: '5', name: 'Lepas Label & Cuci Botol PET', category: 'Aksi Adiwiyata' },
+        { id: '6', name: 'Mencampur Sisa Soto ke Tong Kertas', category: 'Bukan Adiwiyata' }
+      ];
     } else {
       // General Fallback
       categories = ['Organik', 'Anorganik'];

@@ -23,7 +23,10 @@ export const BAGIAN_INFO = [
   { id: 1, title: 'Mengenal Sampah', desc: 'Pondasi dasar pemilahan sampah di sekolah (Adiwiyata)' },
   { id: 2, title: 'Dampak Lingkungan', desc: 'Memahami ancaman nyata bagi bumi dan kesehatan kita' },
   { id: 3, title: 'Solusi & Aksi', desc: 'Prinsip 3R dan pentingnya pemilahan sejak dari sumber' },
-  { id: 4, title: 'Gaya Hidup Hijau', desc: 'Bank Sampah, ekonomi sirkular, dan komitmen pribadi' }
+  { id: 4, title: 'Gaya Hidup Hijau', desc: 'Bank Sampah, ekonomi sirkular, dan komitmen pribadi' },
+  { id: 5, title: 'Pengolahan Sampah Kreatif', desc: 'Metode pengomposan, biokonversi maggot, dan daur ulang kreatif' },
+  { id: 6, title: 'Gerakan Sekolah Adiwiyata', desc: 'Kantin sehat bebas plastik, audit sampah, dan duta lingkungan' },
+  { id: 7, title: 'Aksi Komunitas & Masa Depan', desc: 'Ekonomi sirkular skala luas, inovasi teknologi, dan ikrar bumi' }
 ];
 
 export const RANK_TIERS = [
@@ -32,7 +35,7 @@ export const RANK_TIERS = [
   { name: 'Guardian', minXp: 80, maxXp: 119, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { name: 'Warrior', minXp: 120, maxXp: 179, color: 'text-blue-600 bg-blue-50 border-blue-200' },
   { name: 'Champion', minXp: 180, maxXp: 239, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
-  { name: 'Legend', minXp: 240, maxXp: 999, color: 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse' }
+  { name: 'Legend', minXp: 240, maxXp: 9999, color: 'text-amber-600 bg-amber-50 border-amber-200 animate-pulse' }
 ];
 
 export function getRankTier(xp: number) {
@@ -397,12 +400,12 @@ export const MODUL_DATA: ModulNode[] = [
     bagianId: 4,
     bagianTitle: 'Gaya Hidup Hijau',
     title: 'Komitmen Aksi Nyata untuk Bumi',
-    type: 'komitmen',
+    type: 'bacaan',
     pilar: 'Kemauan',
-    konsepInti: 'Hebat sekali! Kamu sudah mempelajari semua cara menjaga bumi dan memilah sampah. Sekarang, mari tuliskan satu janji aksi nyata yang akan kamu lakukan mulai hari ini!',
+    konsepInti: 'Hebat sekali! Kamu sudah mempelajari semua cara menjaga bumi dan memilah sampah. Sekarang, mari kuatkan satu janji aksi nyata yang akan kamu lakukan secara konsisten mulai hari ini di sekolah dan rumah!',
     contoh: '"Saya berkomitmen membawa kotak makan sendiri untuk jajan di kantin sekolah guna memangkas sampah wadah plastik."',
     question: {
-      question: 'Setelah mempelajari seluruh materi ThinkBin, apa langkah terpenting yang harus kita lakukan setiap hari?',
+      question: 'Setelah mempelajari materi dasar ThinkBin, apa langkah terpenting yang harus kita lakukan setiap hari?',
       options: [
         { value: 'A', text: 'Melupakan semua materi yang sudah dipelajari' },
         { value: 'B', text: 'Mempraktikkan kebiasaan memilah sampah secara konsisten di sekolah dan rumah' },
@@ -414,5 +417,287 @@ export const MODUL_DATA: ModulNode[] = [
     },
     xpReward: 12,
     coinReward: 15
+  },
+
+  // ===== BAGIAN 5 — PENGOLAHAN SAMPAH KREATIF =====
+  {
+    id: 17,
+    bagianId: 5,
+    bagianTitle: 'Pengolahan Sampah Kreatif',
+    title: 'Pembuatan Kompos Takakura & Pupuk Cair',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Metode Takakura adalah cara mudah membuat kompos di rumah atau kelas menggunakan keranjang berventilasi yang diisi bantal sekam dan starter mikroorganisme. Selain kompos padat, sampah kulit buah manis dapat difermentasi dengan air gula merah menjadi cairan pembersih alami serbaguna yang disebut Eco-Enzyme.',
+    contoh: 'Sisa potongan sayur dan kulit apel difermentasi menjadi Eco-Enzyme untuk mengepel lantai kelas secara ramah lingkungan.',
+    question: {
+      question: 'Cairan fermentasi serbaguna dari sisa kulit buah, gula, dan air disebut...',
+      options: [
+        { value: 'A', text: 'Air lindi' },
+        { value: 'B', text: 'Eco-Enzyme' },
+        { value: 'C', text: 'Minyak jelantah' },
+        { value: 'D', text: 'Pestisida sintetis' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'Eco-Enzyme adalah larutan hasil fermentasi sampah organik basah buah dan sayuran yang memiliki banyak manfaat pembersih.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 18,
+    bagianId: 5,
+    bagianTitle: 'Pengolahan Sampah Kreatif',
+    title: 'Biokonversi Maggot BSF untuk Sampah Organik',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Maggot Black Soldier Fly (BSF) adalah larva lalat tentara hitam yang rakus memakan sisa makanan berlebih. Dalam 24 jam, maggot mampu menghabiskan sampah organik hingga 3 kali berat tubuhnya. Larva yang sudah besar kaya protein dan bisa menjadi pakan ternak/ikan, sementara kotorannya (kasgot) menjadi pupuk organik bermutu tinggi.',
+    contoh: 'Sisa makanan kantin diberikan ke biopond maggot BSF di sekolah Adiwiyata agar habis tanpa menimbulkan bau busuk.',
+    question: {
+      question: 'Apa manfaat utama dari budidaya larva Maggot BSF dalam pengelolaan sampah sekolah?',
+      options: [
+        { value: 'A', text: 'Menguraikan sampah sisa makanan organik dengan cepat dan bernilai ekonomi' },
+        { value: 'B', text: 'Menghasilkan sampah plastik baru' },
+        { value: 'C', text: 'Membuat sampah menjadi berbau busuk menyengat' },
+        { value: 'D', text: 'Mencemari air tanah di sekitar sekolah' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Maggot BSF merupakan pengurai alami tercepat untuk sampah organik yang menghasilkan pakan berprotein dan pupuk kasgot.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 19,
+    bagianId: 5,
+    bagianTitle: 'Pengolahan Sampah Kreatif',
+    title: 'Upcycling & Kerajinan Ecobrick',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Upcycling adalah mengubah barang bekas menjadi produk baru yang memiliki nilai estetika atau fungsi lebih tinggi tanpa meleburnya di pabrik. Salah satu contoh populer adalah Ecobrick: memadatkan sampah plastik kresek dan sachet bersih kering ke dalam botol PET hingga padat keras untuk dijadikan meja, kursi, atau pagar taman.',
+    contoh: 'Membuat balok Ecobrick seberat 200 gram dari botol 600 ml yang dipadatkan dengan plastik bungkus snack.',
+    question: {
+      question: 'Apa syarat utama plastik kresek dan kemasan sachet yang akan dimasukkan ke dalam botol Ecobrick?',
+      options: [
+        { value: 'A', text: 'Harus basah dan berlendir' },
+        { value: 'B', text: 'Harus bersih dan kering agar tidak membusuk atau berjamur' },
+        { value: 'C', text: 'Harus dicampur dengan sisa kuah makanan' },
+        { value: 'D', text: 'Harus dibakar terlebih dahulu' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'Plastik dalam Ecobrick wajib bersih dan kering sempurna agar tidak menimbulkan gas, bau, atau bakteri di dalam botol tertutup.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 20,
+    bagianId: 5,
+    bagianTitle: 'Pengolahan Sampah Kreatif',
+    title: 'Kuis Tantangan: Master Daur Ulang Kreatif',
+    type: 'kuis',
+    pilar: 'Kemampuan',
+    konsepInti: 'Uji ketangkasanmu menentukan metode pengolahan sampah organik dan anorganik kreatif secara tepat dan cepat!',
+    contoh: 'Sisa buah manis = Eco-Enzyme. Plastik sachet = Ecobrick. Sisa nasi kantin = Maggot BSF.',
+    question: {
+      question: 'Manakah pasangan sampah dan metode daur ulang kreatif yang paling tepat?',
+      options: [
+        { value: 'A', text: 'Sisa makanan basah -> Ecobrick' },
+        { value: 'B', text: 'Sachet plastik bersih -> Ecobrick dan Upcycling' },
+        { value: 'C', text: 'Baterai bekas -> Pupuk Kompos' },
+        { value: 'D', text: 'Lampu kaca pecah -> Pakan Maggot' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'Kemasan plastik sachet bersih sangat ideal untuk upcycling dan material padat Ecobrick.'
+    },
+    xpReward: 20,
+    coinReward: 25
+  },
+
+  // ===== BAGIAN 6 — GERAKAN SEKOLAH ADIWIYATA =====
+  {
+    id: 21,
+    bagianId: 6,
+    bagianTitle: 'Gerakan Sekolah Adiwiyata',
+    title: 'Kantin Sekolah Bebas Plastik Sekali Pakai',
+    type: 'bacaan',
+    pilar: 'Kemauan',
+    konsepInti: 'Program Adiwiyata mendorong sekolah menciptakan Kantin Sehat Ramah Lingkungan. Pedagang kantin diimbau tidak lagi menyajikan makanan beralas plastik kresek atau styrofoam, melainkan memakai piring kaca, daun pisang, atau wadah yang dibawa siswa sendiri. Kebijakan ini secara drastis memangkas timbulan sampah harian sekolah.',
+    contoh: 'Membeli soto atau siomay di kantin menggunakan wadah makan sendiri (misting).',
+    question: {
+      question: 'Apa tujuan utama gerakan kantin sehat bebas plastik sekali pakai di sekolah Adiwiyata?',
+      options: [
+        { value: 'A', text: 'Mencegah timbulan sampah plastik langsung dari sumbernya di sekolah' },
+        { value: 'B', text: 'Menaikkan harga makanan kantin' },
+        { value: 'C', text: 'Melarang siswa makan di jam istirahat' },
+        { value: 'D', text: 'Menambah tumpukan sampah plastik di tong sampah' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Menghilangkan plastik sekali pakai di kantin adalah strategi pencegahan timbulan sampah (Reduce/Refuse) paling efektif di lingkungan sekolah.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 22,
+    bagianId: 6,
+    bagianTitle: 'Gerakan Sekolah Adiwiyata',
+    title: 'Audit Sampah & Peta Timbulan Kelas',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Audit sampah adalah kegiatan menimbang, mengukur, dan mencatat jenis sampah yang dihasilkan oleh setiap kelas selama satu minggu. Dengan audit ini, sekolah dapat mengetahui kelas mana yang paling hemat sampah dan jenis sampah apa yang paling banyak terbuang untuk dicarikan solusinya.',
+    contoh: 'Piketan kelas menimbang ember sampah organik dan anorganik sebelum disetor ke penampungan sekolah.',
+    question: {
+      question: 'Apa fungsi utama dilakukannya audit timbulan sampah di setiap kelas?',
+      options: [
+        { value: 'A', text: 'Mengetahui volume dan jenis sampah yang dihasilkan untuk evaluasi pengurangan' },
+        { value: 'B', text: 'Menghukum siswa yang menghasilkan sampah' },
+        { value: 'C', text: 'Membeli tong sampah baru setiap hari' },
+        { value: 'D', text: 'Membuang sampah ke sungai bersama-sama' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Audit sampah memberikan data riil untuk mengevaluasi efektivitas program pemilahan dan pengurangan sampah kelas.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 23,
+    bagianId: 6,
+    bagianTitle: 'Gerakan Sekolah Adiwiyata',
+    title: 'Peran Duta Lingkungan & Kader Hijau',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Kader Lingkungan Sekolah bertugas menjadi teladan, mengedukasi teman sebaya, serta mengingatkan jika ada yang membuang sampah sembarangan atau salah memasukkan sampah ke tong. Menjadi duta lingkungan melatih kepemimpinan, kepedulian sosial, dan tanggung jawab terhadap kelestarian bumi.',
+    contoh: 'Mengajak teman sekelas memilah botol PET dan melepas labelnya sebelum dimasukkan ke tong ThinkBin.',
+    question: {
+      question: 'Sikap apa yang harus ditunjukkan oleh seorang kader/duta lingkungan sekolah?',
+      options: [
+        { value: 'A', text: 'Memberikan contoh teladan memilah sampah dan mengajak teman dengan santun' },
+        { value: 'B', text: 'Membiarkan teman membuang sampah sembarangan' },
+        { value: 'C', text: 'Membuang sampah diam-diam di laci meja' },
+        { value: 'D', text: 'Mengabaikan kebersihan lingkungan kelas' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Duta lingkungan berperan sebagai *peer-educator* yang memberikan teladan nyata dan mengajak rekan sebaya peduli lingkungan.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 24,
+    bagianId: 6,
+    bagianTitle: 'Gerakan Sekolah Adiwiyata',
+    title: 'Kuis Tantangan: Aksi Sekolah Hijau',
+    type: 'kuis',
+    pilar: 'Kemampuan',
+    konsepInti: 'Uji wawasanmu tentang aksi kolaboratif sekolah hijau Adiwiyata dan pemilahan terintegrasi!',
+    contoh: 'Kantin ramah lingkungan = Bawa tumbler. Audit sampah = Catat timbulan.',
+    question: {
+      question: 'Manakah tindakan siswa yang paling mencerminkan budaya sekolah Adiwiyata?',
+      options: [
+        { value: 'A', text: 'Membawa botol minum dan wadah makan sendiri serta aktif memilah sampah di kelas' },
+        { value: 'B', text: 'Menumpuk sampah plastik di kolong meja' },
+        { value: 'C', text: 'Membeli minuman kemasan sachet sekali pakai setiap hari' },
+        { value: 'D', text: 'Mencampur sampah basah dengan kertas HVS' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Membawa perlengkapan makan guna ulang dan aktif memilah sampah adalah wujud nyata budaya Adiwiyata.'
+    },
+    xpReward: 20,
+    coinReward: 25
+  },
+
+  // ===== BAGIAN 7 — AKSI KOMUNITAS & MASA DEPAN =====
+  {
+    id: 25,
+    bagianId: 7,
+    bagianTitle: 'Aksi Komunitas & Masa Depan',
+    title: 'Ekonomi Sirkular & Zero Waste Lifestyle',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Ekonomi linier tradisional menganut pola "ambil-buat-buang", sedangkan Ekonomi Sirkular merancang sistem agar tidak ada material yang terbuang sia-sia. Semua barang dirancang agar bisa dipakai lama, diperbaiki, atau didaur ulang kembali menjadi bahan baku baru (Zero Waste).',
+    contoh: 'Sepatu atau tas dari serat daur ulang botol plastik plastik PET.',
+    question: {
+      question: 'Apa prinsip dasar dari model Ekonomi Sirkular dalam penanganan produk dan sampah?',
+      options: [
+        { value: 'A', text: 'Menjaga material tetap bernilai guna selama mungkin dalam siklus tertutup tanpa limbah' },
+        { value: 'B', text: 'Membeli barang sebanyak-banyaknya lalu langsung dibuang ke TPA' },
+        { value: 'C', text: 'Membakar semua jenis sampah agar langsung habis' },
+        { value: 'D', text: 'Menimbun sampah di lubang tanah halaman' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Ekonomi sirkular berorientasi pada regenerasi sumber daya dan siklus material tertutup sehingga meminimalkan limbah.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 26,
+    bagianId: 7,
+    bagianTitle: 'Aksi Komunitas & Masa Depan',
+    title: 'Inovasi Teknologi & Smart Waste Bin',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Perkembangan teknologi modern kini menghadirkan tempat sampah pintar (Smart Waste Bin) berbasis sensor IoT dan gamifikasi seperti ThinkBin. Sistem ini mampu mendeteksi pemilahan sampah yang tepat, menghitung bobot tabungan bank sampah secara otomatis, serta memberikan reward instan bagi siswa yang berpartisipasi aktif.',
+    contoh: 'ThinkBin yang secara otomatis mencatat poin reward siswa saat berhasil memilah sampah dengan benar.',
+    question: {
+      question: 'Bagaimana peran teknologi IoT dan gamifikasi pada ThinkBin dalam meningkatkan literasi sampah siswa?',
+      options: [
+        { value: 'A', text: 'Memberikan umpan balik langsung dan motivasi positif melalui sistem reward & leaderboard' },
+        { value: 'B', text: 'Membuat proses pembuangan sampah menjadi lebih rumit dan membosankan' },
+        { value: 'C', text: 'Mengurangi jumlah siswa yang ingin peduli kebersihan' },
+        { value: 'D', text: 'Menghapus keberadaan bank sampah di sekolah' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Gamifikasi dan umpan balik langsung ThinkBin memotivasi kebiasaan positif pemilahan sampah menjadi aktivitas seru dan bermakna.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 27,
+    bagianId: 7,
+    bagianTitle: 'Aksi Komunitas & Masa Depan',
+    title: 'Gerakan Kolaborasi Bersih Lingkungan Komunitas',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Menjaga lingkungan tidak bisa dilakukan sendirian. Gerakan World Cleanup Day, gotong royong warga RT/RW, dan kolaborasi bank sampah induk kota membuktikan bahwa aksi bersama jutaan orang mampu membersihkan puluhan ribu ton sampah dari sungai, laut, dan pemukiman.',
+    contoh: 'Aksi bersih sungai dan pantai bersama komunitas peduli lingkungan di akhir pekan.',
+    question: {
+      question: 'Mengapa kolaborasi komunitas sangat penting dalam menyelesaikan masalah sampah nasional?',
+      options: [
+        { value: 'A', text: 'Karena volume timbulan sampah masif membutuhkan partisipasi aktif seluruh elemen masyarakat' },
+        { value: 'B', text: 'Karena hanya petugas kebersihan saja yang boleh memungut sampah' },
+        { value: 'C', text: 'Karena sampah akan hilang dengan sendirinya jika diabaikan bersama' },
+        { value: 'D', text: 'Agar semua orang bisa membuang sampah sesuka hati' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Masalah sampah adalah tanggung jawab bersama yang memerlukan aksi kolektif dari keluarga, sekolah, komunitas, dan pemerintah.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 28,
+    bagianId: 7,
+    bagianTitle: 'Aksi Komunitas & Masa Depan',
+    title: 'Ikrar Utama Guardian Bumi ThinkBin',
+    type: 'komitmen',
+    pilar: 'Kemauan',
+    konsepInti: 'Selamat! Kamu telah menuntaskan seluruh kurikulum 7 Bab ThinkBin: Kenali, Pilah, Aksi! Kamu kini resmi menjadi Guardian Lingkungan sejati yang berdaya, berilmu, dan berakhlak mulia terhadap bumi.',
+    contoh: '"Saya berikrar akan selalu menjadi pelopor pemilahan sampah dan menjaga kelestarian lingkungan demi masa depan bumi tercinta."',
+    question: {
+      question: 'Apa komitmen terpenting setelah menyelesaikan seluruh 7 Bab Pembelajaran ThinkBin?',
+      options: [
+        { value: 'A', text: 'Menjadikan gaya hidup pilah sampah dan pengurangan plastik sebagai kebiasaan seumur hidup' },
+        { value: 'B', text: 'Berhenti peduli lingkungan karena materi sudah selesai' },
+        { value: 'C', text: 'Kembali menggunakan plastik sekali pakai sembarangan' },
+        { value: 'D', text: 'Menyimpan ilmu sendiri tanpa mempraktikkannya' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Menjadi Guardian ThinkBin sejati berarti konsisten mempraktikkan gaya hidup ramah lingkungan sepanjang hayat.'
+    },
+    xpReward: 30,
+    coinReward: 50
   }
 ];

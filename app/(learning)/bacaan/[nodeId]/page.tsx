@@ -166,10 +166,10 @@ export default function BacaanPage() {
         {/* ── 4. NARROWER WHITE READING CARD CONTAINER (Shows generous wood margin on both sides) ── */}
         <div className="relative z-10 w-[90%] max-w-[365px] mx-auto bg-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.35)] px-4 pt-10 pb-6 flex flex-col gap-4 mb-4">
           
-          {/* Floating Pill Badge: Node X / 16 • Bagian Y */}
+          {/* Floating Pill Badge: Node X / 28 • Bagian Y */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] px-6 py-2 rounded-full z-20 whitespace-nowrap">
             <span className="font-fredoka font-black text-sm text-[#3b1d03] tracking-wide">
-              Node {node.id} / 16 • Bagian {node.bagianId}
+              Node {node.id} / 28 • Bagian {node.bagianId}
             </span>
           </div>
 

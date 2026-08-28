@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS public.node_catalog (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Seed / Upsert 16 Learning Nodes
+-- Seed / Upsert 28 Learning Nodes
 INSERT INTO public.node_catalog (node_id, title, xp_reward, coin_reward) VALUES
 (1, 'Apa itu Sampah & Klasifikasi UU', 12, 15),
 (2, 'Sampah Organik: Pengertian, Jenis & Contoh', 12, 15),
@@ -66,7 +66,19 @@ INSERT INTO public.node_catalog (node_id, title, xp_reward, coin_reward) VALUES
 (13, 'Pembuatan Kompos Sederhana', 18, 25),
 (14, 'Bank Sampah & Ekonomi Sirkular', 18, 25),
 (15, 'Kuis Tantangan: Master Pengelolaan', 25, 30),
-(16, 'Komitmen Pahlawan Lingkungan', 30, 50)
+(16, 'Komitmen Aksi Nyata untuk Bumi', 12, 15),
+(17, 'Kompos Takakura & Eco-Enzyme', 12, 15),
+(18, 'Biokonversi Maggot BSF', 12, 15),
+(19, 'Upcycling & Kerajinan Ecobrick', 12, 15),
+(20, 'Kuis Tantangan: Daur Ulang Kreatif', 20, 25),
+(21, 'Kantin Sehat Bebas Plastik', 12, 15),
+(22, 'Audit Timbulan Sampah Kelas', 12, 15),
+(23, 'Peran Kader & Duta Lingkungan', 12, 15),
+(24, 'Kuis Tantangan: Aksi Sekolah Hijau', 20, 25),
+(25, 'Ekonomi Sirkular & Zero Waste', 12, 15),
+(26, 'Inovasi Smart Waste Bin & IoT', 12, 15),
+(27, 'Gerakan Bersih Komunitas', 12, 15),
+(28, 'Ikrar Utama Guardian Bumi', 30, 50)
 ON CONFLICT (node_id) DO UPDATE SET
     title = EXCLUDED.title,
     xp_reward = EXCLUDED.xp_reward,
