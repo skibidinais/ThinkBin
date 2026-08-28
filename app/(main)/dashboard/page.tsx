@@ -34,12 +34,12 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-start w-full min-h-full py-6 select-none bg-cover bg-center bg-no-repeat"
+      className="relative flex flex-col items-center justify-center w-full min-h-full py-4 pb-20 select-none bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/screens_assets/background.png')" }}
     >
       {/* TOAST ALERT NOTIFICATION */}
       {toastMessage && (
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-50 bg-[#1E293B]/95 text-white border-2 border-[#F59E0B] px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1E293B]/95 text-white border-2 border-[#F59E0B] px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce">
           <span className="font-fredoka font-bold text-sm tracking-wide">
             {toastMessage}
           </span>
@@ -48,21 +48,21 @@ export default function DashboardPage() {
 
       {/* ── 1. HERO: THINKBIN LOGO + MASCOT ── */}
       <div
-        className="relative z-10 w-full flex justify-center animate-bounce flex-shrink-0"
+        className="relative z-10 w-full flex justify-center animate-bounce flex-shrink-0 mb-1"
         style={{ animationDuration: "4s" }}
       >
         <Image
           src="/screens_assets/logo.png"
           alt="ThinkBin Logo and Mascot"
-          width={270}
-          height={170}
-          className="w-[270px] max-w-[72vw] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
+          width={250}
+          height={155}
+          className="w-[250px] max-w-[68vw] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
           priority
         />
       </div>
 
-      {/* ── 2. ACTION BUTTONS (grouped directly below the logo) ── */}
-      <div className="relative z-20 w-full max-w-[320px] px-4 flex flex-col items-center gap-2.5 mt-3 flex-shrink-0">
+      {/* ── 2. ACTION BUTTONS (centered directly below the logo) ── */}
+      <div className="relative z-20 w-full max-w-[320px] px-4 flex flex-col items-center gap-2 mt-1 flex-shrink-0">
 
         {/* BIG GREEN 3D PLAY BUTTON */}
         <button
@@ -154,9 +154,6 @@ export default function DashboardPage() {
           </Link>
         )}
       </div>
-
-      {/* ── Invisible spacer so the fixed nav bar doesn't overlap the last button ── */}
-      <div className="h-20 flex-shrink-0" />
     </div>
   );
 }
