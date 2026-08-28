@@ -165,17 +165,21 @@ export default function MissionPage() {
   ) => {
     if (missionState[missionKey]) return; // Prevent double claim
 
-    // Optimistic local update so user sees instant reward
+    // 1. Mark as claimed and save state
+    const updated = { ...missionState, [missionKey]: true };
+    saveState(updated);
+
+    // 2. Compute new totals
     const currentCoins = user?.coins ?? 0;
     const currentXp = user?.xp ?? 0;
     const newCoins = currentCoins + coinReward;
     const newXp = currentXp + xpReward;
-    updateUser({ coins: newCoins, xp: newXp });
 
-    const updated = { ...missionState, [missionKey]: true };
-    saveState(updated);
+    // 3. Update Auth Context state & LocalStorage immediately
+    updateUser({ coins: newCoins, xp: newXp });
     showToast(`Berhasil klaim +${coinReward} Coin & +${xpReward} XP dari "${title}"!`);
 
+    // 4. Authoritative Supabase update
     if (user?.id) {
       try {
         const res = await claimDailyMissionTransaction({
@@ -191,9 +195,8 @@ export default function MissionPage() {
             xp: res.currentXp ?? newXp,
           });
         }
-        await refreshProfile(user.id);
       } catch (err) {
-        console.warn("Direct mission claim sync:", err);
+        console.warn("Mission claim RPC fallback:", err);
       }
     }
   };
