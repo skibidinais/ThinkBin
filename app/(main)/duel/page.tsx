@@ -529,57 +529,80 @@ export default function DuelPage() {
       {duelState === "playing" && currentQ && (
         <div className="relative z-10 w-full max-w-[380px] px-3 flex-1 flex flex-col justify-between pb-6 pt-1">
           
-          {/* Top Player Status Duel Bar */}
-          <div className="w-full bg-[#1b281d] border-2 border-[#334d35] rounded-2xl p-2.5 flex items-center justify-between shadow-xl mb-2">
-            {/* Player Me */}
-            <div className="flex items-center gap-2">
-              <div className="relative w-9 h-9 rounded-xl border-2 border-[#4ade80] bg-[#111e12] flex items-center justify-center overflow-hidden">
-                <Image
-                  src="/screens_assets/mascot_thumbsup_transparent.png"
-                  alt="My Avatar"
-                  width={28}
-                  height={28}
-                />
+          {/* Top Player Status Duel Bar with 8-bit battle health bars */}
+          <div className="w-full bg-[#1b281d] border-2 border-[#334d35] rounded-2xl p-3 flex flex-col gap-2.5 shadow-xl mb-2">
+            <div className="flex items-center justify-between">
+              {/* Player Me */}
+              <div className="flex items-center gap-2">
+                <div className="relative w-9 h-9 rounded-xl border-2 border-[#4ade80] bg-[#111e12] flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="/screens_assets/mascot_thumbsup_transparent.png"
+                    alt="My Avatar"
+                    width={28}
+                    height={28}
+                  />
+                </div>
+                <div className="text-left">
+                  <span className="block font-fredoka font-bold text-[11px] text-white truncate max-w-[75px]">
+                    {user?.display_name || "Kamu"}
+                  </span>
+                  <span className="font-fredoka font-black text-xs text-[#4ade80]">
+                    {myScore} Poin
+                  </span>
+                </div>
               </div>
-              <div className="text-left">
-                <span className="block font-fredoka font-bold text-[11px] text-white truncate max-w-[75px]">
-                  {user?.display_name || "Kamu"}
+
+              {/* Timer Badge */}
+              <div className="flex flex-col items-center">
+                <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center font-fredoka font-black text-xs shadow-md ${
+                  timeLeft <= 5 ? "bg-red-600 border-red-300 animate-pulse text-white" : "bg-[#eab308] border-yellow-200 text-slate-950"
+                }`}>
+                  {timeLeft}s
+                </div>
+                <span className="font-fredoka font-bold text-[9px] text-[#86efac] mt-0.5">
+                  Soal {currentIdx + 1}/5
                 </span>
-                <span className="font-fredoka font-black text-xs text-[#4ade80]">
-                  {myScore} Poin
-                </span>
+              </div>
+
+              {/* Opponent */}
+              <div className="flex items-center gap-2 flex-row-reverse">
+                <div className="relative w-9 h-9 rounded-xl border-2 border-[#f87171] bg-[#111e12] flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={opponentAvatar}
+                    alt="Opponent Avatar"
+                    width={28}
+                    height={28}
+                  />
+                </div>
+                <div className="text-right">
+                  <span className="block font-fredoka font-bold text-[11px] text-white truncate max-w-[75px]">
+                    {opponentName}
+                  </span>
+                  <span className="font-fredoka font-black text-xs text-[#f87171]">
+                    {oppScore} Poin
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Timer Badge */}
-            <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center font-fredoka font-black text-xs shadow-md ${
-                timeLeft <= 5 ? "bg-red-600 border-red-300 animate-pulse text-white" : "bg-[#eab308] border-yellow-200 text-slate-950"
-              }`}>
-                {timeLeft}s
-              </div>
-              <span className="font-fredoka font-bold text-[9px] text-[#86efac] mt-0.5">
-                Soal {currentIdx + 1}/5
-              </span>
-            </div>
-
-            {/* Opponent */}
-            <div className="flex items-center gap-2 flex-row-reverse">
-              <div className="relative w-9 h-9 rounded-xl border-2 border-[#f87171] bg-[#111e12] flex items-center justify-center overflow-hidden">
-                <Image
-                  src={opponentAvatar}
-                  alt="Opponent Avatar"
-                  width={28}
-                  height={28}
+            {/* 8-Bit Retro Split Battle XP Gauge (theorcdev 8bit-xp-bar) */}
+            <div className="w-full flex items-center gap-1.5 bg-[#101811] p-1 rounded-xl border border-[#2b3d2d]">
+              {/* My Progress Fill */}
+              <div className="flex-1 h-2.5 bg-[#192b1b] rounded-md overflow-hidden flex justify-end">
+                <div
+                  className="h-full bg-gradient-to-l from-[#4ade80] to-[#22c55e] transition-all duration-500"
+                  style={{ width: `${Math.min(100, (myScore / 500) * 100)}%` }}
                 />
               </div>
-              <div className="text-right">
-                <span className="block font-fredoka font-bold text-[11px] text-white truncate max-w-[75px]">
-                  {opponentName}
-                </span>
-                <span className="font-fredoka font-black text-xs text-[#f87171]">
-                  {oppScore} Poin
-                </span>
+
+              <div className="w-1.5 h-1.5 rounded-full bg-[#eab308]" />
+
+              {/* Opponent Progress Fill */}
+              <div className="flex-1 h-2.5 bg-[#2b1919] rounded-md overflow-hidden flex justify-start">
+                <div
+                  className="h-full bg-gradient-to-r from-[#f87171] to-[#ef4444] transition-all duration-500"
+                  style={{ width: `${Math.min(100, (oppScore / 500) * 100)}%` }}
+                />
               </div>
             </div>
           </div>
