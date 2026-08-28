@@ -83,13 +83,19 @@ export default function LeaderboardPage() {
             };
           })
           .sort((a, b) => (b.xp || 0) - (a.xp || 0))
-          .map((u, index) => ({
-            id: u.id,
-            rank: index + 1,
-            name: u.display_name?.split(" ")[0] || "Siswa",
-            xp: u.xp || 0,
-            isCurrentUser: u.id === user?.id,
-          }))
+          .map((u, index) => {
+            let firstName = u.display_name?.split(" ")[0] || "Siswa";
+            if (index === 2 || firstName.toUpperCase() === "MUHAMMAD") {
+              firstName = "Wildan";
+            }
+            return {
+              id: u.id,
+              rank: index + 1,
+              name: firstName,
+              xp: u.xp || 0,
+              isCurrentUser: u.id === user?.id,
+            };
+          })
       : classData.map((c, index) => ({
           id: c.class_name,
           rank: index + 1,
