@@ -978,7 +978,7 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
             u.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) return { ...u, xp: 335 };
-          if (isWildan) return { ...u, xp: 534 };
+          if (isWildan) return { ...u, xp: 951 };
           if (isAsyraf) return { ...u, xp: 0 };
           return u;
         });
@@ -1074,7 +1074,7 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
             row.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) rowXp = 335;
-          if (isWildan) rowXp = 534;
+          if (isWildan) rowXp = 951;
           if (isAsyraf) rowXp = 0;
 
           classMap[row.class_name].total_xp += rowXp;
