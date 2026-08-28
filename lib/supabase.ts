@@ -945,14 +945,13 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
         throw new Error(error.message || "Gagal memuat data leaderboard dari server.");
       }
       if (data) {
-        // Enforce calibrated XP for Freza to 135 XP and re-sort
+        // Enforce calibrated XP for Freza to 335 XP (+200 XP) and re-sort
         const adjusted = (data as UserProfile[]).map((u) => {
           if (
             u.display_name?.toUpperCase().includes("FREZA") ||
-            u.email?.toLowerCase().includes("freza") ||
-            (u.xp && u.xp >= 800)
+            u.email?.toLowerCase().includes("freza")
           ) {
-            return { ...u, xp: 135 };
+            return { ...u, xp: Math.max((u.xp || 0) + 200, 335) };
           }
           return u;
         });
@@ -1037,10 +1036,9 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
           let rowXp = row.xp || 0;
           if (
             row.display_name?.toUpperCase().includes("FREZA") ||
-            row.email?.toLowerCase().includes("freza") ||
-            rowXp >= 800
+            row.email?.toLowerCase().includes("freza")
           ) {
-            rowXp = 135;
+            rowXp = Math.max((row.xp || 0) + 200, 335);
           }
           classMap[row.class_name].total_xp += rowXp;
           classMap[row.class_name].student_count += 1;
