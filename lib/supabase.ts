@@ -961,14 +961,20 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
         throw new Error(error.message || "Gagal memuat data leaderboard dari server.");
       }
       if (data) {
-        // Enforce calibrated XP for Freza to exactly 335 XP (135 + 200) and re-sort
+        // Enforce calibrated XP: Freza = 335, Wildan = 534
         const adjusted = (data as UserProfile[]).map((u) => {
-          if (
+          const isFreza =
             u.display_name?.toUpperCase().includes("FREZA") ||
-            u.email?.toLowerCase().includes("freza")
-          ) {
-            return { ...u, xp: 335 };
-          }
+            u.email?.toLowerCase().includes("freza");
+
+          const isWildan =
+            u.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+            u.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+            (u.display_name?.toUpperCase().includes("WILDAN") && !u.display_name?.toUpperCase().includes("ZASKEYA")) ||
+            u.email?.toLowerCase().includes("wildan");
+
+          if (isFreza) return { ...u, xp: 335 };
+          if (isWildan) return { ...u, xp: 534 };
           return u;
         });
 
@@ -1050,12 +1056,18 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
             classMap[row.class_name] = { total_xp: 0, student_count: 0 };
           }
           let rowXp = row.xp || 0;
-          if (
+          const isFreza =
             row.display_name?.toUpperCase().includes("FREZA") ||
-            row.email?.toLowerCase().includes("freza")
-          ) {
-            rowXp = 335;
-          }
+            row.email?.toLowerCase().includes("freza");
+          const isWildan =
+            row.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+            row.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+            (row.display_name?.toUpperCase().includes("WILDAN") && !row.display_name?.toUpperCase().includes("ZASKEYA")) ||
+            row.email?.toLowerCase().includes("wildan");
+
+          if (isFreza) rowXp = 335;
+          if (isWildan) rowXp = 534;
+
           classMap[row.class_name].total_xp += rowXp;
           classMap[row.class_name].student_count += 1;
         }

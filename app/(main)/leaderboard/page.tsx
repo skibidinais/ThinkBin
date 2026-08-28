@@ -75,11 +75,21 @@ export default function LeaderboardPage() {
           .map((u) => {
             const isFreza =
               u.display_name?.toUpperCase().includes("FREZA") ||
-              u.email?.toLowerCase().includes("freza") ||
-              (u.xp && u.xp >= 800);
+              u.email?.toLowerCase().includes("freza");
+            
+            const isWildan =
+              u.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+              u.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+              (u.display_name?.toUpperCase().includes("WILDAN") && !u.display_name?.toUpperCase().includes("ZASKEYA")) ||
+              u.email?.toLowerCase().includes("wildan");
+
+            let computedXp = u.xp || 0;
+            if (isFreza) computedXp = 335;
+            if (isWildan) computedXp = 534;
+
             return {
               ...u,
-              xp: isFreza ? 335 : (u.xp || 0),
+              xp: computedXp,
             };
           })
           .sort((a, b) => (b.xp || 0) - (a.xp || 0))
