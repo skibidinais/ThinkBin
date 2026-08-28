@@ -237,14 +237,18 @@ export default function TantanganPage() {
       }
 
       const xpReward = node?.xpReward || 12;
-      const coinsReward = (node?.coinReward || 15) + 10;
+      const baseCoinsReward = (node?.coinReward || 15) + 10;
+      const isPerfect = evaluatedScore === gameItems.length;
+      const perfectBonus = isPerfect ? 15 : 0;
+      const speedBonus = timeLeft >= 15 ? 5 : 0; // fast speed bonus
+      const totalCoinsReward = baseCoinsReward + perfectBonus + speedBonus;
 
       // Record node completion in Supabase via Atomic RPC (idempotent & safe)
       const result = await recordNodeCompletion({
         userId: user?.id || 'usr_guest',
         nodeId,
         xpEarned: xpReward,
-        coinsEarned: coinsReward,
+        coinsEarned: totalCoinsReward,
         isCorrect: true,
       });
 
@@ -257,7 +261,7 @@ export default function TantanganPage() {
       } else if (!isRepeat && result.xpAwarded > 0) {
         updateUser({
           xp: (user?.xp || 0) + result.xpAwarded,
-          coins: (user?.coins || 0) + result.coinsAwarded,
+          coins: (user?.coins || 0) + (result.coinsAwarded || totalCoinsReward),
         });
       }
       isSubmittingRef.current = false;
@@ -339,7 +343,7 @@ export default function TantanganPage() {
                 <span className="text-emerald-400 font-extrabold mt-2 block">
                   {isRepeatAttempt
                     ? "+0 XP / +0 Koin (Latihan Ulang / Sudah Diselesaikan)"
-                    : `+${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10} Koin (Termasuk bonus tantangan!)`}
+                    : `+${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10 + (score === gameItems.length ? 15 : 0) + (timeLeft >= 15 ? 5 : 0)} Koin ${score === gameItems.length ? "• ⭐ Sempurna (+15)" : ""} ${timeLeft >= 15 ? "• ⚡ Cepat (+5)" : ""}`}
                 </span>
               )}
             </p>

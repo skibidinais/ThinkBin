@@ -189,12 +189,10 @@ export default function TokoPage() {
         const result = await openMysteryBoxTransaction(user?.id || "usr_guest");
         if (result.success) {
           setPurchaseNotice(result.message || `Kamu membuka Mystery Box dan mendapatkan +${result.rewardXp} XP!`);
-          if (result.currentCoins !== undefined || result.currentXp !== undefined) {
-            updateUser({
-              coins: result.currentCoins ?? (user?.coins ? user.coins - item.price : 0),
-              xp: result.currentXp ?? ((user?.xp || 0) + (result.rewardXp || 20)),
-            });
-          }
+          updateUser({
+            coins: result.currentCoins ?? (user?.coins ? Math.max(0, user.coins - item.price) : 0),
+            xp: result.currentXp ?? ((user?.xp || 0) + (result.rewardXp || 20)),
+          });
         } else {
           setPurchaseNotice(result.message || "Koin tidak cukup untuk Mystery Box.");
         }

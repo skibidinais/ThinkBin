@@ -223,7 +223,7 @@ BEGIN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
     END IF;
 
-    v_reward_xp := floor(random() * 25 + 15)::INT;
+    v_reward_xp := floor(random() * 26 + 5)::INT; -- 5 to 30 XP
 
     UPDATE public.user_profiles
     SET coins = coins - v_price,

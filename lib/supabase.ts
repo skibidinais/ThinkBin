@@ -949,35 +949,62 @@ export interface MysteryBoxResult {
 export async function openMysteryBoxTransaction(userId?: string): Promise<MysteryBoxResult> {
   const price = 40;
 
+  // Local sync helper
+  const persistMysteryBoxLocal = (newCoins: number, newXp: number) => {
+    if (typeof window !== "undefined") {
+      try {
+        const rawUser = localStorage.getItem("tb_active_user");
+        if (rawUser) {
+          const u = JSON.parse(rawUser);
+          u.coins = newCoins;
+          u.xp = newXp;
+          localStorage.setItem("tb_active_user", JSON.stringify(u));
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   if (isSupabaseConfigured()) {
     try {
-      let { data, error } = await supabase.rpc("open_mystery_box");
+      // 1. Try calling RPC with user ID parameter if available
+      let { data, error } = await supabase.rpc("open_mystery_box", userId ? { p_user_id: userId } : {});
 
-      if (!error && data && data.success) {
-        if (typeof window !== "undefined") {
-          const rawUser = localStorage.getItem("tb_active_user");
-          if (rawUser) {
-            try {
-              const u = JSON.parse(rawUser);
-              u.coins = data.current_coins ?? (u.coins - price);
-              u.xp = data.current_xp ?? (u.xp + data.reward_xp);
-              localStorage.setItem("tb_active_user", JSON.stringify(u));
-            } catch {
-              // ignore
-            }
-          }
+      // If that failed because RPC signature might not expect params, try without params
+      if (error && error.message?.includes("function open_mystery_box")) {
+        const retry = await supabase.rpc("open_mystery_box");
+        if (!retry.error) {
+          data = retry.data;
+          error = null;
         }
-        return {
-          success: true,
-          rewardXp: data.reward_xp,
-          currentXp: data.current_xp,
-          currentCoins: data.current_coins,
-          message: data.message || `Kamu membuka Mystery Box dan mendapatkan +${data.reward_xp} XP!`,
-        };
       }
 
-      if (error && userId) {
-        console.warn("RPC open_mystery_box failed, executing direct DB transaction:", error.message);
+      if (!error && data) {
+        if (data.success) {
+          const finalCoins = data.current_coins;
+          const finalXp = data.current_xp;
+          if (finalCoins !== undefined && finalXp !== undefined) {
+            persistMysteryBoxLocal(finalCoins, finalXp);
+          }
+          return {
+            success: true,
+            rewardXp: data.reward_xp,
+            currentXp: finalXp,
+            currentCoins: finalCoins,
+            message: data.message || `Kamu membuka Mystery Box dan mendapatkan +${data.reward_xp} XP!`,
+          };
+        } else if (data.status === "insufficient_funds" || data.message?.includes("tidak cukup")) {
+          return {
+            success: false,
+            message: data.message || "Koin kamu tidak cukup untuk Mystery Box.",
+          };
+        }
+      }
+
+      // 2. Direct DB fallback if RPC fails or returns unauthorized
+      if ((error || (data && !data.success)) && userId && userId !== "usr_guest") {
+        console.warn("RPC open_mystery_box fallback, executing direct DB transaction:", error?.message || data?.message);
         const { data: prof } = await supabase
           .from("user_profiles")
           .select("id, coins, xp")
@@ -992,8 +1019,8 @@ export async function openMysteryBoxTransaction(userId?: string): Promise<Myster
             };
           }
 
-          const rewardXp = Math.floor(Math.random() * 6) + 5; // 5 to 10 XP
-          const newCoins = (prof.coins || 0) - price;
+          const rewardXp = Math.floor(Math.random() * 26) + 5; // 5 to 30 XP
+          const newCoins = Math.max(0, (prof.coins || 0) - price);
           const newXp = (prof.xp || 0) + rewardXp;
 
           await supabase
@@ -1005,19 +1032,7 @@ export async function openMysteryBoxTransaction(userId?: string): Promise<Myster
             })
             .eq("id", prof.id);
 
-          if (typeof window !== "undefined") {
-            const rawUser = localStorage.getItem("tb_active_user");
-            if (rawUser) {
-              try {
-                const u = JSON.parse(rawUser);
-                u.coins = newCoins;
-                u.xp = newXp;
-                localStorage.setItem("tb_active_user", JSON.stringify(u));
-              } catch {
-                // ignore
-              }
-            }
-          }
+          persistMysteryBoxLocal(newCoins, newXp);
 
           return {
             success: true,
@@ -1029,13 +1044,6 @@ export async function openMysteryBoxTransaction(userId?: string): Promise<Myster
         }
       }
 
-      if (error) {
-        console.error("RPC open_mystery_box error:", error.message);
-        return {
-          success: false,
-          message: error.message || "Gagal membuka Mystery Box via server.",
-        };
-      }
       if (data && !data.success) {
         return {
           success: false,
@@ -1044,10 +1052,38 @@ export async function openMysteryBoxTransaction(userId?: string): Promise<Myster
       }
     } catch (err: any) {
       console.error("Could not open mystery box via Supabase:", err);
-      return {
-        success: false,
-        message: err.message || "Terjadi kesalahan saat membuka Mystery Box.",
-      };
+    }
+  }
+
+  // 3. Guest / Offline fallback using local storage
+  if (typeof window !== "undefined") {
+    try {
+      const rawUser = localStorage.getItem("tb_active_user");
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        const coins = u.coins ?? 0;
+        if (coins < price) {
+          return {
+            success: false,
+            message: "Koin kamu tidak cukup untuk Mystery Box.",
+          };
+        }
+        const rewardXp = Math.floor(Math.random() * 26) + 5; // 5 to 30 XP
+        const newCoins = coins - price;
+        const newXp = (u.xp || 0) + rewardXp;
+        u.coins = newCoins;
+        u.xp = newXp;
+        localStorage.setItem("tb_active_user", JSON.stringify(u));
+        return {
+          success: true,
+          rewardXp,
+          currentCoins: newCoins,
+          currentXp: newXp,
+          message: `Kamu membuka Mystery Box dan mendapatkan +${rewardXp} XP!`,
+        };
+      }
+    } catch (e) {
+      // ignore
     }
   }
 
@@ -1082,18 +1118,11 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
             u.display_name?.toUpperCase().includes("FREZA") ||
             u.email?.toLowerCase().includes("freza");
 
-          const isWildan =
-            u.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
-            u.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
-            (u.display_name?.toUpperCase().includes("WILDAN") && !u.display_name?.toUpperCase().includes("ZASKEYA")) ||
-            u.email?.toLowerCase().includes("wildan");
-
           const isAsyraf =
             u.display_name?.toUpperCase().includes("ASYRAF") ||
             u.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) return { ...u, xp: 335 };
-          if (isWildan) return { ...u, xp: 10000 };
           if (isAsyraf) return { ...u, xp: 0 };
           return u;
         });
@@ -1179,17 +1208,11 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
           const isFreza =
             row.display_name?.toUpperCase().includes("FREZA") ||
             row.email?.toLowerCase().includes("freza");
-          const isWildan =
-            row.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
-            row.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
-            (row.display_name?.toUpperCase().includes("WILDAN") && !row.display_name?.toUpperCase().includes("ZASKEYA")) ||
-            row.email?.toLowerCase().includes("wildan");
           const isAsyraf =
             row.display_name?.toUpperCase().includes("ASYRAF") ||
             row.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) rowXp = 335;
-          if (isWildan) rowXp = 10000;
           if (isAsyraf) rowXp = 0;
 
           classMap[row.class_name].total_xp += rowXp;

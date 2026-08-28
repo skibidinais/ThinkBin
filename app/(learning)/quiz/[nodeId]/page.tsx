@@ -24,9 +24,17 @@ export default function QuizPage() {
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [isRepeatAttempt, setIsRepeatAttempt] = useState<boolean>(false);
   const [showHintModal, setShowHintModal] = useState<boolean>(false);
+  const [startTime, setStartTime] = useState<number>(() => Date.now());
+  const [secondsTaken, setSecondsTaken] = useState<number>(0);
+  const [speedBonus, setSpeedBonus] = useState<number>(0);
+  const [perfectBonus, setPerfectBonus] = useState<number>(0);
 
   // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16, 20, 24, 28, 40)
   const isFinalNodeOfBagian = nodeId % 4 === 0;
+
+  useEffect(() => {
+    setStartTime(Date.now());
+  }, [nodeId]);
 
   useEffect(() => {
     if (!node || !question) {
@@ -108,12 +116,21 @@ export default function QuizPage() {
     isSubmittingRef.current = true;
     setIsSubmitting(true);
 
+    const timeSpent = Math.max(1, Math.round((Date.now() - startTime) / 1000));
+    setSecondsTaken(timeSpent);
+
     const correct = selectedOption === question.correctAnswer;
     setIsCorrect(correct);
     setIsSubmitted(true);
 
     if (correct) {
-      // If this was already solved or is a repeat, strictly skip recording new XP
+      // Calculate Poin B (Perfect Score Bonus: +15 Koin) & Poin C (Speed Run Bonus: +5 Koin if under 10s)
+      const pBonus = 15; // Perfect 100% Correct First Try bonus
+      const sBonus = timeSpent <= 10 ? 5 : 0; // Speed run bonus under 10s
+      setPerfectBonus(pBonus);
+      setSpeedBonus(sBonus);
+
+      // If this was already solved or is a repeat, strictly skip recording new XP/Coins
       if (isRepeatAttempt) {
         setIsRepeatAttempt(true);
         isSubmittingRef.current = false;
@@ -121,12 +138,14 @@ export default function QuizPage() {
         return;
       }
 
+      const totalCoinsEarned = node.coinReward + pBonus + sBonus;
+
       // Record node completion in Supabase via Atomic RPC (idempotent)
       const result = await recordNodeCompletion({
         userId: user?.id || "usr_guest",
         nodeId,
         xpEarned: node.xpReward,
-        coinsEarned: node.coinReward,
+        coinsEarned: totalCoinsEarned,
         quizAnswer: selectedOption,
         isCorrect: true,
       });
@@ -140,7 +159,7 @@ export default function QuizPage() {
       } else if (!isRepeat && result.xpAwarded > 0) {
         updateUser({
           xp: (user?.xp || 0) + result.xpAwarded,
-          coins: (user?.coins || 0) + result.coinsAwarded,
+          coins: (user?.coins || 0) + (result.coinsAwarded || totalCoinsEarned),
         });
       }
     }
@@ -156,6 +175,7 @@ export default function QuizPage() {
     isSubmittingRef.current = false;
     setIsCorrect(false);
     setIsRepeatAttempt(true);
+    setStartTime(Date.now());
   };
 
   const handleContinue = () => {
@@ -377,9 +397,23 @@ export default function QuizPage() {
                 {isCorrect
                   ? isRepeatAttempt
                     ? "+0 XP • +0 Koin (Latihan Ulang)"
-                    : `+${node.xpReward} XP • +${node.coinReward} Koin`
+                    : `+${node.xpReward} XP • +${node.coinReward + perfectBonus + speedBonus} Koin`
                   : "Coba pelajari lagi konsep intinya"}
               </div>
+
+              {/* Bonus Badges (Poin B & C) */}
+              {isCorrect && !isRepeatAttempt && (
+                <div className="flex flex-wrap items-center justify-center gap-2 w-full">
+                  <span className="inline-flex items-center gap-1 bg-[#fef08a] border-[1.5px] border-[#ca8a04] text-[#854d0e] font-fredoka font-bold text-[11px] px-2.5 py-0.5 rounded-full shadow-xs">
+                    ⭐ Sempurna 100%: +{perfectBonus} Koin
+                  </span>
+                  {speedBonus > 0 && (
+                    <span className="inline-flex items-center gap-1 bg-[#dbeafe] border-[1.5px] border-[#2563eb] text-[#1e40af] font-fredoka font-bold text-[11px] px-2.5 py-0.5 rounded-full shadow-xs animate-bounce">
+                      ⚡ Cepat &lt;10s ({secondsTaken}s): +{speedBonus} Koin
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="w-full bg-[#FFFDF5] border-[1.5px] border-[#EADFC9] rounded-2xl p-3.5 text-center shadow-inner">
                 <p className="font-nunito font-bold text-[13px] text-[#553e2a] leading-relaxed">

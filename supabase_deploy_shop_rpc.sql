@@ -186,8 +186,10 @@ BEGIN
 END;
 $$;
 
--- 6. ATOMIC RPC: open_mystery_box()
-CREATE OR REPLACE FUNCTION public.open_mystery_box()
+-- 6. ATOMIC RPC: open_mystery_box(p_user_id TEXT)
+CREATE OR REPLACE FUNCTION public.open_mystery_box(
+    p_user_id TEXT DEFAULT NULL
+)
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -201,18 +203,24 @@ DECLARE
     v_new_xp INT;
     v_updated_rows INT;
 BEGIN
-    v_user_id := auth.uid();
+    IF auth.uid() IS NOT NULL THEN
+        v_user_id := auth.uid();
+    ELSIF p_user_id IS NOT NULL AND p_user_id ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+        v_user_id := p_user_id::UUID;
+    ELSIF p_user_id IS NOT NULL THEN
+        SELECT id INTO v_user_id FROM public.user_profiles WHERE google_id = p_user_id LIMIT 1;
+    END IF;
 
     IF v_user_id IS NULL THEN
         RETURN jsonb_build_object('success', false, 'message', 'Unauthorized');
     END IF;
 
-    -- Random XP reward between 15 and 40
-    v_reward_xp := floor(random() * (40 - 15 + 1) + 15)::INT;
+    -- Random XP reward between 5 and 30
+    v_reward_xp := floor(random() * 26 + 5)::INT;
 
     UPDATE public.user_profiles
     SET coins = coins - v_price,
-        xp = xp + v_reward_xp,
+        xp = COALESCE(xp, 0) + v_reward_xp,
         updated_at = NOW()
     WHERE id = v_user_id AND coins >= v_price
     RETURNING coins, xp INTO v_new_coins, v_new_xp;
@@ -238,6 +246,8 @@ $$;
 
 -- 7. GRANTS
 GRANT EXECUTE ON FUNCTION public.purchase_shop_item(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.open_mystery_box(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.open_mystery_box() TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.equip_shop_item(TEXT) TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.open_mystery_box() TO anon, authenticated, service_role;
 GRANT SELECT ON public.shop_catalog TO anon, authenticated, service_role;
