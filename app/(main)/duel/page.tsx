@@ -347,7 +347,6 @@ export default function DuelPage() {
   const currentQ = questions[currentIdx];
 
   return (
-  return (
     <div className="relative w-full min-h-[100dvh] h-[100dvh] flex flex-col items-center justify-between select-none overflow-hidden bg-[#131b14] text-white">
       {/* ── AMBIENT NATURAL FOREST GLOW ── */}
       <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-[#2d5a27]/40 to-transparent pointer-events-none" />

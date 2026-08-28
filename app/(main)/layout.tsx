@@ -48,9 +48,13 @@ export default function MainLayout({
         />
       )}
 
-      {/* Main Scrollable Content Area with smooth touch scrolling */}
+      {/* Main Content Area */}
       <main
-        className="flex-1 w-full flex flex-col overflow-y-auto overscroll-contain no-scrollbar"
+        className={`w-full flex flex-col ${
+          isDashboard
+            ? "h-full flex-1 overflow-hidden"
+            : "flex-1 overflow-y-auto overscroll-contain no-scrollbar"
+        }`}
         style={{
           WebkitOverflowScrolling: "touch",
         }}
