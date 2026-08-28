@@ -347,51 +347,80 @@ export default function DuelPage() {
   const currentQ = questions[currentIdx];
 
   return (
-    <div className="relative w-full min-h-[100dvh] h-[100dvh] flex flex-col items-center justify-between select-none overflow-hidden bg-[#2c1445] text-white">
-      {/* ── BACKGROUND GLOW & NEON ARENA ── */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0 bg-cover bg-center opacity-60"
-        style={{ backgroundImage: "url('/screens_assets/background.png')" }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1b0a2e]/90 via-[#2c1445]/80 to-[#120520] z-0" />
+  // 3D Card tilt calculation helper
+  const [rotateX, setRotateX] = useState<number>(0);
+  const [rotateY, setRotateY] = useState<number>(0);
 
-      {/* ── TOP HEADER / NAVIGATION BAR ── */}
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotX = ((y - centerY) / centerY) * -10;
+    const rotY = ((x - centerX) / centerX) * 10;
+    setRotateX(rotX);
+    setRotateY(rotY);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
+
+  return (
+    <div className="relative w-full min-h-[100dvh] h-[100dvh] flex flex-col items-center justify-between select-none overflow-hidden bg-[#1a0b2e] text-white">
+      {/* ── AMBIENT LIQUID GLASS LIGHTING ORBS ── */}
+      <div className="absolute top-10 -left-20 w-72 h-72 bg-[#9333ea]/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute bottom-10 -right-20 w-80 h-80 bg-[#f97316]/25 rounded-full blur-3xl pointer-events-none" />
+
+      {/* ── TOP HEADER / NAVIGATION BAR WITH LIQUID FROSTED GLASS ── */}
       <header className="relative z-20 w-full max-w-[420px] px-4 pt-3 pb-2 flex items-center justify-between flex-shrink-0">
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="w-10 h-10 rounded-full bg-white/15 border-[2px] border-white/30 flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-md"
+          className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-lg hover:bg-white/20"
         >
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
 
-        <div className="flex items-center gap-1.5 bg-[#4c1d95]/90 border-[2px] border-[#a855f7] px-4 py-1 rounded-full shadow-lg">
+        {/* Liquid Glass Pill Badge */}
+        <div className="flex items-center gap-2 bg-gradient-to-r from-purple-900/60 to-indigo-900/60 backdrop-blur-xl border border-white/20 px-5 py-1.5 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.37)]">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
             <path d="M13 19l6 2 2-6-4.5-4.5" />
             <path d="M9.5 6.5L17.5 14.5" />
           </svg>
-          <span className="font-fredoka font-black text-sm tracking-wider text-[#fde047]">
-            ARENA DUEL 1 VS 1
+          <span className="font-fredoka font-black text-xs tracking-wider text-[#fde047] uppercase">
+            Arena Duel 1 vs 1
           </span>
         </div>
 
         <div className="w-10" />
       </header>
 
-      {/* ── 1. LOBBY STATE ── */}
+      {/* ── 1. LOBBY STATE (3D CARD EFFECT & LIQUID GLASS) ── */}
       {duelState === "lobby" && (
         <div className="relative z-10 w-full max-w-[380px] px-4 flex-1 flex flex-col items-center justify-center gap-4 my-auto">
-          {/* Hero Banner */}
-          <div className="flex flex-col items-center text-center gap-1">
-            <div className="w-24 h-24 relative mb-1 animate-bounce">
+          {/* 3D Interactive Hero Logo Container */}
+          <div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+              transition: "transform 0.15s ease-out",
+            }}
+            className="flex flex-col items-center text-center gap-1 cursor-pointer"
+          >
+            <div className="w-24 h-24 relative mb-1">
               <Image
                 src="/screens_assets/logo.png"
                 alt="ThinkBin Logo"
                 fill
-                className="object-contain drop-shadow-[0_8px_16px_rgba(255,107,0,0.4)]"
+                className="object-contain drop-shadow-[0_12px_24px_rgba(249,115,22,0.45)]"
               />
             </div>
             <h1 className="font-fredoka font-black text-2xl text-white tracking-wide">
@@ -402,14 +431,14 @@ export default function DuelPage() {
             </p>
           </div>
 
-          {/* Mode Card 1: Lawan AI Maskot */}
-          <button
-            type="button"
+          {/* 3D Mode Card 1: Lawan AI Maskot */}
+          <div
             onClick={startBotMatch}
-            className="w-full bg-gradient-to-r from-[#f97316] to-[#ea580c] border-[3px] border-[#fdba74] rounded-2xl p-3.5 flex items-center justify-between shadow-[0_6px_0_#9a3412] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+            className="group w-full bg-gradient-to-br from-orange-500/90 via-amber-600/90 to-orange-700/90 backdrop-blur-xl border border-orange-300/40 rounded-3xl p-4 flex items-center justify-between shadow-[0_12px_28px_rgba(234,88,12,0.35)] hover:shadow-[0_16px_36px_rgba(234,88,12,0.5)] active:scale-[0.98] transition-all duration-300 cursor-pointer relative overflow-hidden"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center border border-white/30">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <div className="flex items-center gap-3.5 relative z-10">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 shadow-inner group-hover:rotate-6 transition-transform">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="11" width="18" height="10" rx="2" />
                   <circle cx="12" cy="5" r="2" />
@@ -419,23 +448,23 @@ export default function DuelPage() {
                 </svg>
               </div>
               <div className="text-left">
-                <h3 className="font-fredoka font-black text-base text-white">Lawan Maskot Bin</h3>
-                <p className="font-nunito text-[11px] text-white/80 font-bold">Latihan instan tanpa menunggu</p>
+                <h3 className="font-fredoka font-black text-base text-white leading-tight">Lawan Maskot Bin</h3>
+                <p className="font-nunito text-[11px] text-white/80 font-bold mt-0.5">Latihan instan tanpa menunggu</p>
               </div>
             </div>
-            <span className="font-fredoka font-black text-xs bg-white text-[#ea580c] px-3 py-1.5 rounded-full shadow-xs">
+            <span className="relative z-10 font-fredoka font-black text-xs bg-white text-orange-600 px-3.5 py-1.5 rounded-full shadow-md group-hover:scale-105 transition-transform">
               MAIN
             </span>
-          </button>
+          </div>
 
-          {/* Mode Card 2: Mabar Buat Room */}
-          <button
-            type="button"
+          {/* 3D Mode Card 2: Mabar Buat Room */}
+          <div
             onClick={handleCreateRoom}
-            className="w-full bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] border-[3px] border-[#c4b5fd] rounded-2xl p-3.5 flex items-center justify-between shadow-[0_6px_0_#4c1d95] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+            className="group w-full bg-gradient-to-br from-purple-600/90 via-indigo-600/90 to-purple-800/90 backdrop-blur-xl border border-purple-300/40 rounded-3xl p-4 flex items-center justify-between shadow-[0_12px_28px_rgba(109,40,217,0.35)] hover:shadow-[0_16px_36px_rgba(109,40,217,0.5)] active:scale-[0.98] transition-all duration-300 cursor-pointer relative overflow-hidden"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center border border-white/30">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <div className="flex items-center gap-3.5 relative z-10">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 shadow-inner group-hover:rotate-6 transition-transform">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
@@ -444,17 +473,17 @@ export default function DuelPage() {
                 </svg>
               </div>
               <div className="text-left">
-                <h3 className="font-fredoka font-black text-base text-white">Buat Room Mabar</h3>
-                <p className="font-nunito text-[11px] text-white/80 font-bold">Dapatkan kode & ajak teman sebangku</p>
+                <h3 className="font-fredoka font-black text-base text-white leading-tight">Buat Room Mabar</h3>
+                <p className="font-nunito text-[11px] text-white/80 font-bold mt-0.5">Dapatkan kode & ajak teman sebangku</p>
               </div>
             </div>
-            <span className="font-fredoka font-black text-xs bg-white text-[#6d28d9] px-3 py-1.5 rounded-full shadow-xs">
+            <span className="relative z-10 font-fredoka font-black text-xs bg-white text-purple-700 px-3.5 py-1.5 rounded-full shadow-md group-hover:scale-105 transition-transform">
               BUAT
             </span>
-          </button>
+          </div>
 
-          {/* Mode Card 3: Gabung Room Kode */}
-          <div className="w-full bg-white/10 border-[2px] border-white/20 rounded-2xl p-3.5 flex flex-col gap-2.5 backdrop-blur-sm">
+          {/* Mode Card 3: Liquid Glass Gabung Room Input */}
+          <div className="w-full bg-white/[0.08] backdrop-blur-xl border border-white/15 rounded-3xl p-4 flex flex-col gap-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
             <label className="font-fredoka font-bold text-xs text-white/90">
               Punya Kode Room Teman?
             </label>
@@ -464,13 +493,13 @@ export default function DuelPage() {
                 maxLength={4}
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-                placeholder="4 Digit Kode..."
-                className="flex-1 bg-black/40 border-[2px] border-white/30 rounded-xl px-3 py-2 text-center font-fredoka font-black text-base text-yellow-300 placeholder:text-white/40 focus:outline-hidden focus:border-[#a855f7]"
+                placeholder="4 DIGIT KODE"
+                className="flex-1 bg-black/40 border border-white/20 rounded-2xl px-3.5 py-2.5 text-center font-fredoka font-black text-base text-yellow-300 placeholder:text-white/30 focus:outline-hidden focus:border-purple-400 transition-all shadow-inner"
               />
               <button
                 type="button"
                 onClick={handleJoinRoom}
-                className="bg-[#22c55e] border-[2px] border-[#86efac] text-white font-fredoka font-black text-xs px-4 py-2.5 rounded-xl shadow-[0_3px_0_#15803d] active:translate-y-0.5 active:shadow-none cursor-pointer"
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 border border-emerald-300/40 text-white font-fredoka font-black text-xs px-5 py-3 rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer"
               >
                 GABUNG
               </button>
@@ -481,8 +510,8 @@ export default function DuelPage() {
 
       {/* ── 2. WAITING ROOM (PVP) ── */}
       {duelState === "waiting_room" && (
-        <div className="relative z-10 w-full max-w-[360px] px-4 flex-1 flex flex-col items-center justify-center gap-5 text-center">
-          <div className="w-20 h-20 rounded-full border-4 border-[#eab308] border-t-transparent animate-spin flex items-center justify-center">
+        <div className="relative z-10 w-full max-w-[360px] px-4 flex-1 flex flex-col items-center justify-center gap-5 text-center my-auto">
+          <div className="w-20 h-20 rounded-full border-4 border-[#eab308] border-t-transparent animate-spin flex items-center justify-center bg-white/5 backdrop-blur-md">
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#eab308" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse">
               <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
               <path d="M13 19l6 2 2-6-4.5-4.5" />
@@ -499,7 +528,7 @@ export default function DuelPage() {
             </p>
           </div>
 
-          <div className="bg-black/50 border-[3px] border-[#eab308] rounded-2xl px-6 py-3 shadow-xl">
+          <div className="bg-black/50 backdrop-blur-xl border-[3px] border-[#eab308] rounded-3xl px-8 py-3.5 shadow-2xl">
             <span className="font-fredoka font-black text-4xl text-[#fde047] tracking-widest">
               {roomCode}
             </span>
@@ -508,17 +537,17 @@ export default function DuelPage() {
           <button
             type="button"
             onClick={() => setDuelState("lobby")}
-            className="text-white/60 font-fredoka font-bold text-xs underline cursor-pointer hover:text-white"
+            className="text-white/60 font-fredoka font-bold text-xs underline cursor-pointer hover:text-white transition-colors"
           >
             Batalkan & Kembali ke Lobi
           </button>
         </div>
       )}
 
-      {/* ── 3. COUNTDOWN STATE (3... 2... 1... GO!) ── */}
+      {/* ── 3. COUNTDOWN STATE ── */}
       {duelState === "countdown" && (
-        <div className="relative z-10 w-full max-w-[360px] flex-1 flex flex-col items-center justify-center gap-3 animate-in zoom-in-75 duration-300">
-          <span className="font-fredoka font-black text-7xl text-[#fde047] drop-shadow-[0_8px_16px_rgba(234,179,8,0.5)] animate-ping">
+        <div className="relative z-10 w-full max-w-[360px] flex-1 flex flex-col items-center justify-center gap-3 my-auto animate-in zoom-in-75 duration-300">
+          <span className="font-fredoka font-black text-7xl text-[#fde047] drop-shadow-[0_8px_24px_rgba(234,179,8,0.6)] animate-ping">
             {countdownNum > 0 ? countdownNum : "MULAI!"}
           </span>
           <span className="font-fredoka font-bold text-sm text-white/80">
@@ -527,27 +556,27 @@ export default function DuelPage() {
         </div>
       )}
 
-      {/* ── 4. MATCH PLAYING SCREEN ── */}
+      {/* ── 4. MATCH PLAYING SCREEN (3D CARD PERSPECTIVE) ── */}
       {duelState === "playing" && currentQ && (
         <div className="relative z-10 w-full max-w-[380px] px-3 flex-1 flex flex-col justify-between pb-6 pt-1">
           
-          {/* Top Player Status Duel Bar */}
-          <div className="w-full bg-[#1e0a35]/90 border-[2.5px] border-[#6b21a8] rounded-2xl p-2.5 flex items-center justify-between shadow-xl mb-2">
+          {/* Top Player Status Duel Bar with Liquid Glass */}
+          <div className="w-full bg-white/[0.08] backdrop-blur-xl border border-white/20 rounded-3xl p-3 flex items-center justify-between shadow-2xl mb-2">
             {/* Player Me */}
-            <div className="flex items-center gap-2">
-              <div className="relative w-9 h-9 rounded-full border-2 border-[#22c55e] bg-white/10 flex items-center justify-center overflow-hidden">
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-10 h-10 rounded-full border-2 border-emerald-400 bg-white/10 flex items-center justify-center overflow-hidden shadow-inner">
                 <Image
                   src="/screens_assets/mascot_thumbsup_transparent.png"
                   alt="My Avatar"
-                  width={28}
-                  height={28}
+                  width={30}
+                  height={30}
                 />
               </div>
               <div className="text-left">
                 <span className="block font-fredoka font-bold text-[11px] text-white truncate max-w-[75px]">
                   {user?.display_name || "Kamu"}
                 </span>
-                <span className="font-fredoka font-black text-xs text-[#4ade80]">
+                <span className="font-fredoka font-black text-xs text-emerald-400">
                   {myScore} Poin
                 </span>
               </div>
@@ -555,8 +584,8 @@ export default function DuelPage() {
 
             {/* VS Badge & Timer Pill */}
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-fredoka font-black text-xs shadow-md ${
-                timeLeft <= 5 ? "bg-red-600 border-red-300 animate-pulse text-white" : "bg-[#f59e0b] border-yellow-200 text-slate-900"
+              <div className={`w-9 h-9 rounded-full border-2 flex items-center justify-center font-fredoka font-black text-xs shadow-lg transition-all ${
+                timeLeft <= 5 ? "bg-red-600 border-red-300 animate-pulse text-white" : "bg-amber-500 border-amber-200 text-slate-950"
               }`}>
                 {timeLeft}s
               </div>
@@ -566,30 +595,38 @@ export default function DuelPage() {
             </div>
 
             {/* Opponent */}
-            <div className="flex items-center gap-2 flex-row-reverse">
-              <div className="relative w-9 h-9 rounded-full border-2 border-[#ef4444] bg-white/10 flex items-center justify-center overflow-hidden">
+            <div className="flex items-center gap-2.5 flex-row-reverse">
+              <div className="relative w-10 h-10 rounded-full border-2 border-rose-400 bg-white/10 flex items-center justify-center overflow-hidden shadow-inner">
                 <Image
                   src={opponentAvatar}
                   alt="Opponent Avatar"
-                  width={28}
-                  height={28}
+                  width={30}
+                  height={30}
                 />
               </div>
               <div className="text-right">
                 <span className="block font-fredoka font-bold text-[11px] text-white truncate max-w-[75px]">
                   {opponentName}
                 </span>
-                <span className="font-fredoka font-black text-xs text-[#f87171]">
+                <span className="font-fredoka font-black text-xs text-rose-400">
                   {oppScore} Poin
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Question Card Container */}
-          <div className="bg-white rounded-3xl p-4 shadow-2xl flex flex-col gap-3 my-auto border-[3px] border-[#6b21a8]">
-            <div className="flex items-center justify-between border-b pb-2 border-slate-200">
-              <span className="bg-[#ede9fe] text-[#6d28d9] font-fredoka font-black text-[11px] px-2.5 py-0.5 rounded-full">
+          {/* 3D Perspective Question Card */}
+          <div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              transform: `perspective(1000px) rotateX(${rotateX * 0.5}deg) rotateY(${rotateY * 0.5}deg)`,
+              transition: "transform 0.15s ease-out",
+            }}
+            className="bg-white rounded-[32px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-3.5 my-auto border-2 border-white/40"
+          >
+            <div className="flex items-center justify-between border-b pb-2.5 border-slate-100">
+              <span className="bg-purple-100 text-purple-700 font-fredoka font-black text-[11px] px-3 py-1 rounded-full">
                 Tantangan #{currentIdx + 1}
               </span>
               {isAnswered && (
@@ -599,17 +636,17 @@ export default function DuelPage() {
               )}
             </div>
 
-            <h2 className="font-fredoka font-extrabold text-[14px] text-[#1e1b4b] leading-snug">
+            <h2 className="font-fredoka font-extrabold text-[15px] text-[#1e1b4b] leading-snug">
               {currentQ.question}
             </h2>
 
-            {/* 4 Options Grid */}
-            <div className="flex flex-col gap-2 pt-1">
+            {/* 4 Options Grid with smooth 3D press feel */}
+            <div className="flex flex-col gap-2.5 pt-1">
               {currentQ.options.map((opt) => {
                 const isSelected = mySelected === opt.value;
                 const isCorrect = opt.value === currentQ.correctAnswer;
                 
-                let btnStyle = "bg-[#f8fafc] border-slate-300 text-slate-800 hover:bg-purple-50";
+                let btnStyle = "bg-slate-50 border-slate-200 text-slate-800 hover:bg-purple-50 hover:border-purple-300 shadow-xs";
                 if (isAnswered) {
                   if (isCorrect) {
                     btnStyle = "bg-emerald-100 border-emerald-500 text-emerald-900 ring-2 ring-emerald-400";
@@ -626,7 +663,7 @@ export default function DuelPage() {
                     type="button"
                     disabled={isAnswered}
                     onClick={() => handleAnswer(opt.value)}
-                    className={`w-full py-2.5 px-3 rounded-xl border-[2px] font-fredoka text-[12.5px] font-bold text-left flex items-center gap-2.5 transition-all shadow-xs ${btnStyle}`}
+                    className={`w-full py-3 px-3.5 rounded-2xl border-[2px] font-fredoka text-[13px] font-bold text-left flex items-center gap-3 transition-all active:scale-[0.98] cursor-pointer ${btnStyle}`}
                   >
                     <span className="w-6 h-6 rounded-full border border-current flex items-center justify-center font-black text-[11px] flex-shrink-0">
                       {opt.value}
@@ -640,11 +677,11 @@ export default function DuelPage() {
         </div>
       )}
 
-      {/* ── 5. GAME OVER / RESULT SCREEN ── */}
+      {/* ── 5. GAME OVER / RESULT SCREEN (LIQUID GLASS TROPHY) ── */}
       {duelState === "game_over" && (
         <div className="relative z-10 w-full max-w-[360px] px-4 flex-1 flex flex-col items-center justify-center gap-4 my-auto animate-in zoom-in-95 duration-200">
-          <div className="text-center flex flex-col items-center gap-1">
-            <div className="w-16 h-16 rounded-full bg-yellow-400/20 border-2 border-yellow-400 flex items-center justify-center mb-1">
+          <div className="text-center flex flex-col items-center gap-1.5">
+            <div className="w-16 h-16 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center mb-1 shadow-2xl">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fde047" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
                 <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
@@ -662,8 +699,8 @@ export default function DuelPage() {
             </p>
           </div>
 
-          {/* Final Score Comparison Card */}
-          <div className="w-full bg-[#1b0a2e] border-[3px] border-[#a855f7] rounded-3xl p-4 flex items-center justify-around shadow-2xl">
+          {/* Liquid Glass Score Comparison */}
+          <div className="w-full bg-white/[0.08] backdrop-blur-xl border border-white/20 rounded-3xl p-4 flex items-center justify-around shadow-2xl">
             <div className="flex flex-col items-center">
               <span className="font-fredoka font-bold text-xs text-white/80">
                 {user?.display_name || "Kamu"}
@@ -690,7 +727,7 @@ export default function DuelPage() {
             <button
               type="button"
               onClick={startBotMatch}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 border-[3px] border-amber-300 rounded-2xl font-fredoka font-black text-sm text-slate-950 uppercase shadow-lg active:translate-y-0.5 transition-all cursor-pointer"
+              className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 border border-amber-300/40 rounded-2xl font-fredoka font-black text-sm text-slate-950 uppercase shadow-xl active:scale-95 transition-all cursor-pointer"
             >
               DUEL LAGI
             </button>
@@ -698,7 +735,7 @@ export default function DuelPage() {
             <button
               type="button"
               onClick={() => router.push("/dashboard")}
-              className="w-full py-2.5 bg-white/10 border-[2px] border-white/20 rounded-2xl font-fredoka font-bold text-xs text-white uppercase hover:bg-white/20 transition-all cursor-pointer"
+              className="w-full py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl font-fredoka font-bold text-xs text-white uppercase hover:bg-white/20 transition-all cursor-pointer"
             >
               KEMBALI KE BERANDA
             </button>
@@ -708,3 +745,4 @@ export default function DuelPage() {
     </div>
   );
 }
+
