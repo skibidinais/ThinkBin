@@ -89,9 +89,11 @@ export default function LeaderboardPage() {
             if (
               index === 2 || 
               firstName.toUpperCase().includes("MUHAMMAD") || 
-              fullName.toUpperCase().includes("MUHAMMAD")
+              fullName.toUpperCase().includes("MUHAMMAD") ||
+              firstName.toUpperCase().includes("WILDAN") ||
+              fullName.toUpperCase().includes("WILDAN")
             ) {
-              firstName = "Wildan";
+              firstName = "WILDAN";
             }
             return {
               id: u.id,
