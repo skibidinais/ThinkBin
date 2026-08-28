@@ -84,21 +84,24 @@ export default function LeaderboardPage() {
           })
           .sort((a, b) => (b.xp || 0) - (a.xp || 0))
           .map((u, index) => {
-            let fullName = u.display_name || "";
-            let firstName = fullName.split(" ")[0] || "Siswa";
-            if (
-              index === 2 || 
-              firstName.toUpperCase().includes("MUHAMMAD") || 
-              fullName.toUpperCase().includes("MUHAMMAD") ||
-              firstName.toUpperCase().includes("WILDAN") ||
-              fullName.toUpperCase().includes("WILDAN")
-            ) {
-              firstName = "WILDAN";
+            let fullName = u.display_name?.trim() || "";
+            let words = fullName.split(/\s+/).filter(Boolean);
+            let displayName = words[0] || "Siswa";
+
+            // If the name starts with MUHAMMAD/MUHAMAD/MOCH, take the actual calling name (2nd word)
+            if (["MUHAMMAD", "MUHAMAD", "MOCH", "MOCH."].includes(displayName.toUpperCase()) && words.length > 1) {
+              displayName = words[1];
             }
+
+            // Strictly override Rank 3 to WILDAN
+            if (index === 2 || fullName.toUpperCase().includes("WILDAN ARYASATYA")) {
+              displayName = "WILDAN";
+            }
+
             return {
               id: u.id,
               rank: index + 1,
-              name: firstName,
+              name: displayName.toUpperCase(),
               xp: u.xp || 0,
               isCurrentUser: u.id === user?.id,
             };
