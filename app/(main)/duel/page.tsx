@@ -319,11 +319,11 @@ export default function DuelPage() {
           origin: { y: 0.55 },
           colors: ["#ffd700", "#ff6b6b", "#48dbfb", "#1dd1a1"],
         });
-        setRewardNotice(`🏆 KEMENANGAN BESAR! Kamu mendapatkan +${coinsEarned} Koin & +${xpEarned} XP!`);
+        setRewardNotice(`KEMENANGAN BESAR! Kamu mendapatkan +${coinsEarned} Koin & +${xpEarned} XP!`);
       } else if (isDraw) {
-        setRewardNotice(`🤝 HASIL SERI! Kamu mendapatkan +${coinsEarned} Koin & +${xpEarned} XP!`);
+        setRewardNotice(`HASIL SERI! Kamu mendapatkan +${coinsEarned} Koin & +${xpEarned} XP!`);
       } else {
-        setRewardNotice(`👏 PERTANDINGAN HEBAT! Hadiah Partisipasi: +${coinsEarned} Koin & +${xpEarned} XP!`);
+        setRewardNotice(`PERTANDINGAN HEBAT! Hadiah Partisipasi: +${coinsEarned} Koin & +${xpEarned} XP!`);
       }
 
       // Record transaction
