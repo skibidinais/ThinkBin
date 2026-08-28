@@ -157,25 +157,45 @@ export default function MissionPage() {
     setTimeout(() => setToastMsg(null), 3000);
   };
 
-  const handleClaim = async (missionKey: keyof MissionState, coinReward: number, title: string) => {
+  const handleClaim = async (
+    missionKey: keyof MissionState,
+    coinReward: number,
+    xpReward: number,
+    title: string
+  ) => {
     if (missionState[missionKey]) return; // Prevent double claim
 
-    if (user?.id) {
-      await claimDailyMissionTransaction({
-        userId: user.id,
-        missionId: missionKey,
-        coinReward,
-        xpReward: 0,
-      });
-      await refreshProfile(user.id);
-    } else {
-      const newCoins = (user?.coins ?? 0) + coinReward;
-      updateUser({ coins: newCoins });
-    }
+    // Optimistic local update so user sees instant reward
+    const currentCoins = user?.coins ?? 0;
+    const currentXp = user?.xp ?? 0;
+    const newCoins = currentCoins + coinReward;
+    const newXp = currentXp + xpReward;
+    updateUser({ coins: newCoins, xp: newXp });
 
     const updated = { ...missionState, [missionKey]: true };
     saveState(updated);
-    showToast(`Berhasil klaim +${coinReward} Coin dari "${title}"!`);
+    showToast(`Berhasil klaim +${coinReward} Coin & +${xpReward} XP dari "${title}"!`);
+
+    if (user?.id) {
+      try {
+        const res = await claimDailyMissionTransaction({
+          userId: user.id,
+          missionId: missionKey,
+          coinReward,
+          xpReward,
+        });
+
+        if (res.success && res.currentCoins !== undefined) {
+          updateUser({
+            coins: res.currentCoins,
+            xp: res.currentXp ?? newXp,
+          });
+        }
+        await refreshProfile(user.id);
+      } catch (err) {
+        console.warn("Direct mission claim sync:", err);
+      }
+    }
   };
 
   const handleNavigate = (path: string, visitKey?: "m3Visited" | "m4Visited" | "m5Visited") => {
@@ -331,7 +351,7 @@ export default function MissionPage() {
           ) : (
             <button
               type="button"
-              onClick={() => handleClaim("m1Claimed", 10, "Login hari ini")}
+              onClick={() => handleClaim("m1Claimed", 10, 5, "Login hari ini")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -404,7 +424,7 @@ export default function MissionPage() {
           ) : isM2ReadyToClaim ? (
             <button
               type="button"
-              onClick={() => handleClaim("m2Claimed", 15, "Selesaikan 1 node belajar")}
+              onClick={() => handleClaim("m2Claimed", 15, 10, "Selesaikan 1 node belajar")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -488,7 +508,7 @@ export default function MissionPage() {
           ) : missionState.m3Visited ? (
             <button
               type="button"
-              onClick={() => handleClaim("m3Claimed", 10, "Kunjungi Papan Peringkat")}
+              onClick={() => handleClaim("m3Claimed", 10, 5, "Kunjungi Papan Peringkat")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -569,7 +589,7 @@ export default function MissionPage() {
           ) : missionState.m4Visited ? (
             <button
               type="button"
-              onClick={() => handleClaim("m4Claimed", 10, "Kunjungi Toko")}
+              onClick={() => handleClaim("m4Claimed", 10, 5, "Kunjungi Toko")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
@@ -650,7 +670,7 @@ export default function MissionPage() {
           ) : missionState.m5Visited ? (
             <button
               type="button"
-              onClick={() => handleClaim("m5Claimed", 10, "Cek Profil & Rank Kamu")}
+              onClick={() => handleClaim("m5Claimed", 10, 5, "Cek Profil & Rank Kamu")}
               className="bg-[#4CAF50] hover:bg-[#43A047] text-white font-fredoka font-black text-xs px-3.5 py-1.5 rounded-xl border-2 border-[#382C22] shadow-[0_2.5px_0_#382C22] active:translate-y-0.5 cursor-pointer flex-shrink-0 animate-pulse"
             >
               Klaim!
