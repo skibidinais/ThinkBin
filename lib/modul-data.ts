@@ -435,12 +435,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Cairan fermentasi serbaguna dari sisa kulit buah, gula, dan air disebut...',
       options: [
-        { value: 'A', text: 'Air lindi' },
-        { value: 'B', text: 'Eco-Enzyme' },
-        { value: 'C', text: 'Minyak jelantah' },
+        { value: 'A', text: 'Air lindi beracun' },
+        { value: 'B', text: 'Minyak jelantah bekas' },
+        { value: 'C', text: 'Eco-Enzyme' },
         { value: 'D', text: 'Pestisida sintetis' }
       ],
-      correctAnswer: 'B',
+      correctAnswer: 'C',
       explanation: 'Eco-Enzyme adalah larutan hasil fermentasi sampah organik basah buah dan sayuran yang memiliki banyak manfaat pembersih.'
     },
     xpReward: 12,
@@ -458,12 +458,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa manfaat utama dari budidaya larva Maggot BSF dalam pengelolaan sampah sekolah?',
       options: [
-        { value: 'A', text: 'Menguraikan sampah sisa makanan organik dengan cepat dan bernilai ekonomi' },
-        { value: 'B', text: 'Menghasilkan sampah plastik baru' },
+        { value: 'A', text: 'Menghasilkan tumpukan limbah plastik baru' },
+        { value: 'B', text: 'Menguraikan sampah sisa makanan organik dengan cepat dan bernilai ekonomi' },
         { value: 'C', text: 'Membuat sampah menjadi berbau busuk menyengat' },
         { value: 'D', text: 'Mencemari air tanah di sekitar sekolah' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Maggot BSF merupakan pengurai alami tercepat untuk sampah organik yang menghasilkan pakan berprotein dan pupuk kasgot.'
     },
     xpReward: 12,
@@ -482,11 +482,11 @@ export const MODUL_DATA: ModulNode[] = [
       question: 'Apa syarat utama plastik kresek dan kemasan sachet yang akan dimasukkan ke dalam botol Ecobrick?',
       options: [
         { value: 'A', text: 'Harus basah dan berlendir' },
-        { value: 'B', text: 'Harus bersih dan kering agar tidak membusuk atau berjamur' },
-        { value: 'C', text: 'Harus dicampur dengan sisa kuah makanan' },
-        { value: 'D', text: 'Harus dibakar terlebih dahulu' }
+        { value: 'B', text: 'Harus dicampur dengan sisa kuah makanan' },
+        { value: 'C', text: 'Harus dibakar terlebih dahulu' },
+        { value: 'D', text: 'Harus bersih dan kering agar tidak membusuk atau berjamur' }
       ],
-      correctAnswer: 'B',
+      correctAnswer: 'D',
       explanation: 'Plastik dalam Ecobrick wajib bersih dan kering sempurna agar tidak menimbulkan gas, bau, atau bakteri di dalam botol tertutup.'
     },
     xpReward: 12,
@@ -505,11 +505,11 @@ export const MODUL_DATA: ModulNode[] = [
       question: 'Manakah pasangan sampah dan metode daur ulang kreatif yang paling tepat?',
       options: [
         { value: 'A', text: 'Sisa makanan basah -> Ecobrick' },
-        { value: 'B', text: 'Sachet plastik bersih -> Ecobrick dan Upcycling' },
-        { value: 'C', text: 'Baterai bekas -> Pupuk Kompos' },
+        { value: 'B', text: 'Baterai bekas -> Pupuk Kompos' },
+        { value: 'C', text: 'Sachet plastik bersih -> Ecobrick dan Upcycling' },
         { value: 'D', text: 'Lampu kaca pecah -> Pakan Maggot' }
       ],
-      correctAnswer: 'B',
+      correctAnswer: 'C',
       explanation: 'Kemasan plastik sachet bersih sangat ideal untuk upcycling dan material padat Ecobrick.'
     },
     xpReward: 20,
@@ -529,12 +529,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa tujuan utama gerakan kantin sehat bebas plastik sekali pakai di sekolah Adiwiyata?',
       options: [
-        { value: 'A', text: 'Mencegah timbulan sampah plastik langsung dari sumbernya di sekolah' },
-        { value: 'B', text: 'Menaikkan harga makanan kantin' },
+        { value: 'A', text: 'Menaikkan harga makanan kantin' },
+        { value: 'B', text: 'Mencegah timbulan sampah plastik langsung dari sumbernya di sekolah' },
         { value: 'C', text: 'Melarang siswa makan di jam istirahat' },
         { value: 'D', text: 'Menambah tumpukan sampah plastik di tong sampah' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Menghilangkan plastik sekali pakai di kantin adalah strategi pencegahan timbulan sampah (Reduce/Refuse) paling efektif di lingkungan sekolah.'
     },
     xpReward: 12,
@@ -552,12 +552,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa fungsi utama dilakukannya audit timbulan sampah di setiap kelas?',
       options: [
-        { value: 'A', text: 'Mengetahui volume dan jenis sampah yang dihasilkan untuk evaluasi pengurangan' },
-        { value: 'B', text: 'Menghukum siswa yang menghasilkan sampah' },
-        { value: 'C', text: 'Membeli tong sampah baru setiap hari' },
-        { value: 'D', text: 'Membuang sampah ke sungai bersama-sama' }
+        { value: 'A', text: 'Menghukum siswa yang menghasilkan sampah' },
+        { value: 'B', text: 'Membeli tong sampah baru setiap hari' },
+        { value: 'C', text: 'Membuang sampah ke sungai bersama-sama' },
+        { value: 'D', text: 'Mengetahui volume dan jenis sampah yang dihasilkan untuk evaluasi pengurangan' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Audit sampah memberikan data riil untuk mengevaluasi efektivitas program pemilahan dan pengurangan sampah kelas.'
     },
     xpReward: 12,
@@ -598,12 +598,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Manakah tindakan siswa yang paling mencerminkan budaya sekolah Adiwiyata?',
       options: [
-        { value: 'A', text: 'Membawa botol minum dan wadah makan sendiri serta aktif memilah sampah di kelas' },
-        { value: 'B', text: 'Menumpuk sampah plastik di kolong meja' },
-        { value: 'C', text: 'Membeli minuman kemasan sachet sekali pakai setiap hari' },
+        { value: 'A', text: 'Menumpuk sampah plastik di kolong meja' },
+        { value: 'B', text: 'Membeli minuman kemasan sachet sekali pakai setiap hari' },
+        { value: 'C', text: 'Membawa botol minum dan wadah makan sendiri serta aktif memilah sampah di kelas' },
         { value: 'D', text: 'Mencampur sampah basah dengan kertas HVS' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Membawa perlengkapan makan guna ulang dan aktif memilah sampah adalah wujud nyata budaya Adiwiyata.'
     },
     xpReward: 20,
@@ -623,12 +623,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa prinsip dasar dari model Ekonomi Sirkular dalam penanganan produk dan sampah?',
       options: [
-        { value: 'A', text: 'Menjaga material tetap bernilai guna selama mungkin dalam siklus tertutup tanpa limbah' },
-        { value: 'B', text: 'Membeli barang sebanyak-banyaknya lalu langsung dibuang ke TPA' },
+        { value: 'A', text: 'Membeli barang sebanyak-banyaknya lalu langsung dibuang ke TPA' },
+        { value: 'B', text: 'Menjaga material tetap bernilai guna selama mungkin dalam siklus tertutup tanpa limbah' },
         { value: 'C', text: 'Membakar semua jenis sampah agar langsung habis' },
         { value: 'D', text: 'Menimbun sampah di lubang tanah halaman' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Ekonomi sirkular berorientasi pada regenerasi sumber daya dan siklus material tertutup sehingga meminimalkan limbah.'
     },
     xpReward: 12,
@@ -646,12 +646,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Bagaimana peran teknologi IoT dan gamifikasi pada ThinkBin dalam meningkatkan literasi sampah siswa?',
       options: [
-        { value: 'A', text: 'Memberikan umpan balik langsung dan motivasi positif melalui sistem reward & leaderboard' },
-        { value: 'B', text: 'Membuat proses pembuangan sampah menjadi lebih rumit dan membosankan' },
-        { value: 'C', text: 'Mengurangi jumlah siswa yang ingin peduli kebersihan' },
-        { value: 'D', text: 'Menghapus keberadaan bank sampah di sekolah' }
+        { value: 'A', text: 'Membuat proses pembuangan sampah menjadi lebih rumit dan membosankan' },
+        { value: 'B', text: 'Mengurangi jumlah siswa yang ingin peduli kebersihan' },
+        { value: 'C', text: 'Menghapus keberadaan bank sampah di sekolah' },
+        { value: 'D', text: 'Memberikan umpan balik langsung dan motivasi positif melalui sistem reward & leaderboard' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Gamifikasi dan umpan balik langsung ThinkBin memotivasi kebiasaan positif pemilahan sampah menjadi aktivitas seru dan bermakna.'
     },
     xpReward: 12,
@@ -669,12 +669,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Mengapa kolaborasi komunitas sangat penting dalam menyelesaikan masalah sampah nasional?',
       options: [
-        { value: 'A', text: 'Karena volume timbulan sampah masif membutuhkan partisipasi aktif seluruh elemen masyarakat' },
-        { value: 'B', text: 'Karena hanya petugas kebersihan saja yang boleh memungut sampah' },
+        { value: 'A', text: 'Karena hanya petugas kebersihan saja yang boleh memungut sampah' },
+        { value: 'B', text: 'Karena volume timbulan sampah masif membutuhkan partisipasi aktif seluruh elemen masyarakat' },
         { value: 'C', text: 'Karena sampah akan hilang dengan sendirinya jika diabaikan bersama' },
         { value: 'D', text: 'Agar semua orang bisa membuang sampah sesuka hati' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Masalah sampah adalah tanggung jawab bersama yang memerlukan aksi kolektif dari keluarga, sekolah, komunitas, dan pemerintah.'
     },
     xpReward: 12,
@@ -692,12 +692,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Aksi membersihkan sungai dan laut secara serentak bersama ribuan relawan di akhir pekan merupakan contoh dari...',
       options: [
-        { value: 'A', text: 'Gerakan aksi bersih kolaborasi komunitas' },
-        { value: 'B', text: 'Tindakan merusak ekosistem alam' },
-        { value: 'C', text: 'Kegiatan membuang sampah sembarangan' },
+        { value: 'A', text: 'Tindakan merusak ekosistem alam' },
+        { value: 'B', text: 'Kegiatan membuang sampah sembarangan' },
+        { value: 'C', text: 'Gerakan aksi bersih kolaborasi komunitas' },
         { value: 'D', text: 'Pencemaran air limbah kimia' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Aksi bersih lingkungan bersama komunitas adalah wujud nyata gotong royong dan tanggung jawab kolektif terhadap kelestarian alam.'
     },
     xpReward: 20,
@@ -717,12 +717,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Mengapa botol bekas pembasmi serangga (aerosol) tidak boleh dibakar atau dibuang ke tong biasa?',
       options: [
-        { value: 'A', text: 'Dapat meledak dan melepaskan gas beracun yang berbahaya bagi pernapasan' },
-        { value: 'B', text: 'Karena bisa berubah menjadi air bersih' },
+        { value: 'A', text: 'Karena bisa berubah menjadi air bersih' },
+        { value: 'B', text: 'Dapat meledak dan melepaskan gas beracun yang berbahaya bagi pernapasan' },
         { value: 'C', text: 'Karena harganya sangat mahal jika dibakar' },
         { value: 'D', text: 'Agar baunya harum seperti bunga' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Kaleng aerosol bertekanan tinggi dan mengandung residu kimia yang mudah meledak jika terkena panas.'
     },
     xpReward: 12,
@@ -740,12 +740,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Zat berbahaya apa yang terkandung di dalam sampah elektronik dan baterai bekas?',
       options: [
-        { value: 'A', text: 'Logam berat seperti merkuri, timbal, dan kadmium' },
-        { value: 'B', text: 'Vitamin dan mineral alami' },
-        { value: 'C', text: 'Minyak wangi murni' },
+        { value: 'A', text: 'Vitamin dan mineral alami' },
+        { value: 'B', text: 'Minyak wangi murni' },
+        { value: 'C', text: 'Logam berat seperti merkuri, timbal, dan kadmium' },
         { value: 'D', text: 'Oksigen murni' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Baterai dan e-waste mengandung logam berat beracun yang dapat mencemari air tanah jika dibuang sembarangan.'
     },
     xpReward: 12,
@@ -763,12 +763,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Ke mana kita harus menyalurkan sampah baterai bekas dan lampu LED yang pecah?',
       options: [
-        { value: 'A', text: 'Ke Drop-Box limbah B3 / E-waste khusus yang disediakan sekolah/dinas' },
-        { value: 'B', text: 'Dibuang ke selokan sekolah saat hujan lebat' },
-        { value: 'C', text: 'Dicampur ke tong sampah organik sisa makanan' },
-        { value: 'D', text: 'Dikubur di dekat pohon buah' }
+        { value: 'A', text: 'Dibuang ke selokan sekolah saat hujan lebat' },
+        { value: 'B', text: 'Dicampur ke tong sampah organik sisa makanan' },
+        { value: 'C', text: 'Dikubur di dekat pohon buah' },
+        { value: 'D', text: 'Ke Drop-Box limbah B3 / E-waste khusus yang disediakan sekolah/dinas' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Drop-Box B3/E-Waste memastikan sampah beracun ditangani oleh pihak profesional tanpa mencemari lingkungan.'
     },
     xpReward: 12,
@@ -811,12 +811,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Bagaimana mengurangi sampah plastik sekali pakai dapat membantu mengerem perubahan iklim?',
       options: [
-        { value: 'A', text: 'Memangkas kebutuhan produksi plastik baru yang menguras minyak bumi dan menghemat emisi karbon pabrik' },
-        { value: 'B', text: 'Membuat bumi berputar lebih lambat' },
+        { value: 'A', text: 'Membuat bumi berputar lebih lambat' },
+        { value: 'B', text: 'Memangkas kebutuhan produksi plastik baru yang menguras minyak bumi dan menghemat emisi karbon pabrik' },
         { value: 'C', text: 'Mengurangi jumlah oksigen di atmosfer' },
         { value: 'D', text: 'Membuat matahari bersinar lebih redup' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Pengurangan sampah menekan konsumsi bahan bakar fosil pada tahap manufaktur dan transportasi produk baru.'
     },
     xpReward: 12,
@@ -834,12 +834,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Tindakan sederhana di kelas yang efektif menghemat energi dan menekan emisi karbon adalah...',
       options: [
-        { value: 'A', text: 'Mematikan lampu, kipas angin, dan proyektor saat kelas kosong' },
-        { value: 'B', text: 'Menyalakan semua pendingin ruangan dengan pintu terbuka lebar' },
-        { value: 'C', text: 'Membiarkan air kran wastafel mengalir terus-menerus' },
+        { value: 'A', text: 'Menyalakan semua pendingin ruangan dengan pintu terbuka lebar' },
+        { value: 'B', text: 'Membiarkan air kran wastafel mengalir terus-menerus' },
+        { value: 'C', text: 'Mematikan lampu, kipas angin, dan proyektor saat kelas kosong' },
         { value: 'D', text: 'Mengisi daya handphone seharian penuh tanpa dicabut' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Mematikan perangkat elektronik yang tidak terpakai menghemat listrik dan mengurangi pembakaran batu bara di pembangkit listrik.'
     },
     xpReward: 12,
@@ -857,12 +857,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa langkah paling bijak untuk mencegah terjadinya sampah makanan (food waste) di sekolah?',
       options: [
-        { value: 'A', text: 'Mengambil porsi makanan secukupnya sesuai kemampuan makan dan menghabiskannya' },
-        { value: 'B', text: 'Memesan banyak menu lalu membuang setengahnya ke tong sampah' },
-        { value: 'C', text: 'Menyembunyikan sisa makanan di bawah meja' },
-        { value: 'D', text: 'Membuang sayuran karena tidak suka warnanya' }
+        { value: 'A', text: 'Memesan banyak menu lalu membuang setengahnya ke tong sampah' },
+        { value: 'B', text: 'Menyembunyikan sisa makanan di bawah meja' },
+        { value: 'C', text: 'Membuang sayuran karena tidak suka warnanya' },
+        { value: 'D', text: 'Mengambil porsi makanan secukupnya sesuai kemampuan makan dan menghabiskannya' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Mengambil porsi yang tepat dan menghabiskannya adalah pencegahan food waste paling efektif.'
     },
     xpReward: 12,
@@ -905,12 +905,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Bagaimana cara terbaik seorang Green Leader mengajak teman-temannya memilah sampah?',
       options: [
-        { value: 'A', text: 'Memberikan contoh teladan nyata terlebih dahulu dan mengajak dengan ramah dan edukatif' },
-        { value: 'B', text: 'Memarahi teman di depan umum' },
+        { value: 'A', text: 'Memarahi teman di depan umum' },
+        { value: 'B', text: 'Memberikan contoh teladan nyata terlebih dahulu dan mengajak dengan ramah dan edukatif' },
         { value: 'C', text: 'Membiarkan saja teman yang membuang sampah sembarangan' },
         { value: 'D', text: 'Menghukum teman yang salah membuang sampah' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Keteladanan dan ajakan persuasif adalah kunci utama kepemimpinan hijau yang efektif.'
     },
     xpReward: 12,
@@ -928,12 +928,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Apa dampak positif membuat konten edukasi lingkungan kreatif di media sosial siswa?',
       options: [
-        { value: 'A', text: 'Memperluas jangkauan kesadaran peduli lingkungan ke teman sebaya di luar sekolah' },
-        { value: 'B', text: 'Menghabiskan kuota internet tanpa manfaat' },
-        { value: 'C', text: 'Membuat orang malas memilah sampah' },
+        { value: 'A', text: 'Menghabiskan kuota internet tanpa manfaat' },
+        { value: 'B', text: 'Membuat orang malas memilah sampah' },
+        { value: 'C', text: 'Memperluas jangkauan kesadaran peduli lingkungan ke teman sebaya di luar sekolah' },
         { value: 'D', text: 'Mengurangi jumlah daur ulang plastik' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'C',
       explanation: 'Kampanye digital siswa terbukti sangat efektif menularkan kebiasaan positif pemilahan sampah secara viral.'
     },
     xpReward: 12,
@@ -951,12 +951,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Inovasi bioplastik masa depan berbahan rumput laut memiliki keunggulan utama yaitu...',
       options: [
-        { value: 'A', text: 'Dapat terurai alami 100% tanpa menghasilkan limbah mikroplastik berbahaya' },
-        { value: 'B', text: 'Tidak bisa didaur ulang sama sekali' },
-        { value: 'C', text: 'Mencemari laut lebih parah dari plastik minyak bumi' },
-        { value: 'D', text: 'Beracun bagi hewan laut' }
+        { value: 'A', text: 'Tidak bisa didaur ulang sama sekali' },
+        { value: 'B', text: 'Mencemari laut lebih parah dari plastik minyak bumi' },
+        { value: 'C', text: 'Beracun bagi hewan laut' },
+        { value: 'D', text: 'Dapat terurai alami 100% tanpa menghasilkan limbah mikroplastik berbahaya' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'D',
       explanation: 'Bioplastik alami mudah terdegradasi menjadi nutrisi tanah/air tanpa merusak ekosistem.'
     },
     xpReward: 12,
@@ -974,12 +974,12 @@ export const MODUL_DATA: ModulNode[] = [
     question: {
       question: 'Setelah menamatkan seluruh 10 Bab Kurikulum ThinkBin (Node 1 - 40), apa misi sejatimu?',
       options: [
-        { value: 'A', text: 'Menjadi teladan konsisten penjaga bumi dan pelopor pemilahan sampah seumur hidup' },
-        { value: 'B', text: 'Melupakan semua ilmu yang telah dipelajari' },
+        { value: 'A', text: 'Melupakan semua ilmu yang telah dipelajari' },
+        { value: 'B', text: 'Menjadi teladan konsisten penjaga bumi dan pelopor pemilahan sampah seumur hidup' },
         { value: 'C', text: 'Berhenti peduli lingkungan karena game sudah tamat' },
         { value: 'D', text: 'Kembali membuang sampah sembarangan' }
       ],
-      correctAnswer: 'A',
+      correctAnswer: 'B',
       explanation: 'Gelar Legenda Guardian Bumi adalah awal dari komitmen nyata seumur hidup menjaga kelestarian lingkungan!'
     },
     xpReward: 50,
