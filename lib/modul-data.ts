@@ -45,21 +45,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 1,
     bagianId: 1,
     bagianTitle: 'Mengenal Sampah',
-    title: 'Apa itu Sampah & Jenis-Jenisnya',
+    title: 'Apa itu Sampah & Klasifikasi UU',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Sampah adalah barang atau sisa makanan yang sudah tidak kita pakai lagi. Menurut aturan, sampah dibagi menjadi 3 jenis: sampah dari rumah, sampah dari tempat umum (seperti sekolah atau pasar), dan sampah khusus (seperti baterai bekas yang butuh penanganan khusus).',
-    contoh: 'Sisa makanan di rumah = sampah rumah tangga. Bungkus jajanan di kantin sekolah = sampah sejenis rumah tangga. Baterai bekas = sampah khusus.',
+    konsepInti: 'UU No. 18/2008 membagi sampah menjadi 3 kelompok: 1. Sampah rumah tangga (dari kegiatan sehari-hari di rumah tangga). 2. Sampah sejenis rumah tangga (dari fasilitas komersial, industri, atau fasilitas umum seperti sekolah dan pasar). 3. Sampah spesifik (membutuhkan penanganan khusus karena sifat/konsentrasinya seperti baterai bekas, lampu neon/LED pecah, obat kadaluarsa, sisa cat/tinner, atau elektronik kecil rusak). ThinkBin secara fisik menangani sampah rumah tangga dan sejenis rumah tangga yang dipilah menjadi Organik dan Anorganik di tong sekolah. Sampah spesifik sengaja tidak masuk ke tong ThinkBin agar tidak mencemari sampah daur ulang dan membahayakan petugas kebersihan.',
+    contoh: 'Sisa makanan di kantin sekolah = sampah sejenis rumah tangga. Bungkus jajanan = sampah sejenis rumah tangga anorganik. Baterai jam tangan bekas yang menempel di kotak pensil siswa = sampah spesifik (harus dibawa pulang atau diserahkan ke drop-box limbah baterai khusus).',
     question: {
-      question: 'Sampah sisa makanan dan bungkus jajanan dari kantin sekolah termasuk jenis sampah apa?',
+      question: 'Sampah dari kantin sekolah termasuk kategori apa menurut UU No. 18/2008?',
       options: [
-        { value: 'A', text: 'Sampah luar angkasa' },
-        { value: 'B', text: 'Sampah sejenis rumah tangga' },
-        { value: 'C', text: 'Sampah pabrik kimia' },
-        { value: 'D', text: 'Sampah tanaman hutan' }
+        { value: 'A', text: 'Rumah tangga' },
+        { value: 'B', text: 'Sejenis rumah tangga' },
+        { value: 'C', text: 'Spesifik' },
+        { value: 'D', text: 'Bukan termasuk ketiganya' }
       ],
       correctAnswer: 'B',
-      explanation: 'Sampah dari fasilitas umum seperti kantin sekolah dikategorikan sebagai sampah sejenis rumah tangga.'
+      explanation: 'Menurut UU No. 18/2008, sampah dari kawasan fasilitas umum seperti kantin sekolah diklasifikasikan sebagai sampah sejenis rumah tangga.'
     },
     xpReward: 12,
     coinReward: 15
@@ -139,21 +139,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 5,
     bagianId: 2,
     bagianTitle: 'Dampak Lingkungan',
-    title: 'Dampak Sampah Dibuang Sembarangan',
+    title: 'Dampak Sampah & Gas Metana',
     type: 'bacaan',
     pilar: 'Pengetahuan',
-    konsepInti: 'Jika kita membuang sampah sembarangan, lingkungan kita akan tercemar. Air kotor yang merembes dari tumpukan sampah basah (disebut air lindi) bisa meracuni tanah dan air sumur. Selain itu, sampah yang menumpuk bisa menyumbat selokan hingga banjir dan menjadi sarang nyamuk demam berdarah.',
-    contoh: 'Genangan air di kaleng atau plastik bekas menjadi tempat nyamuk DBD bertelur.',
+    konsepInti: 'Di antara dampak sampah (tanah, air, udara, kesehatan, dan ekonomi), dampak udara memiliki satu detail penting: gas metana (CH4). Gas metana dihasilkan dari sampah organik yang membusuk di tumpukan terutama di TPA yang tertutup rapat tanpa oksigen. Metana bukan sekadar menimbulkan bau busuk, tetapi merupakan gas rumah kaca yang efek menahan panasnya di atmosfer puluhan kali lebih kuat dibanding CO2. Selain itu, rembesan cairan kotor dari tumpukan sampah (disebut air lindi) dapat meracuni air tanah dan sumur.',
+    contoh: 'Satu tumpukan sisa makanan kantin yang dibiarkan menumpuk selama seminggu dalam kondisi tertutup rapat akan mulai menghasilkan gas metana. Jika sampah dipilah dan dikompos, pembentukan gas metana liar bisa dicegah.',
     question: {
-      question: 'Cairan kotor dan bau yang merembes dari tumpukan sampah basah disebut apa?',
+      question: 'Cairan hasil rembesan sampah yang mencemari tanah dan air disebut apa?',
       options: [
-        { value: 'A', text: 'Air mineral pegunungan' },
-        { value: 'B', text: 'Air lindi (leachate)' },
-        { value: 'C', text: 'Air hujan bersih' },
-        { value: 'D', text: 'Air embun pagi' }
+        { value: 'A', text: 'Emisi' },
+        { value: 'B', text: 'Lindi' },
+        { value: 'C', text: 'Residu' },
+        { value: 'D', text: 'Sedimen' }
       ],
       correctAnswer: 'B',
-      explanation: 'Air lindi adalah cairan kotor beracun yang keluar merembes dari tumpukan sampah basah.'
+      explanation: 'Air lindi (leachate) adalah cairan hasil pembusukan dan rembesan sampah yang dapat mencemari tanah dan air tanah di sekitarnya.'
     },
     xpReward: 12,
     coinReward: 15
@@ -233,21 +233,21 @@ export const MODUL_DATA: ModulNode[] = [
     id: 9,
     bagianId: 3,
     bagianTitle: 'Solusi & Aksi',
-    title: 'Mengenal Gerakan 3R (Reduce, Reuse, Recycle)',
+    title: 'Prinsip 3R (Refuse, Reduce, Reuse, Recycle)',
     type: 'bacaan',
     pilar: 'Kemampuan',
-    konsepInti: '3R adalah langkah hebat untuk menyelamatkan bumi: 1. Reduce (Kurangi): Mengurangi sampah sejak awal, misalnya membawa botol minum sendiri. 2. Reuse (Gunakan Ulang): Memakai kembali barang yang masih bagus, misalnya kaleng bekas jadi tempat pensil. 3. Recycle (Daur Ulang): Mengolah sampah bekas di pabrik menjadi barang atau bahan baru.',
-    contoh: 'Bawa tas belanja kain = Reduce. Botol bekas jadi pot tanaman = Reuse. Botol plastik dilebur jadi serat pakaian = Recycle.',
+    konsepInti: 'Sebelum 3R (Reduce, Reuse, Recycle), ada satu prinsip yang sangat penting di awal: Refuse (Menolak) — menolak barang sekali pakai sebelum barang itu sampai ke tangan kita jika memang tidak dibutuhkan. Bedanya dengan Reduce: Refuse terjadi pada titik paling awal (saat ditawari/sebelum membeli), sedangkan Reduce terjadi setelah barang sudah menjadi kebiasaan dipakai tetapi jumlahnya dikurangi. Urutan lengkap aksi pencegahan sampah adalah: Refuse -> Reduce -> Reuse -> Recycle, di mana 3 prinsip pertama mencegah barang menjadi sampah, dan hanya Recycle yang mengolah barang yang sudah terlanjur jadi sampah.',
+    contoh: 'Refuse: Menolak sedotan plastik atau kantong kresek saat jajan di kantin ("tanpa sedotan"). Reduce: Mengurangi pemakaian kertas tisu dengan saputangan. Reuse: Menggunakan botol minum berulang kali. Recycle: Menyerahkan kardus ke bank sampah untuk didaur ulang.',
     question: {
-      question: 'Apa yang membedakan Reuse dengan Recycle?',
+      question: 'Apa perbedaan utama antara prinsip Refuse dan Reduce?',
       options: [
-        { value: 'A', text: 'Reuse harus membakar sampah, Recycle membuang sampah ke sungai' },
-        { value: 'B', text: 'Reuse hanya untuk sisa nasi, Recycle hanya untuk daun kering' },
-        { value: 'C', text: 'Reuse memakai kembali barang apa adanya, Recycle mengolahnya di pabrik jadi barang baru' },
-        { value: 'D', text: 'Keduanya sama persis dan tidak ada bedanya sama sekali' }
+        { value: 'A', text: 'Refuse membakar sampah, sedangkan Reduce menimbunnya di tanah' },
+        { value: 'B', text: 'Refuse menolak barang sejak sebelum sampai ke tangan kita, sedangkan Reduce mengurangi jumlah barang yang digunakan' },
+        { value: 'C', text: 'Refuse hanya untuk sampah organik, sedangkan Reduce hanya untuk anorganik' },
+        { value: 'D', text: 'Refuse dan Reduce sama sekali tidak ada bedanya' }
       ],
-      correctAnswer: 'C',
-      explanation: 'Reuse menggunakan barang kembali secara langsung, sedangkan Recycle melibatkan pemrosesan ulang/peleburan bahan di pabrik.'
+      correctAnswer: 'B',
+      explanation: 'Refuse menolak barang sekali pakai di awal sebelum menjadi konsumsi kita, sedangkan Reduce adalah upaya mengurangi kuantitas barang yang digunakan.'
     },
     xpReward: 12,
     coinReward: 15

@@ -9,22 +9,22 @@ var modulData = [
     bagianTitle: "Mengenal Sampah",
     nodeId: 1,
     type: "bacaan+kuis",
-    title: "Apa itu Sampah & Jenis-Jenisnya",
+    title: "Apa itu Sampah & Klasifikasi UU",
     xp: 12,
     bacaan: {
-      konsepInti: "Sampah adalah barang atau sisa makanan yang sudah tidak kita pakai lagi. Menurut aturan, sampah dibagi menjadi 3 jenis: sampah dari rumah, sampah dari tempat umum (seperti sekolah atau pasar), dan sampah khusus (seperti baterai bekas yang butuh penanganan khusus).",
-      contoh: "Sisa makanan di rumah = sampah rumah tangga. Bungkus jajanan di kantin sekolah = sampah sejenis rumah tangga. Baterai bekas = sampah khusus."
+      konsepInti: "UU No. 18/2008 membagi sampah menjadi 3 kelompok: 1. Sampah rumah tangga (dari kegiatan sehari-hari di rumah tangga). 2. Sampah sejenis rumah tangga (dari fasilitas komersial, industri, atau fasilitas umum seperti sekolah dan pasar). 3. Sampah spesifik (membutuhkan penanganan khusus karena sifat/konsentrasinya seperti baterai bekas, lampu neon/LED pecah, obat kadaluarsa, sisa cat/tinner, atau elektronik kecil rusak). ThinkBin secara fisik menangani sampah rumah tangga dan sejenis rumah tangga yang dipilah menjadi Organik dan Anorganik di tong sekolah. Sampah spesifik sengaja tidak masuk ke tong ThinkBin agar tidak mencemari sampah daur ulang dan membahayakan petugas kebersihan.",
+      contoh: "Sisa makanan di kantin sekolah = sampah sejenis rumah tangga. Bungkus jajanan = sampah sejenis rumah tangga anorganik. Baterai jam tangan bekas yang menempel di kotak pensil siswa = sampah spesifik (harus dibawa pulang atau diserahkan ke drop-box limbah baterai khusus)."
     },
     kuis: {
-      pertanyaan: "Sampah sisa makanan dan bungkus jajanan dari kantin sekolah termasuk jenis sampah apa?",
+      pertanyaan: "Sampah dari kantin sekolah termasuk kategori apa menurut UU No. 18/2008?",
       tipe: "pilihan_ganda",
       opsi: [
-        { id: "a", text: "Sampah sejenis rumah tangga" },
-        { id: "b", text: "Sampah luar angkasa" },
-        { id: "c", text: "Sampah pabrik kimia" },
-        { id: "d", text: "Sampah tanaman hutan" }
+        { id: "a", text: "Rumah tangga" },
+        { id: "b", text: "Sejenis rumah tangga" },
+        { id: "c", text: "Spesifik" },
+        { id: "d", text: "Bukan termasuk ketiganya" }
       ],
-      jawabanBenar: "a"
+      jawabanBenar: "b"
     }
   },
   {
@@ -91,22 +91,22 @@ var modulData = [
     bagianTitle: "Dampak Lingkungan",
     nodeId: 5,
     type: "bacaan+kuis",
-    title: "Dampak Sampah Dibuang Sembarangan",
+    title: "Dampak Sampah & Gas Metana",
     xp: 12,
     bacaan: {
-      konsepInti: "Jika kita membuang sampah sembarangan, lingkungan kita akan tercemar. Air kotor yang merembes dari tumpukan sampah basah (disebut air lindi) bisa meracuni tanah dan air sumur. Selain itu, sampah yang menumpuk bisa menyumbat selokan hingga banjir dan menjadi sarang nyamuk demam berdarah.",
-      contoh: "Genangan air di kaleng atau plastik bekas menjadi tempat nyamuk DBD bertelur."
+      konsepInti: "Di antara dampak sampah (tanah, air, udara, kesehatan, dan ekonomi), dampak udara memiliki satu detail penting: gas metana (CH4). Gas metana dihasilkan dari sampah organik yang membusuk di tumpukan terutama di TPA yang tertutup rapat tanpa oksigen. Metana bukan sekadar menimbulkan bau busuk, tetapi merupakan gas rumah kaca yang efek menahan panasnya di atmosfer puluhan kali lebih kuat dibanding CO2. Selain itu, rembesan cairan kotor dari tumpukan sampah (disebut air lindi) dapat meracuni air tanah dan sumur.",
+      contoh: "Satu tumpukan sisa makanan kantin yang dibiarkan menumpuk selama seminggu dalam kondisi tertutup rapat akan mulai menghasilkan gas metana. Jika sampah dipilah dan dikompos, pembentukan gas metana liar bisa dicegah."
     },
     kuis: {
-      pertanyaan: "Cairan kotor dan bau yang merembes dari tumpukan sampah basah disebut apa?",
+      pertanyaan: "Cairan hasil rembesan sampah yang mencemari tanah dan air disebut apa?",
       tipe: "pilihan_ganda",
       opsi: [
-        { id: "a", text: "Air lindi (leachate)" },
-        { id: "b", text: "Air mineral pegunungan" },
-        { id: "c", text: "Air hujan bersih" },
-        { id: "d", text: "Air embun pagi" }
+        { id: "a", text: "Emisi" },
+        { id: "b", text: "Lindi" },
+        { id: "c", text: "Residu" },
+        { id: "d", text: "Sedimen" }
       ],
-      jawabanBenar: "a"
+      jawabanBenar: "b"
     }
   },
   {
@@ -173,22 +173,22 @@ var modulData = [
     bagianTitle: "Solusi & Aksi",
     nodeId: 9,
     type: "bacaan+kuis",
-    title: "Mengenal Gerakan 3R (Reduce, Reuse, Recycle)",
+    title: "Prinsip 3R (Refuse, Reduce, Reuse, Recycle)",
     xp: 12,
     bacaan: {
-      konsepInti: "3R adalah langkah hebat untuk menyelamatkan bumi: 1. Reduce (Kurangi): Mengurangi sampah sejak awal, misalnya membawa botol minum sendiri. 2. Reuse (Gunakan Ulang): Memakai kembali barang yang masih bagus, misalnya kaleng bekas jadi tempat pensil. 3. Recycle (Daur Ulang): Mengolah sampah bekas di pabrik menjadi barang atau bahan baru.",
-      contoh: "Bawa tas belanja kain = Reduce. Botol bekas jadi pot tanaman = Reuse. Botol plastik dilebur jadi serat pakaian = Recycle."
+      konsepInti: "Sebelum 3R (Reduce, Reuse, Recycle), ada satu prinsip yang sangat penting di awal: Refuse (Menolak) — menolak barang sekali pakai sebelum barang itu sampai ke tangan kita jika memang tidak dibutuhkan. Bedanya dengan Reduce: Refuse terjadi pada titik paling awal (saat ditawari/sebelum membeli), sedangkan Reduce terjadi setelah barang sudah menjadi kebiasaan dipakai tetapi jumlahnya dikurangi. Urutan lengkap aksi pencegahan sampah adalah: Refuse -> Reduce -> Reuse -> Recycle, di mana 3 prinsip pertama mencegah barang menjadi sampah, dan hanya Recycle yang mengolah barang yang sudah terlanjur jadi sampah.",
+      contoh: "Refuse: Menolak sedotan plastik atau kantong kresek saat jajan di kantin (\"tanpa sedotan\"). Reduce: Mengurangi pemakaian kertas tisu dengan saputangan. Reuse: Menggunakan botol minum berulang kali. Recycle: Menyerahkan kardus ke bank sampah untuk didaur ulang."
     },
     kuis: {
-      pertanyaan: "Apa yang membedakan Reuse dengan Recycle?",
+      pertanyaan: "Apa perbedaan utama antara prinsip Refuse dan Reduce?",
       tipe: "pilihan_ganda",
       opsi: [
-        { id: "a", text: "Reuse memakai kembali barang apa adanya, Recycle mengolahnya di pabrik jadi barang baru" },
-        { id: "b", text: "Reuse harus membakar sampah, Recycle membuang sampah ke sungai" },
-        { id: "c", text: "Reuse hanya untuk sisa nasi, Recycle hanya untuk daun kering" },
-        { id: "d", text: "Keduanya sama persis dan tidak ada bedanya sama sekali" }
+        { id: "a", text: "Refuse membakar sampah, sedangkan Reduce menimbunnya di tanah" },
+        { id: "b", text: "Refuse menolak barang sejak sebelum sampai ke tangan kita, sedangkan Reduce mengurangi jumlah barang yang digunakan" },
+        { id: "c", text: "Refuse hanya untuk sampah organik, sedangkan Reduce hanya untuk anorganik" },
+        { id: "d", text: "Refuse dan Reduce sama sekali tidak ada bedanya" }
       ],
-      jawabanBenar: "a"
+      jawabanBenar: "b"
     }
   },
   {
