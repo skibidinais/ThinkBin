@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { MODUL_DATA } from "@/lib/modul-data";
 import { useAuth } from "@/lib/auth-context";
-import { recordNodeCompletion } from "@/lib/supabase";
+import { recordNodeCompletion, fetchUserCompletedNodes } from "@/lib/supabase";
 import confetti from "canvas-confetti";
 
 export default function QuizPage() {
@@ -19,18 +19,48 @@ export default function QuizPage() {
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const isSubmittingRef = useRef<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [isRepeatAttempt, setIsRepeatAttempt] = useState<boolean>(false);
   const [showHintModal, setShowHintModal] = useState<boolean>(false);
 
-  // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16, 20, 24, 28)
+  // Check if this is the final level of a section/Bagian (Node 4, 8, 12, 16, 20, 24, 28, 40)
   const isFinalNodeOfBagian = nodeId % 4 === 0;
 
   useEffect(() => {
     if (!node || !question) {
       router.push("/belajar");
+      return;
     }
-  }, [node, question, router]);
+    let isMounted = true;
+
+    // Check local storage first
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("thinkbin_completed_nodes");
+        const completed: number[] = raw ? JSON.parse(raw) : [];
+        if (completed.includes(nodeId)) {
+          setIsRepeatAttempt(true);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    // Also check Supabase remote completion
+    if (user?.id) {
+      fetchUserCompletedNodes(user.id).then((nodes) => {
+        if (isMounted && nodes.includes(nodeId)) {
+          setIsRepeatAttempt(true);
+        }
+      }).catch(() => {});
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [node, question, router, nodeId, user?.id]);
 
   // Trigger celebration confetti when answer is correct
   useEffect(() => {
@@ -74,13 +104,23 @@ export default function QuizPage() {
   if (!node || !question) return null;
 
   const handleSubmit = async () => {
-    if (!selectedOption || isSubmitted) return;
+    if (!selectedOption || isSubmitted || isSubmitting || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
 
     const correct = selectedOption === question.correctAnswer;
     setIsCorrect(correct);
     setIsSubmitted(true);
 
     if (correct) {
+      // If this was already solved or is a repeat, strictly skip recording new XP
+      if (isRepeatAttempt) {
+        setIsRepeatAttempt(true);
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
+        return;
+      }
+
       // Record node completion in Supabase via Atomic RPC (idempotent)
       const result = await recordNodeCompletion({
         userId: user?.id || "usr_guest",
@@ -91,23 +131,31 @@ export default function QuizPage() {
         isCorrect: true,
       });
 
-      if (result.success) {
-        setIsRepeatAttempt(result.isRepeat);
-      } else {
-        console.error("Node completion failed:", result.message);
-      }
+      const isRepeat = result.isRepeat || result.xpAwarded === 0;
+      setIsRepeatAttempt(isRepeat);
 
       // Always refresh profile from database to get authoritative XP/coins
       if (user?.id) {
         await refreshProfile(user.id);
+      } else if (!isRepeat && result.xpAwarded > 0) {
+        updateUser({
+          xp: (user?.xp || 0) + result.xpAwarded,
+          coins: (user?.coins || 0) + result.coinsAwarded,
+        });
       }
     }
+
+    isSubmittingRef.current = false;
+    setIsSubmitting(false);
   };
 
   const handleRestart = () => {
     setSelectedOption(null);
     setIsSubmitted(false);
+    setIsSubmitting(false);
+    isSubmittingRef.current = false;
     setIsCorrect(false);
+    setIsRepeatAttempt(true);
   };
 
   const handleContinue = () => {
@@ -290,14 +338,14 @@ export default function QuizPage() {
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={!selectedOption}
+                  disabled={!selectedOption || isSubmitting || isSubmitted}
                   className={`w-full max-w-[190px] py-3 rounded-2xl font-fredoka font-black text-base tracking-wider uppercase transition-transform text-center ${
-                    selectedOption
+                    selectedOption && !isSubmitting && !isSubmitted
                       ? "bg-gradient-to-b from-[#fad85e] to-[#e7a627] border-[3.5px] border-[#6b3506] shadow-[0_4px_0_#542803] active:translate-y-1 active:shadow-none text-[#3b1d03] cursor-pointer"
                       : "bg-[#e2d5c3] border-[3px] border-[#a8937b] text-[#8c7862] shadow-[0_3px_0_#8c7862] cursor-not-allowed opacity-75"
                   }`}
                 >
-                  JAWAB
+                  {isSubmitting ? "MEMERIKSA..." : "JAWAB"}
                 </button>
               </div>
             </div>

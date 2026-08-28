@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { MODUL_DATA } from '@/lib/modul-data';
 import { useAuth } from '@/lib/auth-context';
-import { recordNodeCompletion } from '@/lib/supabase';
+import { recordNodeCompletion, fetchUserCompletedNodes } from '@/lib/supabase';
 
 interface GameItem {
   id: string;
@@ -30,6 +30,29 @@ export default function TantanganPage() {
   const [bins, setBins] = useState<string[]>([]);
   const [hasUnlocked, setHasUnlocked] = useState<boolean>(false);
   const [isRepeatAttempt, setIsRepeatAttempt] = useState<boolean>(false);
+  const isSubmittingRef = useRef<boolean>(false);
+
+  // Check if node is already completed on mount
+  useEffect(() => {
+    let isMounted = true;
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("thinkbin_completed_nodes");
+        const completed: number[] = raw ? JSON.parse(raw) : [];
+        if (completed.includes(nodeId)) {
+          setIsRepeatAttempt(true);
+        }
+      } catch {}
+    }
+    if (user?.id) {
+      fetchUserCompletedNodes(user.id).then((nodes) => {
+        if (isMounted && nodes.includes(nodeId)) {
+          setIsRepeatAttempt(true);
+        }
+      }).catch(() => {});
+    }
+    return () => { isMounted = false; };
+  }, [nodeId, user?.id]);
 
   // Define game data based on the node
   useEffect(() => {
@@ -156,6 +179,19 @@ export default function TantanganPage() {
     // Shuffle items
     setGameItems(items.sort(() => Math.random() - 0.5));
     setBins(categories);
+
+    // Check if node is already completed
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("thinkbin_completed_nodes");
+        const completed: number[] = raw ? JSON.parse(raw) : [];
+        if (completed.includes(nodeId)) {
+          setIsRepeatAttempt(true);
+        }
+      } catch {
+        // ignore
+      }
+    }
   }, [nodeId, node, router]);
 
   // Game timer countdown effect
@@ -189,9 +225,17 @@ export default function TantanganPage() {
     
     // Check if player scored at least 3 correct (or all if < 3) to pass
     const isPassingScore = gameItems.length > 0 && evaluatedScore >= Math.min(3, gameItems.length);
-    if (isPassingScore && !hasUnlocked) {
+    if (isPassingScore && !hasUnlocked && !isSubmittingRef.current) {
+      isSubmittingRef.current = true;
       setHasUnlocked(true);
       
+      // If already completed / repeat attempt, strictly skip rewarding XP
+      if (isRepeatAttempt) {
+        setIsRepeatAttempt(true);
+        isSubmittingRef.current = false;
+        return;
+      }
+
       const xpReward = node?.xpReward || 12;
       const coinsReward = (node?.coinReward || 15) + 10;
 
@@ -204,16 +248,19 @@ export default function TantanganPage() {
         isCorrect: true,
       });
 
-      if (result.success) {
-        setIsRepeatAttempt(result.isRepeat);
-      } else {
-        console.error("Node completion failed:", result.message);
-      }
+      const isRepeat = result.isRepeat || result.xpAwarded === 0;
+      setIsRepeatAttempt(isRepeat);
 
       // Always refresh profile from database to get authoritative XP/coins
       if (user?.id) {
         await refreshProfile(user.id);
+      } else if (!isRepeat && result.xpAwarded > 0) {
+        updateUser({
+          xp: (user?.xp || 0) + result.xpAwarded,
+          coins: (user?.coins || 0) + result.coinsAwarded,
+        });
       }
+      isSubmittingRef.current = false;
     }
   };
 

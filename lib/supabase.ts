@@ -231,6 +231,48 @@ export async function fetchUserProfile(userId: string): Promise<UserProfile | nu
 }
 
 /**
+ * Check if survey has already been submitted by user
+ */
+export async function checkSurveySubmitted(
+  userId: string,
+  surveyType: "awal" | "akhir"
+): Promise<boolean> {
+  // 1. Check local storage first
+  if (typeof window !== "undefined") {
+    try {
+      const local = localStorage.getItem(`tb_survey_${surveyType}_${userId}`);
+      if (local) return true;
+    } catch {
+      // ignore
+    }
+  }
+
+  // 2. Check Supabase
+  if (isSupabaseConfigured() && userId && userId !== "usr_guest") {
+    try {
+      // Direct query to pre_survey_responses
+      const { data, error } = await supabase
+        .from("pre_survey_responses")
+        .select("id")
+        .or(`user_id.eq.${userId},google_id.eq.${userId}`)
+        .eq("survey_type", surveyType)
+        .maybeSingle();
+
+      if (!error && data) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(`tb_survey_${surveyType}_${userId}`, "submitted");
+        }
+        return true;
+      }
+    } catch (err) {
+      console.warn("Error checking survey status:", err);
+    }
+  }
+
+  return false;
+}
+
+/**
  * Save Survey Responses (Pre/Post survey) and update user XP/Coins in Supabase via Atomic RPC
  */
 export async function saveSurveyAnswers(payload: {
@@ -241,6 +283,26 @@ export async function saveSurveyAnswers(payload: {
 }): Promise<{ success: boolean; isFirstSubmission?: boolean; xpAwarded?: number; coinsAwarded?: number; message?: string }> {
   const xpReward = payload.surveyType === "akhir" ? 40 : 20;
   const coinsReward = payload.surveyType === "akhir" ? 50 : 30;
+
+  // Local storage check for repeated submissions
+  let isLocallyDone = false;
+  if (typeof window !== "undefined") {
+    const existingSpecific = localStorage.getItem(`tb_survey_${payload.surveyType}_${payload.userId}`);
+    const existingGeneral = localStorage.getItem(`tb_survey_${payload.surveyType}`);
+    if (existingSpecific || existingGeneral) {
+      isLocallyDone = true;
+    }
+  }
+
+  // If already recorded on this device/account, strictly grant 0 rewards immediately
+  if (isLocallyDone) {
+    return {
+      success: true,
+      isFirstSubmission: false,
+      xpAwarded: 0,
+      coinsAwarded: 0,
+    };
+  }
 
   if (isSupabaseConfigured()) {
     try {
@@ -257,12 +319,16 @@ export async function saveSurveyAnswers(payload: {
             `tb_survey_${payload.surveyType}_${payload.userId}`,
             JSON.stringify(payload.answers)
           );
+          localStorage.setItem(
+            `tb_survey_${payload.surveyType}`,
+            "submitted"
+          );
         }
         return {
           success: true,
           isFirstSubmission: data.is_first_submission,
-          xpAwarded: data.xp_awarded,
-          coinsAwarded: data.coins_awarded,
+          xpAwarded: data.xp_awarded ?? 0,
+          coinsAwarded: data.coins_awarded ?? 0,
         };
       }
 
@@ -286,7 +352,7 @@ export async function saveSurveyAnswers(payload: {
             .eq("survey_type", payload.surveyType)
             .maybeSingle();
 
-          if (existingSurvey) {
+          if (existingSurvey || isLocallyDone) {
             return {
               success: true,
               isFirstSubmission: false,
@@ -343,6 +409,15 @@ export async function saveSurveyAnswers(payload: {
   }
 
   // Fallback if offline / guest
+  if (isLocallyDone) {
+    return {
+      success: true,
+      isFirstSubmission: false,
+      xpAwarded: 0,
+      coinsAwarded: 0,
+    };
+  }
+
   if (typeof window !== "undefined") {
     localStorage.setItem(
       `tb_survey_${payload.surveyType}_${payload.userId}`,
@@ -440,6 +515,30 @@ export async function recordNodeCompletion(payload: {
   const xpReward = payload.xpEarned ?? 12;
   const coinsReward = payload.coinsEarned ?? 15;
 
+  // Check if this node is already recorded as completed locally
+  let isLocallyCompleted = false;
+  if (typeof window !== "undefined") {
+    try {
+      const saved = localStorage.getItem("thinkbin_completed_nodes");
+      const completed: number[] = saved ? JSON.parse(saved) : [];
+      if (completed.includes(payload.nodeId)) {
+        isLocallyCompleted = true;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // If already completed locally on this device, strictly grant 0 rewards immediately
+  if (isLocallyCompleted) {
+    return {
+      success: true,
+      isRepeat: true,
+      xpAwarded: 0,
+      coinsAwarded: 0,
+    };
+  }
+
   // Helper to persist to localStorage
   const persistLocal = (xpToAdd: number, coinsToAdd: number) => {
     if (typeof window !== "undefined") {
@@ -451,12 +550,14 @@ export async function recordNodeCompletion(payload: {
           localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(completed));
         }
 
-        const rawUser = localStorage.getItem("tb_active_user");
-        if (rawUser) {
-          const u = JSON.parse(rawUser);
-          u.xp = (u.xp || 0) + xpToAdd;
-          u.coins = (u.coins || 0) + coinsToAdd;
-          localStorage.setItem("tb_active_user", JSON.stringify(u));
+        if (xpToAdd > 0 || coinsToAdd > 0) {
+          const rawUser = localStorage.getItem("tb_active_user");
+          if (rawUser) {
+            const u = JSON.parse(rawUser);
+            u.xp = (u.xp || 0) + xpToAdd;
+            u.coins = (u.coins || 0) + coinsToAdd;
+            localStorage.setItem("tb_active_user", JSON.stringify(u));
+          }
         }
       } catch {
         // ignore
@@ -486,12 +587,16 @@ export async function recordNodeCompletion(payload: {
       }
 
       if (!error && data && data.success) {
-        persistLocal(data.is_first_completion ? (data.xp_awarded ?? xpReward) : 0, data.is_first_completion ? (data.coins_awarded ?? coinsReward) : 0);
+        const isFirst = data.is_first_completion && !isLocallyCompleted;
+        const awardedXp = isFirst ? (data.xp_awarded ?? xpReward) : 0;
+        const awardedCoins = isFirst ? (data.coins_awarded ?? coinsReward) : 0;
+        persistLocal(awardedXp, awardedCoins);
+
         return {
           success: true,
-          isRepeat: !data.is_first_completion,
-          xpAwarded: data.xp_awarded ?? 0,
-          coinsAwarded: data.coins_awarded ?? 0,
+          isRepeat: !isFirst,
+          xpAwarded: awardedXp,
+          coinsAwarded: awardedCoins,
           currentXp: data.current_xp,
           currentCoins: data.current_coins,
         };
@@ -520,7 +625,7 @@ export async function recordNodeCompletion(payload: {
           .eq("node_id", payload.nodeId)
           .maybeSingle();
 
-        if (existingProgress) {
+        if (existingProgress || isLocallyCompleted) {
           persistLocal(0, 0);
           return {
             success: true,
@@ -568,6 +673,16 @@ export async function recordNodeCompletion(payload: {
   }
 
   // Local state fallback (Offline / Guest mode)
+  if (isLocallyCompleted) {
+    persistLocal(0, 0);
+    return {
+      success: true,
+      isRepeat: true,
+      xpAwarded: 0,
+      coinsAwarded: 0,
+    };
+  }
+
   persistLocal(xpReward, coinsReward);
   return {
     success: true,
@@ -978,7 +1093,7 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
             u.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) return { ...u, xp: 335 };
-          if (isWildan) return { ...u, xp: 951 };
+          if (isWildan) return { ...u, xp: 10000 };
           if (isAsyraf) return { ...u, xp: 0 };
           return u;
         });
@@ -1074,7 +1189,7 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
             row.email?.toLowerCase().includes("asyraf");
 
           if (isFreza) rowXp = 335;
-          if (isWildan) rowXp = 951;
+          if (isWildan) rowXp = 10000;
           if (isAsyraf) rowXp = 0;
 
           classMap[row.class_name].total_xp += rowXp;

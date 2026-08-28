@@ -89,7 +89,7 @@ export default function LeaderboardPage() {
 
             let computedXp = u.xp || 0;
             if (isFreza) computedXp = 335;
-            if (isWildan) computedXp = 951;
+            if (isWildan) computedXp = 10000;
             if (isAsyraf) computedXp = 0;
 
             return {

@@ -213,17 +213,22 @@ btnNext.addEventListener("click", () => {
       localStorage.setItem("thinkbin_reflection_node16", reflectionText);
     }
 
-    // Award XP
-    const awardedXP = currentNode.xp || 12;
-    let prevXP = parseInt(localStorage.getItem("thinkbin_xp") || "252", 10);
-    localStorage.setItem("thinkbin_xp", (prevXP + awardedXP).toString());
-
-    // Mark Node 16 Complete in localStorage
+    // Check if Node 16 was already completed
+    let completed = [];
     try {
-      let completed = JSON.parse(localStorage.getItem("thinkbin_completed_nodes") || "[]");
-      if (!completed.includes(16)) completed.push(16);
-      localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(completed));
+      completed = JSON.parse(localStorage.getItem("thinkbin_completed_nodes") || "[]");
     } catch (e) {}
+    const isAlreadyDone = completed.includes(16);
+
+    // Award XP strictly once
+    const awardedXP = currentNode.xp || 12;
+    if (!isAlreadyDone) {
+      let prevXP = parseInt(localStorage.getItem("thinkbin_xp") || "252", 10);
+      localStorage.setItem("thinkbin_xp", (prevXP + awardedXP).toString());
+
+      completed.push(16);
+      localStorage.setItem("thinkbin_completed_nodes", JSON.stringify(completed));
+    }
 
     // Random celebration variant: 50% Celeb A / 50% Celeb C
     const celebScreen = Math.random() < 0.5 ? 'celeb-a' : 'celeb-c';

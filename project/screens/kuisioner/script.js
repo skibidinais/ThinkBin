@@ -259,32 +259,35 @@ function handleNextClick() {
   } else {
     // Selesai kuisioner!
     const key = isAwal ? 'thinkbin_survey_awal' : 'thinkbin_survey_akhir';
+    const isAlreadyDone = !!localStorage.getItem(key);
     localStorage.setItem(key, JSON.stringify(userAnswers));
     localStorage.setItem('thinkbin_onboarding_completed', 'true');
 
-    // Grant Rewards (+30 Koin & +20 XP)
-    const prevCoins = parseInt(localStorage.getItem('thinkbin_coins') || '0', 10);
-    const newCoins = prevCoins + 30;
-    localStorage.setItem('thinkbin_coins', String(newCoins));
+    if (!isAlreadyDone) {
+      // Grant Rewards (+30 Koin & +20 XP) strictly on first completion
+      const prevCoins = parseInt(localStorage.getItem('thinkbin_coins') || '0', 10);
+      const newCoins = prevCoins + 30;
+      localStorage.setItem('thinkbin_coins', String(newCoins));
 
-    const prevXp = parseInt(localStorage.getItem('thinkbin_xp') || '0', 10);
-    const newXp = prevXp + 20;
-    localStorage.setItem('thinkbin_xp', String(newXp));
+      const prevXp = parseInt(localStorage.getItem('thinkbin_xp') || '0', 10);
+      const newXp = prevXp + 20;
+      localStorage.setItem('thinkbin_xp', String(newXp));
 
-    // Sync Profile state
-    const profileState = localStorage.getItem('thinkbin_layout_profile_state');
-    if (profileState) {
-      try {
-        const parsed = JSON.parse(profileState);
-        parsed.coins = newCoins;
-        parsed.xp = newXp;
-        localStorage.setItem('thinkbin_layout_profile_state', JSON.stringify(parsed));
-      } catch (e) {}
-    }
+      // Sync Profile state
+      const profileState = localStorage.getItem('thinkbin_layout_profile_state');
+      if (profileState) {
+        try {
+          const parsed = JSON.parse(profileState);
+          parsed.coins = newCoins;
+          parsed.xp = newXp;
+          localStorage.setItem('thinkbin_layout_profile_state', JSON.stringify(parsed));
+        } catch (e) {}
+      }
 
-    // Broadcast to parent app frame
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: 'update_coins_xp', coins: newCoins, xp: newXp }, '*');
+      // Broadcast to parent app frame
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'update_coins_xp', coins: newCoins, xp: newXp }, '*');
+      }
     }
 
     // Show result screen

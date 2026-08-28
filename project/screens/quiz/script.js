@@ -322,28 +322,31 @@ function goToLearningMapToRetry() {
   }
 }
 
-// Complete Node, Award XP & Save Progression (Only when correct)
+// Complete Node, Award XP & Save Progression (Only when correct and first attempt)
 function finishNodeAndCelebrate() {
+  let completed = [];
+  try {
+    completed = JSON.parse(localStorage.getItem('thinkbin_completed_nodes') || '[]');
+  } catch (e) {}
+
+  const isAlreadyDone = currentNode && completed.includes(currentNode.nodeId);
   const awardedXP = (currentNode && currentNode.xp) ? currentNode.xp : 12;
 
-  // 1. Award XP
-  let prevXP = parseInt(localStorage.getItem('thinkbin_xp') || '252', 10);
-  localStorage.setItem('thinkbin_xp', (prevXP + awardedXP).toString());
+  if (!isAlreadyDone && currentNode) {
+    // 1. Award XP strictly once
+    let prevXP = parseInt(localStorage.getItem('thinkbin_xp') || '252', 10);
+    localStorage.setItem('thinkbin_xp', (prevXP + awardedXP).toString());
 
-  // 2. Mark Node Completed in thinkbin_completed_nodes
-  try {
-    let completed = JSON.parse(localStorage.getItem('thinkbin_completed_nodes') || '[]');
-    if (currentNode && !completed.includes(currentNode.nodeId)) {
-      completed.push(currentNode.nodeId);
-    }
+    // 2. Mark Node Completed in thinkbin_completed_nodes
+    completed.push(currentNode.nodeId);
     localStorage.setItem('thinkbin_completed_nodes', JSON.stringify(completed));
 
     // Update current node to next node
     let currentId = parseInt(localStorage.getItem('thinkbin_current_node') || '1', 10);
-    if (currentNode && currentNode.nodeId >= currentId && currentNode.nodeId < 16) {
+    if (currentNode.nodeId >= currentId && currentNode.nodeId < 40) {
       localStorage.setItem('thinkbin_current_node', (currentNode.nodeId + 1).toString());
     }
-  } catch (e) {}
+  }
 
   // 3. Update Mission 2 progress
   const missionState = localStorage.getItem('tb_mission_state');

@@ -256,24 +256,28 @@ function finishTantangan() {
   clearInterval(timerInterval);
   sfx.playCorrect();
 
-  // Award 12 XP
-  let prevXP = parseInt(localStorage.getItem('thinkbin_xp') || '252', 10);
-  localStorage.setItem('thinkbin_xp', (prevXP + 12).toString());
-
-  // Mark Node Completed in LocalStorage
+  let completed = [];
   try {
-    let completed = JSON.parse(localStorage.getItem('thinkbin_completed_nodes') || '[]');
-    if (!completed.includes(currentNodeId)) {
-      completed.push(currentNodeId);
-    }
+    completed = JSON.parse(localStorage.getItem('thinkbin_completed_nodes') || '[]');
+  } catch (e) {}
+
+  const isAlreadyDone = completed.includes(currentNodeId);
+
+  if (!isAlreadyDone) {
+    // Award 12 XP only on first completion
+    let prevXP = parseInt(localStorage.getItem('thinkbin_xp') || '252', 10);
+    localStorage.setItem('thinkbin_xp', (prevXP + 12).toString());
+
+    // Mark Node Completed in LocalStorage
+    completed.push(currentNodeId);
     localStorage.setItem('thinkbin_completed_nodes', JSON.stringify(completed));
 
     // Update current node to next node
     let currentId = parseInt(localStorage.getItem('thinkbin_current_node') || '1', 10);
-    if (currentNodeId >= currentId && currentNodeId < 16) {
+    if (currentNodeId >= currentId && currentNodeId < 40) {
       localStorage.setItem('thinkbin_current_node', (currentNodeId + 1).toString());
     }
-  } catch (e) {}
+  }
 
   // 50/50 Random Celebration Screen (Celeb A or Celeb C)
   const celebrationScreens = ["celeb-a", "celeb-c"];

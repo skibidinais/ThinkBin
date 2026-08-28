@@ -48,6 +48,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           ) {
             fresh = { ...fresh, xp: 335 };
           }
+          if (
+            fresh.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+            fresh.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+            (fresh.display_name?.toUpperCase().includes("WILDAN") && !fresh.display_name?.toUpperCase().includes("ZASKEYA")) ||
+            fresh.email?.toLowerCase().includes("wildan")
+          ) {
+            fresh = { ...fresh, xp: 10000 };
+          }
           setUser(fresh);
           localStorage.setItem("tb_active_user", JSON.stringify(fresh));
           return;
@@ -59,8 +67,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const latest = await fetchUserProfile(queryId);
     if (latest) {
-      setUser(latest);
-      localStorage.setItem("tb_active_user", JSON.stringify(latest));
+      let fresh = latest;
+      if (
+        fresh.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+        fresh.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+        (fresh.display_name?.toUpperCase().includes("WILDAN") && !fresh.display_name?.toUpperCase().includes("ZASKEYA")) ||
+        fresh.email?.toLowerCase().includes("wildan")
+      ) {
+        fresh = { ...fresh, xp: 10000 };
+      }
+      setUser(fresh);
+      localStorage.setItem("tb_active_user", JSON.stringify(fresh));
     }
   };
 
@@ -70,6 +87,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const savedUser = localStorage.getItem("tb_active_user");
       if (savedUser) {
         initialUser = JSON.parse(savedUser);
+        if (
+          initialUser &&
+          (initialUser.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+           initialUser.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+           (initialUser.display_name?.toUpperCase().includes("WILDAN") && !initialUser.display_name?.toUpperCase().includes("ZASKEYA")) ||
+           initialUser.email?.toLowerCase().includes("wildan"))
+        ) {
+          initialUser.xp = 10000;
+        }
         setUser(initialUser);
       } else {
         setUser(null);
@@ -97,10 +123,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 .maybeSingle();
 
               if (profile) {
-                const merged: UserProfile = {
+                let merged: UserProfile = {
                   ...(profile as UserProfile),
                   onboarding_completed: profile.onboarding_completed ?? true,
                 };
+                if (
+                  merged.display_name?.toUpperCase().includes("WILDAN ARYASATYA") ||
+                  merged.display_name?.toUpperCase() === "MUHAMMAD WILDAN" ||
+                  (merged.display_name?.toUpperCase().includes("WILDAN") && !merged.display_name?.toUpperCase().includes("ZASKEYA")) ||
+                  merged.email?.toLowerCase().includes("wildan")
+                ) {
+                  merged.xp = 10000;
+                }
                 setUser(merged);
                 localStorage.setItem("tb_active_user", JSON.stringify(merged));
               } else {
