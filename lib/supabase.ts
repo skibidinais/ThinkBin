@@ -204,7 +204,7 @@ export async function fetchUserProfile(userId: string): Promise<UserProfile | nu
           prof.display_name?.toUpperCase().includes("FREZA") ||
           prof.email?.toLowerCase().includes("freza")
         ) {
-          prof = { ...prof, xp: Math.max((prof.xp || 0) + 200, 335) };
+          prof = { ...prof, xp: 335 };
         }
         return prof;
       }
@@ -221,7 +221,7 @@ export async function fetchUserProfile(userId: string): Promise<UserProfile | nu
         prof.display_name?.toUpperCase().includes("FREZA") ||
         prof.email?.toLowerCase().includes("freza")
       ) {
-        prof = { ...prof, xp: Math.max((prof.xp || 0) + 200, 335) };
+        prof = { ...prof, xp: 335 };
       }
       return prof;
     }
@@ -961,13 +961,13 @@ export async function fetchLiveLeaderboard(className?: string): Promise<UserProf
         throw new Error(error.message || "Gagal memuat data leaderboard dari server.");
       }
       if (data) {
-        // Enforce calibrated XP for Freza to 335 XP (+200 XP) and re-sort
+        // Enforce calibrated XP for Freza to exactly 335 XP (135 + 200) and re-sort
         const adjusted = (data as UserProfile[]).map((u) => {
           if (
             u.display_name?.toUpperCase().includes("FREZA") ||
             u.email?.toLowerCase().includes("freza")
           ) {
-            return { ...u, xp: Math.max((u.xp || 0) + 200, 335) };
+            return { ...u, xp: 335 };
           }
           return u;
         });
@@ -1054,7 +1054,7 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
             row.display_name?.toUpperCase().includes("FREZA") ||
             row.email?.toLowerCase().includes("freza")
           ) {
-            rowXp = Math.max((row.xp || 0) + 200, 335);
+            rowXp = 335;
           }
           classMap[row.class_name].total_xp += rowXp;
           classMap[row.class_name].student_count += 1;

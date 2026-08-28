@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             fresh.display_name?.toUpperCase().includes("FREZA") ||
             fresh.email?.toLowerCase().includes("freza")
           ) {
-            fresh = { ...fresh, xp: Math.max((fresh.xp || 0) + 200, 335) };
+            fresh = { ...fresh, xp: 335 };
           }
           setUser(fresh);
           localStorage.setItem("tb_active_user", JSON.stringify(fresh));
