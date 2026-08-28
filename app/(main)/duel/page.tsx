@@ -366,11 +366,24 @@ export default function DuelPage() {
   const currentQ = questions[currentIdx];
 
   return (
-  return (
     <div
       className="relative w-full min-h-[100dvh] h-[100dvh] flex flex-col items-center justify-between select-none overflow-hidden bg-cover bg-center bg-no-repeat text-[#2e3b2e]"
       style={{ backgroundImage: "url('/screens_assets/background.png')" }}
     >
+      {/* ── DECORATIVE STATIONERY PROPS (Playful Classroom Theme) ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-80">
+        {/* Orange Sticky Note */}
+        <div
+          className="absolute top-2 left-6 w-14 h-12 bg-[#f77028] rounded-md shadow-md -rotate-12"
+          style={{ filter: "drop-shadow(2px 3px 5px rgba(0,0,0,0.18))" }}
+        />
+        {/* Yellow Sticky Note */}
+        <div
+          className="absolute top-1 right-8 w-16 h-12 bg-[#fec432] rounded-md shadow-md rotate-8"
+          style={{ filter: "drop-shadow(2px 3px 5px rgba(0,0,0,0.18))" }}
+        />
+      </div>
+
       {/* ── TOP HEADER / NAVIGATION BAR (Playful Yellow 3D Style) ── */}
       <header className="relative z-20 w-full max-w-[420px] px-4 pt-3 pb-1 flex items-center justify-between flex-shrink-0">
         <button
