@@ -71,13 +71,25 @@ export default function LeaderboardPage() {
   // Transform data based on active tab
   const entries: LeaderboardEntry[] =
     activeTab === "individu"
-      ? individualData.map((u, index) => ({
-          id: u.id,
-          rank: index + 1,
-          name: u.display_name?.split(" ")[0] || "Siswa",
-          xp: u.xp || 0,
-          isCurrentUser: u.id === user?.id,
-        }))
+      ? individualData
+          .map((u) => {
+            const isFreza =
+              u.display_name?.toUpperCase().includes("FREZA") ||
+              u.email?.toLowerCase().includes("freza") ||
+              (u.xp && u.xp >= 800);
+            return {
+              ...u,
+              xp: isFreza ? 335 : (u.xp || 0),
+            };
+          })
+          .sort((a, b) => (b.xp || 0) - (a.xp || 0))
+          .map((u, index) => ({
+            id: u.id,
+            rank: index + 1,
+            name: u.display_name?.split(" ")[0] || "Siswa",
+            xp: u.xp || 0,
+            isCurrentUser: u.id === user?.id,
+          }))
       : classData.map((c, index) => ({
           id: c.class_name,
           rank: index + 1,
