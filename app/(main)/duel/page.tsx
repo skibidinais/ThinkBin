@@ -309,8 +309,23 @@ export default function DuelPage() {
       const isWinner = myScore > oppScore;
       const isDraw = myScore === oppScore;
 
-      const xpEarned = isWinner ? 30 : 15;
-      const coinsEarned = isWinner ? 25 : 10;
+      // Differentiated rewards: Bot (Practice) vs PvP (Real Friend)
+      const isBotMode = mode === "bot";
+      const xpEarned = isBotMode
+        ? isWinner
+          ? 10
+          : 5
+        : isWinner
+        ? 35
+        : 15;
+
+      const coinsEarned = isBotMode
+        ? isWinner
+          ? 8
+          : 4
+        : isWinner
+        ? 30
+        : 10;
 
       if (isWinner) {
         confetti({
@@ -319,7 +334,11 @@ export default function DuelPage() {
           origin: { y: 0.55 },
           colors: ["#ffd700", "#ff6b6b", "#48dbfb", "#1dd1a1"],
         });
-        setRewardNotice(`KEMENANGAN BESAR! Kamu mendapatkan +${coinsEarned} Koin & +${xpEarned} XP!`);
+        setRewardNotice(
+          isBotMode
+            ? `LATIHAN SELESAI! Kamu menang lawan Maskot Bin: +${coinsEarned} Koin & +${xpEarned} XP!`
+            : `KEMENANGAN BESAR! Kamu mengalahkan temanmu: +${coinsEarned} Koin & +${xpEarned} XP!`
+        );
       } else if (isDraw) {
         setRewardNotice(`HASIL SERI! Kamu mendapatkan +${coinsEarned} Koin & +${xpEarned} XP!`);
       } else {
