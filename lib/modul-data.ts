@@ -26,7 +26,10 @@ export const BAGIAN_INFO = [
   { id: 4, title: 'Gaya Hidup Hijau', desc: 'Bank Sampah, ekonomi sirkular, dan komitmen pribadi' },
   { id: 5, title: 'Pengolahan Sampah Kreatif', desc: 'Metode pengomposan, biokonversi maggot, dan daur ulang kreatif' },
   { id: 6, title: 'Gerakan Sekolah Adiwiyata', desc: 'Kantin sehat bebas plastik, audit sampah, dan duta lingkungan' },
-  { id: 7, title: 'Aksi Komunitas & Masa Depan', desc: 'Ekonomi sirkular skala luas, inovasi teknologi, dan ikrar bumi' }
+  { id: 7, title: 'Aksi Komunitas & Masa Depan', desc: 'Ekonomi sirkular skala luas, inovasi teknologi, dan kolaborasi global' },
+  { id: 8, title: 'Pengelolaan Sampah Khusus & B3', desc: 'Bahaya limbah elektronik, baterai, medis, dan drop box spesifik' },
+  { id: 9, title: 'Konservasi Energi & Jejak Karbon', desc: 'Hubungan sampah dengan emisi karbon, energi bersih, dan gaya hidup hemat' },
+  { id: 10, title: 'Duta & Inovator Lingkungan Global', desc: 'Kepemimpinan hijau, kampanye digital, dan ikrar agung kelestarian bumi' }
 ];
 
 export const RANK_TIERS = [
@@ -681,23 +684,305 @@ export const MODUL_DATA: ModulNode[] = [
     id: 28,
     bagianId: 7,
     bagianTitle: 'Aksi Komunitas & Masa Depan',
-    title: 'Ikrar Utama Guardian Bumi ThinkBin',
-    type: 'komitmen',
-    pilar: 'Kemauan',
-    konsepInti: 'Selamat! Kamu telah menuntaskan seluruh kurikulum 7 Bab ThinkBin: Kenali, Pilah, Aksi! Kamu kini resmi menjadi Guardian Lingkungan sejati yang berdaya, berilmu, dan berakhlak mulia terhadap bumi.',
-    contoh: '"Saya berikrar akan selalu menjadi pelopor pemilahan sampah dan menjaga kelestarian lingkungan demi masa depan bumi tercinta."',
+    title: 'Kuis Tantangan: Kolaborasi Lingkungan',
+    type: 'kuis',
+    pilar: 'Kemampuan',
+    konsepInti: 'Uji wawasanmu seputar gerakan kolaborasi bersih lingkungan dan sistem ekonomi sirkular modern!',
+    contoh: 'Ekonomi sirkular = Siklus tertutup. World Cleanup Day = Aksi komunitas.',
     question: {
-      question: 'Apa komitmen terpenting setelah menyelesaikan seluruh 7 Bab Pembelajaran ThinkBin?',
+      question: 'Aksi membersihkan sungai dan laut secara serentak bersama ribuan relawan di akhir pekan merupakan contoh dari...',
       options: [
-        { value: 'A', text: 'Menjadikan gaya hidup pilah sampah dan pengurangan plastik sebagai kebiasaan seumur hidup' },
-        { value: 'B', text: 'Berhenti peduli lingkungan karena materi sudah selesai' },
-        { value: 'C', text: 'Kembali menggunakan plastik sekali pakai sembarangan' },
-        { value: 'D', text: 'Menyimpan ilmu sendiri tanpa mempraktikkannya' }
+        { value: 'A', text: 'Gerakan aksi bersih kolaborasi komunitas' },
+        { value: 'B', text: 'Tindakan merusak ekosistem alam' },
+        { value: 'C', text: 'Kegiatan membuang sampah sembarangan' },
+        { value: 'D', text: 'Pencemaran air limbah kimia' }
       ],
       correctAnswer: 'A',
-      explanation: 'Menjadi Guardian ThinkBin sejati berarti konsisten mempraktikkan gaya hidup ramah lingkungan sepanjang hayat.'
+      explanation: 'Aksi bersih lingkungan bersama komunitas adalah wujud nyata gotong royong dan tanggung jawab kolektif terhadap kelestarian alam.'
     },
-    xpReward: 30,
-    coinReward: 50
+    xpReward: 20,
+    coinReward: 25
+  },
+
+  // ===== BAGIAN 8 — PENGELOLAAN SAMPAH KHUSUS & B3 =====
+  {
+    id: 29,
+    bagianId: 8,
+    bagianTitle: 'Pengelolaan Sampah Khusus & B3',
+    title: 'Mengenal Sampah B3 Rumah Tangga & Sekolah',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Sampah B3 (Bahan Berbahaya dan Beracun) adalah sampah yang mengandung zat beracun, mudah meledak, mudah terbakar, atau korosif. Di rumah dan sekolah, contohnya adalah sisa obat-obatan, botol pembasmi serangga (aerosol), pembersih porselen kimia, dan wadah sisa cat.',
+    contoh: 'Kaleng semprot obat nyamuk dan botol cairan pembersih lantai yang berbahan kimia keras.',
+    question: {
+      question: 'Mengapa botol bekas pembasmi serangga (aerosol) tidak boleh dibakar atau dibuang ke tong biasa?',
+      options: [
+        { value: 'A', text: 'Dapat meledak dan melepaskan gas beracun yang berbahaya bagi pernapasan' },
+        { value: 'B', text: 'Karena bisa berubah menjadi air bersih' },
+        { value: 'C', text: 'Karena harganya sangat mahal jika dibakar' },
+        { value: 'D', text: 'Agar baunya harum seperti bunga' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Kaleng aerosol bertekanan tinggi dan mengandung residu kimia yang mudah meledak jika terkena panas.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 30,
+    bagianId: 8,
+    bagianTitle: 'Pengelolaan Sampah Khusus & B3',
+    title: 'Bahaya Logam Berat dari E-Waste & Baterai',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Sampah elektronik (E-Waste) seperti charger rusak, earphone putus, dan baterai bekas mengandung logam berat berbahaya (seperti merkuri, timbal, dan kadmium). Jika tercecer di tanah, logam berat ini dapat meresap ke sumur air minum dan menyebabkan gangguan kesehatan serius pada ginjal dan saraf.',
+    contoh: 'Baterai bekas remote atau jam dinding yang bocor dan mengeluarkan serbuk putih beracun.',
+    question: {
+      question: 'Zat berbahaya apa yang terkandung di dalam sampah elektronik dan baterai bekas?',
+      options: [
+        { value: 'A', text: 'Logam berat seperti merkuri, timbal, dan kadmium' },
+        { value: 'B', text: 'Vitamin dan mineral alami' },
+        { value: 'C', text: 'Minyak wangi murni' },
+        { value: 'D', text: 'Oksigen murni' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Baterai dan e-waste mengandung logam berat beracun yang dapat mencemari air tanah jika dibuang sembarangan.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 31,
+    bagianId: 8,
+    bagianTitle: 'Pengelolaan Sampah Khusus & B3',
+    title: 'Sistem Drop-Box & Saluran Limbah Khusus',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Sampah B3 dan E-Waste tidak boleh dicampur ke tong ThinkBin Organik atau Anorganik. Sekolah dan kota menyediakan Drop-Box Limbah B3 khusus (E-Waste Drop Point) yang nantinya akan diambil oleh instansi berizin resmi untuk dimurnikan atau dinetralkan secara aman.',
+    contoh: 'Menaruh charger handphone bekas dan baterai AA ke kotak drop-box E-Waste di lobi sekolah.',
+    question: {
+      question: 'Ke mana kita harus menyalurkan sampah baterai bekas dan lampu LED yang pecah?',
+      options: [
+        { value: 'A', text: 'Ke Drop-Box limbah B3 / E-waste khusus yang disediakan sekolah/dinas' },
+        { value: 'B', text: 'Dibuang ke selokan sekolah saat hujan lebat' },
+        { value: 'C', text: 'Dicampur ke tong sampah organik sisa makanan' },
+        { value: 'D', text: 'Dikubur di dekat pohon buah' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Drop-Box B3/E-Waste memastikan sampah beracun ditangani oleh pihak profesional tanpa mencemari lingkungan.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 32,
+    bagianId: 8,
+    bagianTitle: 'Pengelolaan Sampah Khusus & B3',
+    title: 'Kuis Tantangan: Identifikasi Limbah B3',
+    type: 'kuis',
+    pilar: 'Kemampuan',
+    konsepInti: 'Uji ketelitianmu memisahkan sampah sehari-hari dari limbah B3 beracun sebelum terbuang sembarangan!',
+    contoh: 'Baterai bekas = Drop-Box B3. Botol kaca sirup = Anorganik.',
+    question: {
+      question: 'Manakah benda berikut yang WAJIB dimasukkan ke dalam tempat sampah khusus limbah B3?',
+      options: [
+        { value: 'A', text: 'Baterai bekas, lampu neon pecah, dan termometer raksa' },
+        { value: 'B', text: 'Daun mangga gugur dan kulit jeruk' },
+        { value: 'C', text: 'Kardus biskuit dan kertas HVS' },
+        { value: 'D', text: 'Botol plastik air mineral bersih' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Baterai, neon, dan termometer raksa mengandung bahan berbahaya dan beracun (B3) yang wajib penanganan khusus.'
+    },
+    xpReward: 20,
+    coinReward: 25
+  },
+
+  // ===== BAGIAN 9 — KONSERVASI ENERGI & JEJAK KARBON =====
+  {
+    id: 33,
+    bagianId: 9,
+    bagianTitle: 'Konservasi Energi & Jejak Karbon',
+    title: 'Hubungan Sampah dengan Emisi Gas Rumah Kaca',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Setiap barang yang kita beli membutuhkan energi fosil dan bahan bakar saat diproduksi dan diangkut. Ketika barang tersebut cepat dibuang menjadi sampah, energi tersebut terbuang sia-sia dan sampah di TPA melepaskan emisi karbon serta metana yang memicu pemanasan global.',
+    contoh: 'Membuat 1 botol plastik baru membutuhkan minyak bumi dan menghasilkan jejak karbon 3 kali lebih besar dibanding botol daur ulang.',
+    question: {
+      question: 'Bagaimana mengurangi sampah plastik sekali pakai dapat membantu mengerem perubahan iklim?',
+      options: [
+        { value: 'A', text: 'Memangkas kebutuhan produksi plastik baru yang menguras minyak bumi dan menghemat emisi karbon pabrik' },
+        { value: 'B', text: 'Membuat bumi berputar lebih lambat' },
+        { value: 'C', text: 'Mengurangi jumlah oksigen di atmosfer' },
+        { value: 'D', text: 'Membuat matahari bersinar lebih redup' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Pengurangan sampah menekan konsumsi bahan bakar fosil pada tahap manufaktur dan transportasi produk baru.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 34,
+    bagianId: 9,
+    bagianTitle: 'Konservasi Energi & Jejak Karbon',
+    title: 'Hemat Energi & Efisiensi Sumber Daya',
+    type: 'bacaan',
+    pilar: 'Kemauan',
+    konsepInti: 'Menjaga bumi bukan hanya tentang memilah sampah, tetapi juga mematikan lampu dan kipas angin kelas saat tidak digunakan, mematikan kran air yang menetes, serta memilih berjalan kaki atau bersepeda ke sekolah untuk menekan emisi gas buang kendaraan bermotor.',
+    contoh: 'Mematikan LCD proyektor dan lampu kelas saat jam istirahat dan kegiatan di luar ruangan.',
+    question: {
+      question: 'Tindakan sederhana di kelas yang efektif menghemat energi dan menekan emisi karbon adalah...',
+      options: [
+        { value: 'A', text: 'Mematikan lampu, kipas angin, dan proyektor saat kelas kosong' },
+        { value: 'B', text: 'Menyalakan semua pendingin ruangan dengan pintu terbuka lebar' },
+        { value: 'C', text: 'Membiarkan air kran wastafel mengalir terus-menerus' },
+        { value: 'D', text: 'Mengisi daya handphone seharian penuh tanpa dicabut' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Mematikan perangkat elektronik yang tidak terpakai menghemat listrik dan mengurangi pembakaran batu bara di pembangkit listrik.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 35,
+    bagianId: 9,
+    bagianTitle: 'Konservasi Energi & Jejak Karbon',
+    title: 'Food Waste: Stop Membuang Makanan!',
+    type: 'bacaan',
+    pilar: 'Kemauan',
+    konsepInti: 'Food waste (sampah makanan) adalah makanan layak makan yang terbuang sia-sia karena kita mengambil porsi terlalu banyak lalu tidak menghabiskannya. Menghabiskan makanan yang kita ambil adalah wujud rasa syukur sekaligus tindakan nyata mencegah timbunan sampah organik di TPA.',
+    contoh: 'Mengambil porsi makan siang secukupnya dan selalu menghabiskannya tanpa sisa di piring.',
+    question: {
+      question: 'Apa langkah paling bijak untuk mencegah terjadinya sampah makanan (food waste) di sekolah?',
+      options: [
+        { value: 'A', text: 'Mengambil porsi makanan secukupnya sesuai kemampuan makan dan menghabiskannya' },
+        { value: 'B', text: 'Memesan banyak menu lalu membuang setengahnya ke tong sampah' },
+        { value: 'C', text: 'Menyembunyikan sisa makanan di bawah meja' },
+        { value: 'D', text: 'Membuang sayuran karena tidak suka warnanya' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Mengambil porsi yang tepat dan menghabiskannya adalah pencegahan food waste paling efektif.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 36,
+    bagianId: 9,
+    bagianTitle: 'Konservasi Energi & Jejak Karbon',
+    title: 'Kuis Tantangan: Jejak Karbon Hijau',
+    type: 'kuis',
+    pilar: 'Kemampuan',
+    konsepInti: 'Uji pengetahuanmu tentang hubungan aksi pencegahan sampah, penghematan energi, dan penyelamatan iklim bumi!',
+    contoh: 'Habiskan makanan = Nol Food Waste. Matikan lampu = Hemat Energi.',
+    question: {
+      question: 'Manakah kebiasaan siswa yang memberikan dampak penurunan jejak karbon paling besar bagi sekolah?',
+      options: [
+        { value: 'A', text: 'Membawa bekal dengan wadah guna ulang, menghabiskan makanan, dan mematikan alat listrik saat tidak digunakan' },
+        { value: 'B', text: 'Membeli minuman kemasan plastik baru setiap jam istirahat' },
+        { value: 'C', text: 'Membiarkan kran air wastafel bocor berhari-hari' },
+        { value: 'D', text: 'Membakar sampah daun kering di halaman sekolah' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Kombinasi 3R, pencegahan food waste, dan konservasi energi adalah pilar utama gaya hidup rendah karbon.'
+    },
+    xpReward: 20,
+    coinReward: 25
+  },
+
+  // ===== BAGIAN 10 — DUTA & INOVATOR LINGKUNGAN GLOBAL =====
+  {
+    id: 37,
+    bagianId: 10,
+    bagianTitle: 'Duta & Inovator Lingkungan Global',
+    title: 'Kepemimpinan Hijau & Aksi Teman Sebaya',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Seorang pemimpin hijau (Green Leader) tidak hanya mempraktikkan kebiasaan baik sendiri, tetapi juga mampu menginspirasi dan mengajak teman sekelas untuk bersama-sama menjaga kebersihan tanpa perlu menggurui atau memarahi.',
+    contoh: 'Mengajak piket kelas bergiliran membawa sampah botol ke Bank Sampah sekolah setiap Jumat bersih.',
+    question: {
+      question: 'Bagaimana cara terbaik seorang Green Leader mengajak teman-temannya memilah sampah?',
+      options: [
+        { value: 'A', text: 'Memberikan contoh teladan nyata terlebih dahulu dan mengajak dengan ramah dan edukatif' },
+        { value: 'B', text: 'Memarahi teman di depan umum' },
+        { value: 'C', text: 'Membiarkan saja teman yang membuang sampah sembarangan' },
+        { value: 'D', text: 'Menghukum teman yang salah membuang sampah' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Keteladanan dan ajakan persuasif adalah kunci utama kepemimpinan hijau yang efektif.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 38,
+    bagianId: 10,
+    bagianTitle: 'Duta & Inovator Lingkungan Global',
+    title: 'Kampanye Digital & Edukasi Media Sosial',
+    type: 'bacaan',
+    pilar: 'Kemampuan',
+    konsepInti: 'Di era digital, kita bisa memanfaatkan media sosial, poster digital, atau video pendek kreatif untuk menyebarkan edukasi pemilahan sampah ThinkBin ke ribuan siswa di sekolah lain di seluruh Indonesia.',
+    contoh: 'Membuat video tutorial 30 detik cara melepas label botol plastik yang ditonton ratusan teman sekolah.',
+    question: {
+      question: 'Apa dampak positif membuat konten edukasi lingkungan kreatif di media sosial siswa?',
+      options: [
+        { value: 'A', text: 'Memperluas jangkauan kesadaran peduli lingkungan ke teman sebaya di luar sekolah' },
+        { value: 'B', text: 'Menghabiskan kuota internet tanpa manfaat' },
+        { value: 'C', text: 'Membuat orang malas memilah sampah' },
+        { value: 'D', text: 'Mengurangi jumlah daur ulang plastik' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Kampanye digital siswa terbukti sangat efektif menularkan kebiasaan positif pemilahan sampah secara viral.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 39,
+    bagianId: 10,
+    bagianTitle: 'Duta & Inovator Lingkungan Global',
+    title: 'Inovasi Masa Depan: Bumi Tanpa Sampah',
+    type: 'bacaan',
+    pilar: 'Pengetahuan',
+    konsepInti: 'Masa depan pengelolaan sampah akan dipenuhi inovasi hebat: plastik dari rumput laut yang bisa dimakan, kecerdasan buatan (AI) pemilah sampah otomatis, dan kota tanpa TPA. Kamu adalah generasi penerus yang akan mewujudkan masa depan bersih tersebut!',
+    contoh: 'Kemasan makanan berbahan rumput laut yang larut dalam air panas tanpa meninggalkan residu mikroplastik.',
+    question: {
+      question: 'Inovasi bioplastik masa depan berbahan rumput laut memiliki keunggulan utama yaitu...',
+      options: [
+        { value: 'A', text: 'Dapat terurai alami 100% tanpa menghasilkan limbah mikroplastik berbahaya' },
+        { value: 'B', text: 'Tidak bisa didaur ulang sama sekali' },
+        { value: 'C', text: 'Mencemari laut lebih parah dari plastik minyak bumi' },
+        { value: 'D', text: 'Beracun bagi hewan laut' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Bioplastik alami mudah terdegradasi menjadi nutrisi tanah/air tanpa merusak ekosistem.'
+    },
+    xpReward: 12,
+    coinReward: 15
+  },
+  {
+    id: 40,
+    bagianId: 10,
+    bagianTitle: 'Duta & Inovator Lingkungan Global',
+    title: 'Ikrar Agung Legenda Bumi ThinkBin',
+    type: 'komitmen',
+    pilar: 'Kemauan',
+    konsepInti: 'LUAR BIASA! Kamu telah menyelesaikan seluruh 10 Bab Kurikulum ThinkBin (40 Learning Nodes)! Kamu kini resmi menyandang gelar kehormatan LEGENDA GUARDIAN BUMI THINKBIN. Mari ucapkan ikrar agung kelestarian bumi!',
+    contoh: '"Saya berikrar seumur hidup untuk menjaga bumi, memilah sampah dari sumbernya, dan menginspirasi generasi masa depan demi kelestarian alam semesta."',
+    question: {
+      question: 'Setelah menamatkan seluruh 10 Bab Kurikulum ThinkBin (Node 1 - 40), apa misi sejatimu?',
+      options: [
+        { value: 'A', text: 'Menjadi teladan konsisten penjaga bumi dan pelopor pemilahan sampah seumur hidup' },
+        { value: 'B', text: 'Melupakan semua ilmu yang telah dipelajari' },
+        { value: 'C', text: 'Berhenti peduli lingkungan karena game sudah tamat' },
+        { value: 'D', text: 'Kembali membuang sampah sembarangan' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Gelar Legenda Guardian Bumi adalah awal dari komitmen nyata seumur hidup menjaga kelestarian lingkungan!'
+    },
+    xpReward: 50,
+    coinReward: 100
   }
 ];

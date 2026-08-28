@@ -109,6 +109,39 @@ export default function TantanganPage() {
         { id: '5', name: 'Lepas Label & Cuci Botol PET', category: 'Aksi Adiwiyata' },
         { id: '6', name: 'Mencampur Sisa Soto ke Tong Kertas', category: 'Bukan Adiwiyata' }
       ];
+    } else if (nodeId === 28) {
+      // Aksi Komunitas & Zero Waste
+      categories = ['Ekonomi Sirkular', 'Ekonomi Linier'];
+      items = [
+        { id: '1', name: 'Daur Ulang Botol PET Jadi Serat Baju', category: 'Ekonomi Sirkular' },
+        { id: '2', name: 'Beli Barang Lalu Langsung Dibuang ke TPA', category: 'Ekonomi Linier' },
+        { id: '3', name: 'Refill Sabun Pakai Wadah Lama', category: 'Ekonomi Sirkular' },
+        { id: '4', name: 'Menggunakan Sedotan Plastik Sekali Buang', category: 'Ekonomi Linier' },
+        { id: '5', name: 'Menabung Sampah ke Bank Sampah', category: 'Ekonomi Sirkular' },
+        { id: '6', name: 'Membakar Sampah Plastik di Pekarangan', category: 'Ekonomi Linier' }
+      ];
+    } else if (nodeId === 32) {
+      // Identifikasi Sampah B3 vs Anorganik Biasa
+      categories = ['Drop-Box B3', 'Tong Anorganik Biasa'];
+      items = [
+        { id: '1', name: 'Baterai Jam Dinding Bocor', category: 'Drop-Box B3' },
+        { id: '2', name: 'Botol Kaca Minuman Sirup', category: 'Tong Anorganik Biasa' },
+        { id: '3', name: 'Lampu Neon Panjang Pecah', category: 'Drop-Box B3' },
+        { id: '4', name: 'Kaleng Biskuit Logam', category: 'Tong Anorganik Biasa' },
+        { id: '5', name: 'Earphone & Kabel Putus', category: 'Drop-Box B3' },
+        { id: '6', name: 'Kardus Box Paket Bersih', category: 'Tong Anorganik Biasa' }
+      ];
+    } else if (nodeId === 36) {
+      // Aksi Rendah Karbon
+      categories = ['Hemat Energi & Rendah Karbon', 'Boros Emisi'];
+      items = [
+        { id: '1', name: 'Matikan AC & Lampu Saat Ruang Kosong', category: 'Hemat Energi & Rendah Karbon' },
+        { id: '2', name: 'Biarkan Kran Air Wastafel Terbuka', category: 'Boros Emisi' },
+        { id: '3', name: 'Habiskan Makanan Tanpa Sisa', category: 'Hemat Energi & Rendah Karbon' },
+        { id: '4', name: 'Membuang Separuh Nasi Kotak', category: 'Boros Emisi' },
+        { id: '5', name: 'Bersepeda / Jalan Kaki ke Sekolah', category: 'Hemat Energi & Rendah Karbon' },
+        { id: '6', name: 'Membakar Daun Kering di Halaman', category: 'Boros Emisi' }
+      ];
     } else {
       // General Fallback
       categories = ['Organik', 'Anorganik'];

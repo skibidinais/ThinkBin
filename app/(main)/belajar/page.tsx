@@ -102,7 +102,40 @@ const MAP_BAGIANS: Record<number, MapBagian> = {
       1: { slotNum: 1, nodeId: 25, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 25: Ekonomi Sirkular & Zero Waste", shortTitle: "Ekonomi Sirkular & Zero Waste", desc: "Menerapkan sistem siklus tertutup tanpa limbah terbuang.", xpReward: 12, coinReward: 15 },
       2: { slotNum: 2, nodeId: 26, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 26: Inovasi Smart Waste Bin & IoT", shortTitle: "Smart Bin & IoT", desc: "Pemanfaatan teknologi sensor dan gamifikasi ThinkBin.", xpReward: 12, coinReward: 15 },
       3: { slotNum: 3, nodeId: 27, x: 64.57, y: 68.33, icon: "plus", type: "bacaan", title: "Node 27: Gerakan Bersih Komunitas", shortTitle: "Gerakan Komunitas", desc: "Aksi bersama skala besar menyelamatkan lingkungan dari limbah.", xpReward: 12, coinReward: 15 },
-      4: { slotNum: 4, nodeId: 28, x: 58.46, y: 82.42, icon: "trophy", type: "komitmen", title: "Node 28: Ikrar Utama Guardian Bumi", shortTitle: "Ikrar Guardian Bumi", desc: "Tulis ikrar puncakmu dan raih gelar Legenda Lingkungan ThinkBin!", xpReward: 30, coinReward: 50 },
+      4: { slotNum: 4, nodeId: 28, x: 58.46, y: 82.42, icon: "trophy", type: "kuis", title: "Node 28: Kuis Tantangan: Kolaborasi Lingkungan", shortTitle: "Kuis Kolaborasi Lingkungan", desc: "Tunjukkan pemahaman aksi komunitas dan sirkular!", xpReward: 20, coinReward: 25 },
+    },
+  },
+  8: {
+    id: 8,
+    unitSubtitle: "Bagian 8 • Node 29 - 32",
+    unitTitle: "Pengelolaan Sampah Khusus & B3",
+    levels: {
+      1: { slotNum: 1, nodeId: 29, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 29: Sampah B3 Rumah & Sekolah", shortTitle: "Sampah B3 Rumah & Sekolah", desc: "Mengenal aerosol, sisa obat, dan bahan korosif beracun.", xpReward: 12, coinReward: 15 },
+      2: { slotNum: 2, nodeId: 30, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 30: Bahaya E-Waste & Baterai Bekas", shortTitle: "Bahaya E-Waste & Baterai", desc: "Ancaman pencemaran logam berat merkuri dan timbal.", xpReward: 12, coinReward: 15 },
+      3: { slotNum: 3, nodeId: 31, x: 64.57, y: 68.33, icon: "plus", type: "bacaan", title: "Node 31: Drop-Box Limbah B3 Khusus", shortTitle: "Drop-Box Limbah B3", desc: "Menyalurkan limbah elektronik ke pos pengolahan resmi.", xpReward: 12, coinReward: 15 },
+      4: { slotNum: 4, nodeId: 32, x: 58.46, y: 82.42, icon: "trophy", type: "kuis", title: "Node 32: Kuis Tantangan: Identifikasi B3", shortTitle: "Kuis Identifikasi B3", desc: "Pisahkan benda beracun berbahaya dari sampah biasa!", xpReward: 20, coinReward: 25 },
+    },
+  },
+  9: {
+    id: 9,
+    unitSubtitle: "Bagian 9 • Node 33 - 36",
+    unitTitle: "Konservasi Energi & Jejak Karbon",
+    levels: {
+      1: { slotNum: 1, nodeId: 33, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 33: Sampah & Emisi Gas Rumah Kaca", shortTitle: "Sampah & Emisi Karbon", desc: "Hubungan timbulan sampah dengan pemanasan global.", xpReward: 12, coinReward: 15 },
+      2: { slotNum: 2, nodeId: 34, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 34: Hemat Energi di Lingkungan Kelas", shortTitle: "Hemat Energi di Kelas", desc: "Membiasakan mematikan perangkat elektronik saat tidak terpakai.", xpReward: 12, coinReward: 15 },
+      3: { slotNum: 3, nodeId: 35, x: 64.57, y: 68.33, icon: "plus", type: "bacaan", title: "Node 35: Food Waste: Stop Buang Makanan!", shortTitle: "Stop Food Waste", desc: "Mengambil porsi bijak dan mencegah sampah sisa makanan.", xpReward: 12, coinReward: 15 },
+      4: { slotNum: 4, nodeId: 36, x: 58.46, y: 82.42, icon: "trophy", type: "kuis", title: "Node 36: Kuis Tantangan: Jejak Karbon Hijau", shortTitle: "Kuis Jejak Karbon Hijau", desc: "Uji keahlianmu menekan emisi karbon sekolah!", xpReward: 20, coinReward: 25 },
+    },
+  },
+  10: {
+    id: 10,
+    unitSubtitle: "Bagian 10 • Node 37 - 40",
+    unitTitle: "Duta & Inovator Lingkungan Global",
+    levels: {
+      1: { slotNum: 1, nodeId: 37, x: 32.66, y: 43.63, icon: "flag", type: "bacaan", title: "Node 37: Kepemimpinan Hijau Teman Sebaya", shortTitle: "Kepemimpinan Hijau", desc: "Menjadi teladan inspiratif pemilahan sampah di sekolah.", xpReward: 12, coinReward: 15 },
+      2: { slotNum: 2, nodeId: 38, x: 46.39, y: 57.69, icon: "dumbbell", type: "bacaan", title: "Node 38: Kampanye Edukasi Media Digital", shortTitle: "Kampanye Media Digital", desc: "Menyebarkan pesan positif penyelamatan bumi di media sosial.", xpReward: 12, coinReward: 15 },
+      3: { slotNum: 3, nodeId: 39, x: 64.57, y: 68.33, icon: "plus", type: "bacaan", title: "Node 39: Inovasi Masa Depan Tanpa Sampah", shortTitle: "Masa Depan Tanpa Sampah", desc: "Mengenal bioplastik ramah lingkungan dan teknologi hijau.", xpReward: 12, coinReward: 15 },
+      4: { slotNum: 4, nodeId: 40, x: 58.46, y: 82.42, icon: "trophy", type: "komitmen", title: "Node 40: Ikrar Agung Legenda Bumi", shortTitle: "Ikrar Legenda Bumi", desc: "Raih predikat Legenda Tertinggi Guardian Bumi ThinkBin!", xpReward: 50, coinReward: 100 },
     },
   },
 };
@@ -122,14 +155,14 @@ export default function BelajarPage() {
         refreshProfile(user.id).catch(() => {});
         const completed = await fetchUserCompletedNodes(user.id);
         setCompletedNodeIds(completed);
-        let nextUnlocked = 28;
-        for (let i = 1; i <= 28; i++) {
+        let nextUnlocked = 40;
+        for (let i = 1; i <= 40; i++) {
           if (!completed.includes(i)) {
             nextUnlocked = i;
             break;
           }
         }
-        const recommendedBagian = Math.min(7, Math.max(1, Math.ceil(nextUnlocked / 4)));
+        const recommendedBagian = Math.min(10, Math.max(1, Math.ceil(nextUnlocked / 4)));
         setCurrentBagian(recommendedBagian);
       } else {
         try {
@@ -137,14 +170,14 @@ export default function BelajarPage() {
           if (raw) {
             const completed: number[] = JSON.parse(raw);
             setCompletedNodeIds(completed);
-            let nextUnlocked = 28;
-            for (let i = 1; i <= 28; i++) {
+            let nextUnlocked = 40;
+            for (let i = 1; i <= 40; i++) {
               if (!completed.includes(i)) {
                 nextUnlocked = i;
                 break;
               }
             }
-            const recommendedBagian = Math.min(7, Math.max(1, Math.ceil(nextUnlocked / 4)));
+            const recommendedBagian = Math.min(10, Math.max(1, Math.ceil(nextUnlocked / 4)));
             setCurrentBagian(recommendedBagian);
           }
         } catch {
@@ -168,9 +201,9 @@ export default function BelajarPage() {
     };
   }, [user?.id]);
 
-  // Sequential unlock logic: first uncompleted node from 1 to 28
-  let unlockedNodeId = 28;
-  for (let i = 1; i <= 28; i++) {
+  // Sequential unlock logic: first uncompleted node from 1 to 40
+  let unlockedNodeId = 40;
+  for (let i = 1; i <= 40; i++) {
     if (!completedNodeIds.includes(i)) {
       unlockedNodeId = i;
       break;
@@ -302,7 +335,7 @@ export default function BelajarPage() {
           {/* Dropdown Menu (Z-INDEX 60: STRICTLY COVERS MASCOT AND ALL MAP ELEMENTS) */}
           {showDropdown && (
             <div className="absolute top-16 right-0 w-full max-w-[340px] max-h-[380px] overflow-y-auto bg-white border-[3px] border-[#382C22] rounded-[22px] p-2.5 flex flex-col gap-2 shadow-[0_12px_28px_rgba(0,0,0,0.25)] z-[60] animate-in zoom-in-95 duration-150">
-              {[1, 2, 3, 4, 5, 6, 7].map((bNum) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((bNum) => (
                 <button
                   key={bNum}
                   type="button"
