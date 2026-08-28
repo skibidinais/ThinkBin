@@ -34,6 +34,7 @@ export default function MainLayout({
     pathname === "/leaderboard" ||
     pathname === "/belajar" ||
     pathname === "/profil" ||
+    pathname === "/duel" ||
     pathname === "/toko";
 
   return (
@@ -49,11 +50,7 @@ export default function MainLayout({
 
       {/* Main Scrollable Content Area with smooth touch scrolling */}
       <main
-        className={`flex-1 w-full flex flex-col ${
-          isDashboard
-            ? "overflow-hidden"
-            : "overflow-y-auto overscroll-contain no-scrollbar"
-        }`}
+        className="flex-1 w-full flex flex-col overflow-y-auto overscroll-contain no-scrollbar"
         style={{
           WebkitOverflowScrolling: "touch",
         }}

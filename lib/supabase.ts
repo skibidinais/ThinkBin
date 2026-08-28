@@ -1235,3 +1235,68 @@ export async function fetchLiveClassLeaderboard(): Promise<ClassLeaderboardItem[
 
   return [];
 }
+
+/**
+ * Record Duel Reward (Victory or Participation) to user profile
+ */
+export async function recordDuelRewardTransaction(payload: {
+  userId: string;
+  xpEarned: number;
+  coinsEarned: number;
+  isWinner: boolean;
+}): Promise<{ success: boolean; currentCoins?: number; currentXp?: number }> {
+  // 1. Local update helper
+  const persistLocal = (xpToAdd: number, coinsToAdd: number) => {
+    if (typeof window !== "undefined") {
+      try {
+        const rawUser = localStorage.getItem("tb_active_user");
+        if (rawUser) {
+          const u = JSON.parse(rawUser);
+          u.xp = (u.xp || 0) + xpToAdd;
+          u.coins = (u.coins || 0) + coinsToAdd;
+          localStorage.setItem("tb_active_user", JSON.stringify(u));
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  if (isSupabaseConfigured()) {
+    try {
+      const { data: prof } = await supabase
+        .from("user_profiles")
+        .select("id, xp, coins")
+        .or(`id.eq.${payload.userId},google_id.eq.${payload.userId}`)
+        .maybeSingle();
+
+      if (prof) {
+        const newXp = (prof.xp || 0) + payload.xpEarned;
+        const newCoins = (prof.coins || 0) + payload.coinsEarned;
+
+        await supabase
+          .from("user_profiles")
+          .update({
+            xp: newXp,
+            coins: newCoins,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", prof.id);
+
+        persistLocal(payload.xpEarned, payload.coinsEarned);
+
+        return {
+          success: true,
+          currentCoins: newCoins,
+          currentXp: newXp,
+        };
+      }
+    } catch (err) {
+      console.error("Could not record duel reward via Supabase:", err);
+    }
+  }
+
+  persistLocal(payload.xpEarned, payload.coinsEarned);
+  return { success: true };
+}
+

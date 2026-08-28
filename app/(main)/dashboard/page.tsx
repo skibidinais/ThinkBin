@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden select-none bg-cover bg-center bg-no-repeat"
+      className="relative flex flex-col items-center justify-start w-full min-h-full py-6 select-none bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/screens_assets/background.png')" }}
     >
       {/* TOAST ALERT NOTIFICATION */}
@@ -88,6 +88,24 @@ export default function DashboardPage() {
           </div>
           <span className="font-fredoka font-black text-[20px] text-[#2e5926] tracking-wide">
             Misi Harian
+          </span>
+        </Link>
+
+        {/* ARENA DUEL 1 VS 1 */}
+        <Link
+          href="/duel"
+          className="w-full h-[52px] bg-gradient-to-b from-[#ff7a29] via-[#f95716] to-[#d93806] border-[3px] border-[#8a2202] rounded-[22px] px-4 flex items-center justify-center gap-3 shadow-[0_5px_0_#751900,0_8px_16px_rgba(217,56,6,0.25)] active:translate-y-1 active:shadow-[0_2px_0_#751900] transition-all cursor-pointer relative overflow-hidden"
+        >
+          <div className="absolute top-1 left-2 right-2 h-[38%] bg-gradient-to-b from-white/35 to-transparent rounded-t-[12px] pointer-events-none" />
+          <div className="w-8 h-8 bg-white/20 border-[2px] border-white/40 rounded-xl flex items-center justify-center shadow-xs flex-shrink-0">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
+              <path d="M13 19l6 2 2-6-4.5-4.5" />
+              <path d="M9.5 6.5L17.5 14.5" />
+            </svg>
+          </div>
+          <span className="font-fredoka font-black text-[20px] text-white tracking-wide drop-shadow-md">
+            Arena Duel 1 vs 1
           </span>
         </Link>
 

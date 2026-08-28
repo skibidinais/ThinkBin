@@ -405,11 +405,11 @@ export default function QuizPage() {
               {isCorrect && !isRepeatAttempt && (
                 <div className="flex flex-wrap items-center justify-center gap-2 w-full">
                   <span className="inline-flex items-center gap-1 bg-[#fef08a] border-[1.5px] border-[#ca8a04] text-[#854d0e] font-fredoka font-bold text-[11px] px-2.5 py-0.5 rounded-full shadow-xs">
-                    ⭐ Sempurna 100%: +{perfectBonus} Koin
+                    Bonus Sempurna 100%: +{perfectBonus} Koin
                   </span>
                   {speedBonus > 0 && (
                     <span className="inline-flex items-center gap-1 bg-[#dbeafe] border-[1.5px] border-[#2563eb] text-[#1e40af] font-fredoka font-bold text-[11px] px-2.5 py-0.5 rounded-full shadow-xs animate-bounce">
-                      ⚡ Cepat &lt;10s ({secondsTaken}s): +{speedBonus} Koin
+                      Bonus Cepat &lt;10s ({secondsTaken}s): +{speedBonus} Koin
                     </span>
                   )}
                 </div>

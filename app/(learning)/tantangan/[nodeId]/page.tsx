@@ -343,7 +343,7 @@ export default function TantanganPage() {
                 <span className="text-emerald-400 font-extrabold mt-2 block">
                   {isRepeatAttempt
                     ? "+0 XP / +0 Koin (Latihan Ulang / Sudah Diselesaikan)"
-                    : `+${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10 + (score === gameItems.length ? 15 : 0) + (timeLeft >= 15 ? 5 : 0)} Koin ${score === gameItems.length ? "• ⭐ Sempurna (+15)" : ""} ${timeLeft >= 15 ? "• ⚡ Cepat (+5)" : ""}`}
+                    : `+${node?.xpReward || 12} XP / +${(node?.coinReward || 15) + 10 + (score === gameItems.length ? 15 : 0) + (timeLeft >= 15 ? 5 : 0)} Koin ${score === gameItems.length ? "• Bonus Sempurna (+15)" : ""} ${timeLeft >= 15 ? "• Bonus Cepat (+5)" : ""}`}
                 </span>
               )}
             </p>
